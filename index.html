@@ -1,0 +1,1151 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Ideal Company ร่วมกันสร้างบริษัทในฝันของพวกเรา เกมสำรวจความพึงพอใจในงาน 9 ด้าน">
+<!-- ภาพตอนแชร์ลิงก์: เมื่อได้ลิงก์เว็บแล้ว เปลี่ยน ideal-company-cover.png ใน 2 บรรทัดด้านล่างเป็นลิงก์เต็ม เช่น https://ชื่อเว็บของคุณ/ideal-company-cover.png -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jtvg4b76mn-spec.github.io/JSS-IDAEL-CO./">
+<meta property="og:title" content="Ideal Company">
+<meta property="og:description" content="ร่วมกันสร้างบริษัทในฝันของพวกเรา · เกมสำรวจความพึงพอใจในงาน 9 ด้าน">
+<meta property="og:image" content="https://jtvg4b76mn-spec.github.io/JSS-IDAEL-CO./ideal-company-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="th_TH">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://jtvg4b76mn-spec.github.io/JSS-IDAEL-CO./ideal-company-cover.png">
+<meta name="theme-color" content="#071327">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 46'%3E%3Cpolygon points='23,3 43,14 23,25 3,14' fill='%233FD9F2'/%3E%3Cpolygon points='3,14 23,25 23,44 3,33' fill='%2311966C'/%3E%3Cpolygon points='23,25 43,14 43,33 23,44' fill='%230B6E50'/%3E%3C/svg%3E">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Ideal Company</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
+<style>
+/* Layout: one game shell — sticky HUD, then a single active screen; map + control panel side by side on wide screens, stacked on phones */
+:root{
+  color-scheme: dark;
+  --bg:#071327; --water:#0A1C38; --surface:#0E2244; --raised:#15305C; --line:#24497C;
+  --fg:#E8F1FB; --muted:#94AAC8; --dim:#5F7799;
+  --emerald:#1BC690; --emerald-2:#11966C; --emerald-3:#0B6E50;
+  --cyan:#3FD9F2; --cyan-soft:rgba(63,217,242,.12);
+  --ok:#1BC690; --warn:#F4B64A; --bad:#F06C6C;
+  --display:"Bai Jamjuree","IBM Plex Sans Thai","Leelawadee UI","Thonburi",sans-serif;
+  --body:"IBM Plex Sans Thai","Leelawadee UI","Thonburi",system-ui,sans-serif;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.6;
+  background-image:radial-gradient(ellipse 80% 50% at 70% 0%, rgba(63,217,242,.10), transparent 70%),radial-gradient(ellipse 60% 40% at 0% 100%, rgba(27,198,144,.08), transparent 70%);
+  background-attachment:fixed}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--display);line-height:1.2;text-wrap:balance;margin:0}
+p{margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.eyebrow{font-family:var(--display);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);font-weight:600}
+.muted{color:var(--muted)}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:var(--raised);
+  padding:11px 18px;border-radius:12px;font-family:var(--display);font-weight:600;font-size:15px;transition:transform .15s,background .15s,border-color .15s}
+.btn:hover{border-color:var(--cyan)}
+.btn:active{transform:translateY(1px) scale(.98)}
+.btn.primary{background:linear-gradient(180deg,#22D39C,#12a273);border-color:transparent;color:#03231A;box-shadow:0 6px 22px -8px rgba(27,198,144,.7)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.cyan{background:var(--cyan-soft);border-color:rgba(63,217,242,.5);color:var(--cyan)}
+.btn.ghost{background:transparent}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.btn.sm{padding:7px 12px;font-size:13px;border-radius:10px}
+
+/* HUD */
+.hud{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(7,19,39,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.hud .wrap{display:flex;align-items:center;gap:14px;padding-block:10px;flex-wrap:wrap}
+.hud-player{display:flex;align-items:center;gap:10px;min-width:0}
+.hud-player .av{width:40px;height:40px;flex:none}
+.hud-name{font-family:var(--display);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
+.lvl{font-size:12px;color:var(--muted)}
+.xpbar{width:90px;height:6px;border-radius:6px;background:var(--water);overflow:hidden;margin-top:3px}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--emerald),var(--cyan));transition:width .5s}
+.chapters{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.chip-ch{border:1px solid var(--line);background:transparent;border-radius:999px;padding:5px 11px;font-size:12.5px;font-family:var(--display);font-weight:600;color:var(--muted)}
+.chip-ch.done{color:var(--emerald);border-color:rgba(27,198,144,.5)}
+.chip-ch.active{background:var(--cyan);color:#04202A;border-color:var(--cyan)}
+.chip-ch[disabled]{opacity:.4;cursor:not-allowed}
+.demo-pill{font-size:12px;background:rgba(244,182,74,.15);color:var(--warn);border:1px solid rgba(244,182,74,.4);padding:3px 9px;border-radius:999px;white-space:nowrap}
+@media (max-width:640px){.chapters{margin-left:0;width:100%}.chip-ch{flex:1;padding:5px 4px}}
+
+main{padding-block:24px 64px}
+.screen{animation:fadeUp .4s ease both}
+@keyframes fadeUp{from{transform:translateY(8px);opacity:.4}to{transform:none;opacity:1}}
+
+/* panels */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.two{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:860px){.two{grid-template-columns:minmax(0,1fr)}}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* Logo */
+.logo{display:flex;align-items:center;gap:12px}
+.logo-word{font-family:var(--display);font-weight:700;font-size:clamp(34px,6vw,58px);letter-spacing:.02em;line-height:1}
+.logo-word b{color:var(--cyan);font-weight:700}
+.mission-tag{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.2em;border:1px solid var(--emerald);color:var(--emerald);padding:4px 10px;border-radius:6px}
+
+/* Home */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:28px;align-items:center}
+@media (max-width:860px){.hero{grid-template-columns:minmax(0,1fr)}}
+.tagline{font-family:var(--display);font-size:clamp(20px,2.6vw,26px);font-weight:600;margin-top:18px}
+.lead{color:var(--muted);max-width:60ch;margin-top:12px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.city-stage{position:relative}
+.city-stage .bubble{position:absolute;left:4%;top:2%;max-width:230px}
+.chapters-intro{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:36px}
+@media (max-width:860px){.chapters-intro{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ch-card{border:1px solid var(--line);border-radius:var(--r);padding:16px;background:rgba(14,34,68,.6)}
+.ch-card .n{font-family:var(--display);font-size:12px;letter-spacing:.14em;color:var(--emerald);font-weight:600}
+.ch-card h3{font-size:17px;margin-top:4px}
+.ch-card p{font-size:13.5px;color:var(--muted);margin-top:6px}
+
+/* mascot */
+.mascot-line{display:flex;gap:12px;align-items:flex-start}
+.mascot{width:64px;height:64px;flex:none;animation:hover 3.2s ease-in-out infinite}
+@keyframes hover{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.bubble{background:var(--raised);border:1px solid rgba(63,217,242,.35);border-radius:14px;padding:10px 14px;font-size:14px;position:relative}
+.bubble b{color:var(--cyan);font-family:var(--display)}
+
+/* map */
+.map svg{width:100%;height:auto;display:block}
+.tile-top{fill:#167A5C}.tile-l{fill:#0D4E3C}.tile-r{fill:#0A3D30}
+.tile-hl .tile-top{fill:#1E9B74}
+.tile-ring{fill:none;stroke:var(--cyan);stroke-width:2;opacity:0}
+.tile-hl .tile-ring{opacity:1;filter:drop-shadow(0 0 6px var(--cyan))}
+.b-top{fill:#4BE3B4}.b-l{fill:#18A97B}.b-r{fill:#0F7C5B}
+.b-warn .b-top{fill:#FFD27E}.b-warn .b-l{fill:#D99A2B}.b-warn .b-r{fill:#A9741B}
+.b-bad .b-top{fill:#FF9A9A}.b-bad .b-l{fill:#D95454}.b-bad .b-r{fill:#A63B3B}
+.win{stroke:rgba(255,255,255,.35);stroke-width:1.4}
+.holo{fill:rgba(63,217,242,.07);stroke:var(--cyan);stroke-width:1.3;stroke-dasharray:4 3}
+.pad{fill:#2B4A6E}
+.tile-num{fill:var(--bg);stroke:var(--cyan);stroke-width:1.2}
+.tile-num-t{fill:var(--fg);font:600 10px var(--display);text-anchor:middle;dominant-baseline:central}
+.check{fill:var(--emerald)}
+.district{cursor:default}
+.district.clickable{cursor:pointer}
+.district.clickable:hover .tile-top{fill:#1E9B74}
+.district:focus{outline:none}.district:focus-visible .tile-ring{opacity:1}
+.rise{animation:rise .45s cubic-bezier(.3,1.4,.5,1)}
+@keyframes rise{from{transform:scaleY(.7)}to{transform:none}}
+.rise{transform-box:fill-box;transform-origin:50% 100%}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-top:8px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:10px;border-radius:2px;display:inline-block}
+.sw.holo-sw{border:1.5px dashed var(--cyan);background:var(--cyan-soft)}
+.sw.real-sw{background:var(--emerald)}
+
+/* avatar builder */
+.avatar-preview{display:flex;flex-direction:column;align-items:center;gap:10px}
+.avatar-preview .av{width:min(220px,60vw);height:auto}
+.opt-group{display:flex;flex-direction:column;gap:8px}
+.opt-label{font-family:var(--display);font-weight:600;font-size:14px}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opt{border:1px solid var(--line);background:var(--water);border-radius:10px;padding:7px 12px;font-size:14px}
+.opt[aria-pressed="true"]{border-color:var(--cyan);background:var(--cyan-soft);color:var(--cyan)}
+.swatch{width:34px;height:34px;border-radius:50%;padding:0;border:2px solid transparent}
+.swatch[aria-pressed="true"]{border-color:var(--fg);box-shadow:0 0 0 3px var(--bg) inset}
+.field{width:100%;background:var(--water);border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--fg);font:inherit}
+.field:focus{border-color:var(--cyan);outline:none}
+textarea.field{min-height:96px;resize:vertical}
+.toggle{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--water);text-align:left;width:100%}
+.toggle .knob{width:40px;height:22px;border-radius:22px;background:var(--line);flex:none;position:relative;transition:background .2s;margin-top:2px}
+.toggle .knob::after{content:"";position:absolute;width:16px;height:16px;border-radius:50%;background:var(--fg);top:3px;left:3px;transition:left .2s}
+.toggle[aria-pressed="true"] .knob{background:var(--emerald)}
+.toggle[aria-pressed="true"] .knob::after{left:21px}
+.err{color:var(--bad);font-size:13.5px}
+
+/* chapter header */
+.ch-head{display:flex;flex-direction:column;gap:6px;margin-bottom:18px}
+.ch-head h2{font-size:clamp(24px,3.4vw,32px)}
+.ch-head p{color:var(--muted);max-width:64ch}
+
+/* dream builder */
+.steps{display:flex;gap:6px;flex-wrap:wrap}
+.step-dot{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--water);font:600 12px var(--display);color:var(--muted)}
+.step-dot.set{border-color:rgba(27,198,144,.6);color:var(--emerald)}
+.step-dot.cur{background:var(--cyan);border-color:var(--cyan);color:#04202A}
+.dist-title{font-size:22px}
+.dist-sub{color:var(--muted);font-size:13.5px}
+.q-ideal{font-size:17px;font-weight:500;margin-top:6px}
+.slider-box{background:var(--water);border:1px solid var(--line);border-radius:12px;padding:18px 16px 12px}
+.slider-read{display:flex;align-items:baseline;gap:10px}
+.slider-read .big{font:700 44px var(--display);color:var(--cyan);line-height:1}
+.slider-read .lab{font-family:var(--display);font-weight:600;font-size:17px}
+input[type=range]{width:100%;margin:14px 0 4px;-webkit-appearance:none;appearance:none;height:8px;border-radius:8px;
+  background:linear-gradient(90deg,var(--emerald) 0,var(--cyan) var(--p,50%),var(--line) var(--p,50%));outline-offset:6px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--fg);border:4px solid var(--cyan);box-shadow:0 0 12px rgba(63,217,242,.6)}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--fg);border:4px solid var(--cyan)}
+.ticks{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted)}
+.ticks span{width:20%;text-align:center}
+.ticks span:first-child{text-align:left}.ticks span:last-child{text-align:right}
+
+/* reality hub */
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mini-stat{background:var(--water);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.mini-stat .k{font-size:12.5px;color:var(--muted)}
+.mini-stat .v{font:700 22px var(--display)}
+.mini-stat .v small{font-size:13px;color:var(--muted);font-weight:500}
+.dist-list{display:flex;flex-direction:column;gap:8px}
+.dist-item{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:10px;align-items:center;text-align:left;border:1px solid var(--line);
+  background:var(--water);border-radius:12px;padding:10px 12px;transition:border-color .15s,transform .15s}
+.dist-item:hover{border-color:var(--cyan);transform:translateX(2px)}
+.dist-item .num{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font:600 13px var(--display);border:1px solid var(--cyan);color:var(--cyan)}
+.dist-item .nm{font-family:var(--display);font-weight:600;font-size:14.5px;line-height:1.3}
+.dist-item .sub{font-size:12.5px;color:var(--muted)}
+.status{font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.status.done{color:var(--emerald);border-color:rgba(27,198,144,.5);background:rgba(27,198,144,.1)}
+.status.part{color:var(--cyan);border-color:rgba(63,217,242,.5)}
+
+/* mission card */
+.mission{max-width:720px;margin:0 auto}
+.scenario{border-left:3px solid var(--warn);background:rgba(244,182,74,.08);padding:10px 14px;border-radius:0 10px 10px 0;font-size:14px}
+.scenario b{color:var(--warn);font-family:var(--display)}
+.pips{display:flex;gap:6px}
+.pips i{flex:1;height:5px;border-radius:5px;background:var(--line)}
+.pips i.on{background:var(--emerald)}.pips i.cur{background:var(--cyan)}
+.item-text{font-family:var(--display);font-size:clamp(19px,2.6vw,24px);font-weight:600;line-height:1.4;min-height:3em}
+.answers{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+@media (max-width:560px){.answers{grid-template-columns:minmax(0,1fr)}}
+.ans{border:1px solid var(--line);background:var(--water);border-radius:12px;padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s}
+.ans .d{font:700 20px var(--display);color:var(--cyan)}
+.ans .t{font-size:12.5px;color:var(--muted);text-align:center;line-height:1.3}
+.ans:hover{border-color:var(--cyan);background:var(--cyan-soft)}
+.ans[aria-pressed="true"]{background:var(--cyan);border-color:var(--cyan)}
+.ans[aria-pressed="true"] .d,.ans[aria-pressed="true"] .t{color:#04202A}
+@media (max-width:560px){.ans{flex-direction:row;justify-content:flex-start;gap:14px;padding:10px 14px}.ans .d{width:20px}}
+
+/* gap analysis */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:20px}
+@media (max-width:760px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.kpi .k{font-size:12.5px;color:var(--muted)}
+.kpi .v{font:700 30px var(--display);line-height:1.15;margin-top:2px}
+.kpi .v small{font-size:14px;color:var(--muted);font-weight:500}
+.kpi .s{font-size:12.5px;margin-top:2px}
+.dumb{display:flex;flex-direction:column;gap:2px}
+.dumb-row{display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr) 64px;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(36,73,124,.5)}
+.dumb-row:last-child{border-bottom:0}
+.dumb-row .lb{font-size:13.5px;font-weight:500;line-height:1.3}
+.dumb-row .lb small{display:block;color:var(--muted);font-size:11.5px;font-weight:400}
+.track{position:relative;height:22px}
+.track::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--line)}
+.track .grid{position:absolute;top:3px;bottom:3px;width:1px;background:rgba(36,73,124,.6)}
+.track .seg{position:absolute;top:50%;height:4px;transform:translateY(-50%);border-radius:4px}
+.track .dot{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;transform:translate(-50%,-50%)}
+.track .dot.ideal{border:2.5px solid var(--cyan);background:var(--bg)}
+.gapv{font:700 15px var(--display);text-align:right}
+.axis{display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr) 64px;gap:12px;font-size:11px;color:var(--muted)}
+.axis .scale{position:relative;height:14px}
+.axis .scale span{position:absolute;transform:translateX(-50%)}
+@media (max-width:560px){.dumb-row,.axis{grid-template-columns:minmax(0,96px) minmax(0,1fr) 48px;gap:8px}}
+.c-ok{color:var(--ok)}.c-warn{color:var(--warn)}.c-bad{color:var(--bad)}
+.bg-ok{background:var(--ok)}.bg-warn{background:var(--warn)}.bg-bad{background:var(--bad)}
+.prio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.prio{grid-template-columns:minmax(0,1fr)}}
+.prio-card{border:1px solid var(--line);border-radius:var(--r);padding:14px;background:var(--surface);border-top:3px solid var(--line)}
+.prio-card.k-bad{border-top-color:var(--bad)}.prio-card.k-warn{border-top-color:var(--warn)}.prio-card.k-ok{border-top-color:var(--ok)}
+.prio-card .rank{font:600 12px var(--display);letter-spacing:.12em;color:var(--muted)}
+.prio-card h3{font-size:17px;margin-top:2px}
+.prio-card p{font-size:13.5px;color:var(--muted);margin-top:6px}
+.howread{font-size:13.5px;color:var(--muted)}
+.howread table{border-collapse:collapse;width:100%;margin-top:8px}
+.howread td,.howread th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;font-weight:400}
+.howread th{color:var(--fg);font-family:var(--display);font-weight:600}
+.tbl-wrap{overflow-x:auto}
+
+/* ideas */
+.idea-card{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:18px;display:flex;flex-direction:column;gap:10px}
+.idea-card h3{font-size:18px}
+.starters{display:flex;gap:6px;flex-wrap:wrap}
+.starter{font-size:12.5px;border:1px dashed var(--line);background:transparent;border-radius:999px;padding:4px 10px;color:var(--muted)}
+.starter:hover{color:var(--cyan);border-color:var(--cyan)}
+.stars{display:flex;gap:3px}
+.stars svg{width:18px;height:18px}
+.star-on{fill:var(--warn)}.star-off{fill:var(--line)}
+.idea-result{display:flex;align-items:center;gap:10px;font-size:13.5px}
+
+/* report */
+.cert{background:linear-gradient(160deg,var(--surface),#0B1D3B);border:1px solid rgba(63,217,242,.35);border-radius:20px;padding:24px;position:relative;overflow:hidden}
+.cert-head{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.cert-head .av{width:96px;height:96px;flex:none}
+.persona{font-size:clamp(24px,3.6vw,34px);color:var(--cyan)}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.tag{font-size:12.5px;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.badges{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.badges{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.badge{border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center;background:var(--water)}
+.badge svg{width:42px;height:42px}
+.badge .bn{font-family:var(--display);font-weight:600;font-size:13.5px;margin-top:4px;line-height:1.3}
+.badge .bd{font-size:11.5px;color:var(--muted)}
+.badge.locked{opacity:.38}
+.list-plain{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+
+/* modal + toast */
+.modal{position:fixed;inset:0;z-index:50;background:rgba(3,10,22,.72);display:grid;place-items:center;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px))}
+.modal-box{background:var(--surface);border:1px solid var(--line);border-radius:18px;max-width:560px;width:100%;max-height:85vh;overflow:auto;padding:22px;animation:fadeUp .25s ease both}
+.modal-box h2{font-size:22px;margin-bottom:10px}
+.modal-box ol{padding-left:20px;margin:10px 0;display:flex;flex-direction:column;gap:8px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;background:var(--raised);
+  border:1px solid var(--emerald);border-radius:999px;padding:10px 18px;font-family:var(--display);font-weight:600;box-shadow:0 10px 30px -10px rgba(0,0,0,.7);
+  display:flex;gap:10px;align-items:center;white-space:nowrap;max-width:calc(100vw - 32px);overflow:hidden;text-overflow:ellipsis}
+.toast .xp{color:var(--emerald)}
+.ico{fill:none;stroke:var(--cyan);stroke-width:1.7;vector-effect:none;stroke-linecap:round;stroke-linejoin:round}
+.ico-badge{width:34px;height:34px;flex:none;border-radius:10px;display:grid;place-items:center;background:var(--cyan-soft);border:1px solid rgba(63,217,242,.45)}
+.ico-badge .ico{width:21px;height:21px}
+.ic-head{grid-template-columns:34px minmax(0,1fr) auto}
+.dist-item{grid-template-columns:34px minmax(0,1fr) auto}
+.ico-h{display:flex;align-items:center;gap:10px}
+.floor-hl .tile-num{stroke-width:2;fill:var(--cyan-soft)}
+.congrats{max-width:640px;margin:24px auto 0;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;
+  background:linear-gradient(160deg,var(--surface),#0B1D3B);border:1px solid rgba(63,217,242,.35);border-radius:22px;padding:36px 24px}
+.cg-badge{width:120px;height:120px;animation:hover 3.2s ease-in-out infinite}
+.cg-title{font-size:clamp(30px,6vw,44px);color:var(--cyan)}
+.cg-lead{font-family:var(--display);font-weight:600;font-size:clamp(19px,3.4vw,24px)}
+.cg-body{color:var(--muted);max-width:46ch}
+#subBox{width:100%;text-align:left}
+#subBox:empty{display:none}
+.core{fill:#0E2A4A}.core-r{fill:#0A2038}
+.plate{fill:#1D3A62}
+.lead{stroke:var(--line);stroke-width:1}
+.floor-t{fill:var(--muted);font:500 11.5px var(--body);dominant-baseline:central}
+.floor-hl .floor-t{fill:var(--cyan);font-weight:600}
+.floor-hl .holo{stroke-width:2.2;filter:drop-shadow(0 0 5px var(--cyan))}
+.grow{animation:grow .5s cubic-bezier(.3,1.4,.5,1);transform-box:fill-box;transform-origin:50% 50%}
+@keyframes grow{from{transform:scale(.6)}to{transform:none}}
+.sub-box:has(.code-box){display:block}
+.code-box{display:flex;flex-direction:column;gap:10px;width:100%}
+#resCode{min-height:84px;font-size:11.5px;word-break:break-all;font-family:ui-monospace,Menlo,monospace}
+.report-art{max-width:72ch;display:flex;flex-direction:column;gap:18px;line-height:1.75}
+.report-art h2{font-size:clamp(20px,2.8vw,26px)}
+.report-art h3{font-size:18px;color:var(--cyan);margin-bottom:6px}
+.report-art h4{font-size:16px;margin:12px 0 4px}
+.report-art section{display:flex;flex-direction:column;gap:8px}
+.report-art ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.btn.danger{background:rgba(240,108,108,.14);border-color:rgba(240,108,108,.55);color:var(--bad)}
+.btn.danger:hover{background:rgba(240,108,108,.24);border-color:var(--bad)}
+.sel-row td{background:rgba(240,108,108,.07)}
+.dtable input[type=checkbox]{width:18px;height:18px;accent-color:var(--bad)}
+input[type=date].field{padding:7px 10px}
+.profile-panel{max-width:760px}
+.org-opt{padding:11px 18px;font-family:var(--display);font-weight:600;font-size:15px}
+.ideal-card{display:flex;flex-direction:column;gap:6px;transition:border-color .2s,box-shadow .2s}
+.ideal-card.set{border-color:rgba(27,198,144,.45)}
+.ideal-card.need{border-color:var(--bad);box-shadow:0 0 0 3px rgba(240,108,108,.25)}
+.ic-head{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:center}
+.ic-head .num{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font:600 13px var(--display);border:1px solid var(--cyan);color:var(--cyan)}
+.ic-head .nm{font-family:var(--display);font-weight:600;font-size:16px;line-height:1.3}
+.ic-head .sub{font-size:12.5px;color:var(--muted)}
+.ic-val{font-family:var(--display);font-weight:600;font-size:13.5px;color:var(--cyan);text-align:right}
+.ideal-card:not(.set) .ic-val{color:var(--dim);font-weight:500}
+.ideal-card .q-ideal{font-size:15px;margin-top:2px}
+.islider.unset{background:var(--line)}
+.islider.unset::-webkit-slider-thumb{border-color:var(--dim);box-shadow:none;background:var(--raised)}
+.islider.unset::-moz-range-thumb{border-color:var(--dim);background:var(--raised)}
+.submit-bar{position:sticky;bottom:0;z-index:5;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+  background:rgba(7,19,39,.94);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:14px;padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px))}
+@media (min-width:861px){.sticky-map{position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px)}}
+@media (max-width:860px){.sticky-map{max-width:380px;margin:0 auto;width:100%;padding:10px}}
+.btn.xl{padding:17px 36px;font-size:20px;border-radius:14px;min-width:240px}
+.hero-actions{flex-direction:column;align-items:flex-start}
+@media (max-width:560px){.btn.xl{width:100%;min-width:0}.hero-actions{align-items:stretch}}
+.home-foot{display:flex;justify-content:flex-end;margin-top:28px;border-top:1px solid var(--line);padding-top:12px}
+.home-foot .btn{color:var(--dim)}
+.runbar{height:8px;border-radius:8px;background:var(--water);overflow:hidden}
+.runbar i{display:block;height:100%;background:linear-gradient(90deg,var(--emerald),var(--cyan));transition:width .3s}
+.run-map{max-width:420px;margin:0 auto;width:100%;padding:10px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.tab{background:transparent;border:0;border-bottom:2px solid transparent;padding:9px 12px;font-family:var(--display);font-weight:600;color:var(--muted);margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--cyan);border-bottom-color:var(--cyan)}
+.dl-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:760px){.dl-grid{grid-template-columns:minmax(0,1fr)}}
+code{font-size:12.5px;color:var(--cyan)}
+.sub-box{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 16px;font-size:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.sample-banner{margin-bottom:12px;border:1px solid rgba(244,182,74,.45);background:rgba(244,182,74,.1);color:var(--warn);border-radius:10px;padding:8px 14px;font-size:13.5px}
+.admin-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.admin-bar label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted)}
+select.field{padding:8px 10px;min-width:150px}
+.empty{color:var(--muted)}
+.dtable{width:100%;border-collapse:collapse;font-size:13.5px}
+.dtable th,.dtable td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.dtable th{font-family:var(--display);font-weight:600;color:var(--muted);font-size:12.5px;white-space:nowrap}
+.dtable .n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.rev{font-size:11.5px;color:var(--warn);border:1px solid rgba(244,182,74,.4);border-radius:6px;padding:1px 6px;white-space:nowrap}
+.hbar{display:grid;grid-template-columns:minmax(0,140px) minmax(0,1fr) 92px;gap:10px;align-items:center;font-size:13px;padding:3px 0}
+.hbar .tr{height:10px;background:var(--water);border-radius:6px;overflow:hidden}
+.hbar .tr i{display:block;height:100%;border-radius:6px}
+.hbar .vl{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+@media (max-width:560px){.hbar{grid-template-columns:minmax(0,96px) minmax(0,1fr) 84px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+</head>
+<body>
+<div id="app"></div>
+<div id="modalRoot"></div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+(function(){
+"use strict";
+/* ===== ตั้งค่าเว็บไซต์: วาง URL ของ Google Apps Script Web App ระหว่างเครื่องหมายคำพูด ===== */
+const SITE_CONFIG={ENDPOINT:''};
+
+
+/* ---------- content ---------- */
+const DIMS=[
+ {th:'ค่าตอบแทน',en:'Pay',place:'เสาแห่งค่าตอบแทน',
+  def:'เงินเดือน ความเหมาะสม ความยุติธรรม และการปรับขึ้นค่าตอบแทน',
+  ideal:'หากคุณคือเจ้าของบริษัท “ค่าตอบแทนที่เหมาะสมกับงาน” ควรมีความสำคัญเพียงใด?',
+  scen:'เงินเดือนเริ่มต้นใกล้เคียงตลาด แต่ปรับขึ้นปีละ 3% เท่ากันทุกคน ไม่ว่าผลงานจะเป็นอย่างไร',
+  starters:['ปรับเงินเดือนตามผลงานจริง','เปิดเผยโครงสร้างเงินเดือน','สำรวจค่าตอบแทนเทียบตลาดทุกปี'],
+  items:[['เมื่อมองย้อนกลับไปถึงงานที่ทำในแต่ละเดือน ฉันรู้สึกว่าสิ่งที่ได้รับตอบแทนมีความสมเหตุสมผล',0],['ความสามารถในการทำงานของตัวเองสอดคล้องกับเงินเดือนที่ได้รับ',0],['ถ้าฉันพัฒนาผลงานได้ดีขึ้น ฉันเชื่อว่ามีโอกาสได้รับเงินเดือนเพิ่มขึ้น',0],['เงินเดือนที่ฉันได้รับอยู่ในปัจจุบันมีความเหมาะสมกับความสามารถของฉัน',0],['เงินเดือนที่ได้รับเป็นปัจจัยหนึ่งที่ทำให้ฉันยังคงทำงานกับบริษัทนี้ต่อไป',0]]},
+ {th:'สวัสดิการ',en:'Fringe Benefits',place:'สวนสนุกสวัสดิการ',
+  def:'ประกันสุขภาพ วันลาพักร้อน และสิทธิประโยชน์นอกเหนือเงินเดือน',
+  ideal:'หากคุณคือเจ้าของบริษัท “สวัสดิการที่ครอบคลุมและเข้าถึงง่าย” ควรมีความสำคัญเพียงใด?',
+  scen:'มีประกันสุขภาพกลุ่มและพักร้อน 10 วันต่อปี แต่การเบิกค่ารักษาต้องกรอกเอกสาร 3 ฉบับ และรอเงินประมาณ 1 เดือน',
+  starters:['ให้เลือกสวัสดิการแบบยืดหยุ่น','เบิกค่ารักษาผ่านแอปได้','สำรวจความต้องการสวัสดิการทุกปี'],
+  items:[['ฉันรู้ว่าต้องติดต่อหน่วยงานใดหรือดำเนินการอย่างไรเมื่อต้องการใช้สวัสดิการ',0],['ฉันแทบจะไม่เสียเวลาในการเตรียมเอกสารหรือดำเนินการเพื่อขอใช้สิทธิ์สวัสดิการเลย',0],['จากประสบการณ์การใช้สิทธิ์ที่ผ่านมา ฉันได้รับสิทธิตามที่ควรจะเป็น',0],['สิทธิการรักษาพยาบาลที่มีอยู่สามารถครอบคลุมความต้องการจำเป็นของฉันได้',0],['เมื่อพิจารณาสิทธิประโยชน์ด้านสุขภาพที่ได้รับ ฉันรู้สึกอุ่นใจว่ามีหลักประกันในการดูแลตัวเองมากขึ้น',0]]},
+ {th:'โอกาสเลื่อนขั้น',en:'Promotion',place:'ลิฟต์ไปสู่สุดยอดตำแหน่ง',
+  def:'โอกาสเติบโต ความก้าวหน้าในตำแหน่ง และความเป็นธรรมของเกณฑ์',
+  ideal:'หากคุณคือเจ้าของบริษัท “โอกาสเติบโตและเลื่อนตำแหน่งอย่างเป็นธรรม” ควรมีความสำคัญเพียงใด?',
+  scen:'มีตำแหน่งให้เลื่อนปีละไม่กี่ที่ ผู้ที่ได้เลื่อนส่วนใหญ่เป็นคนที่สนิทกับผู้บริหาร และไม่มีการประกาศเกณฑ์ชัดเจน',
+  starters:['ประกาศเกณฑ์เลื่อนขั้นให้ทุกคนรู้','ทำแผนเส้นทางอาชีพรายบุคคล','มีคณะกรรมการพิจารณาร่วม'],
+  items:[['ฉันมองเห็นโอกาสที่จะเติบโตในตำแหน่งหน้าที่ภายในบริษัทแห่งนี้',0],['บริษัทมีเกณฑ์การพิจารณาเลื่อนขั้นที่ชัดเจน',0],['แม้ว่าฉันจะพยายามทำงานอย่างเต็มที่ แต่โอกาสในการเลื่อนขั้นของฉันยังคงมีน้อย',1],['เมื่อมองอนาคตการทำงาน ฉันเห็นว่าตัวเองสามารถเติบโตไปได้อีกหลายระดับ',0],['ฉันรู้สึกว่าผลงานของฉันไม่ส่งผลต่อโอกาสในการเลื่อนขั้นเท่าที่ควร',1]]},
+ {th:'รางวัลตามผลงาน',en:'Contingent Rewards',place:'ห้องเก็บถ้วยรางวัล',
+  def:'คำชม การยอมรับในผลงาน และการให้รางวัลตามผลงาน',
+  ideal:'หากคุณคือเจ้าของบริษัท “การชื่นชมและให้รางวัลตามผลงาน” ควรมีความสำคัญเพียงใด?',
+  scen:'ทุกเดือนมีการประกาศ "พนักงานดีเด่น" พร้อมบัตรของขวัญ แต่บางเดือนก็ข้ามไปโดยไม่มีคำอธิบาย',
+  starters:['ชมผลงานในที่ประชุมทุกสัปดาห์','ให้รางวัลตามเป้าที่ประกาศล่วงหน้า','ให้เพื่อนร่วมงานโหวตชื่นชมกัน'],
+  items:[['หัวหน้างานมักจะเอ่ยชมฉันเวลาที่ฉันทำงานสำเร็จตามเป้าหมาย',0],['ฉันรู้สึกว่ารางวัลที่ได้รับมีความเหมาะสมกับผลงานของฉัน',0],['หัวหน้างานไม่ค่อยให้ความสำคัญกับผลงานของฉัน',1],['บริษัทให้ความสำคัญเฉพาะกับพนักงานที่มีผลงานโดดเด่น',1],['ฉันรู้สึกว่าบริษัทให้รางวัลแก่พนักงานตามลำดับความอาวุโส',1]]},
+ {th:'หัวหน้างาน',en:'Supervision',place:'ศูนย์บัญชาการที่เข้มแข็ง',
+  def:'ความสามารถ การสนับสนุน ความยุติธรรม และความสัมพันธ์กับหัวหน้า',
+  ideal:'หากคุณคือเจ้าของบริษัท “หัวหน้างานที่เก่ง รับฟัง และยุติธรรม” ควรมีความสำคัญเพียงใด?',
+  scen:'หัวหน้าทีม "พี่ต้น" เก่งงานเทคนิคและช่วยแก้ปัญหาได้เร็ว แต่ตัดสินใจคนเดียวบ่อย และไม่ค่อยถามความเห็นทีม',
+  starters:['ประชุมตัวต่อตัวกับลูกทีมทุกเดือน','อบรมทักษะการเป็นผู้นำ','ให้ลูกทีมประเมินหัวหน้า'],
+  items:[['หัวหน้างานของฉันคอยรับฟังความคิดเห็นของพนักงานอยู่เสมอ',0],['ฉันได้รับคำตอบจากหัวหน้าทุกครั้งเมื่อฉันประสบปัญหา',0],['หัวหน้างานมักเพิกเฉยมุมมองใหม่ ๆ ที่ฉันเสนอเพื่อการพัฒนาบริษัท',1],['หัวหน้างานมักตามงานในช่วงวันหยุด',1],['ฉันรู้สึกว่าหัวหน้างานช่วยเหลือเฉพาะพนักงานที่มีความสนิทสนมส่วนตัวมากกว่า',1]]},
+ {th:'เพื่อนร่วมงาน',en:'Coworkers',place:'ชุมชนเพื่อนร่วมงาน',
+  def:'ความสัมพันธ์ ความร่วมมือ การช่วยเหลือ และความสามารถของเพื่อนร่วมงาน',
+  ideal:'หากคุณคือเจ้าของบริษัท “เพื่อนร่วมงานที่ร่วมมือและเคารพกัน” ควรมีความสำคัญเพียงใด?',
+  scen:'ทีมช่วยเหลือกันดีและกินข้าวด้วยกันบ่อย แต่มีเพื่อนร่วมทีม 1 คนที่มักส่งงานช้า จนคนอื่นต้องรับภาระแทน',
+  starters:['กำหนดบทบาทในทีมให้ชัด','จัดกิจกรรมสร้างทีมทุกไตรมาส','มีพี่เลี้ยงให้พนักงานใหม่'],
+  items:[['เพื่อนร่วมงานของฉันคอยให้ความช่วยเหลือเมื่อฉันประสบปัญหาในการทำงาน',0],['ฉันสามารถทำงานร่วมกับใครก็ได้',0],['เพื่อนร่วมงานของฉันมักไม่รับฟังความคิดเห็นที่แตกต่างของฉัน',1],['เพื่อนร่วมงานปฏิบัติกับฉันด้วยความเคารพ',0],['เพื่อนร่วมงานมักจะเมินเฉยต่อข้อสังเกตของฉัน',1]]},
+ {th:'ระเบียบและขั้นตอน',en:'Operating Procedures',place:'สำนักงานระเบียบ',
+  def:'กฎระเบียบ ขั้นตอนการทำงาน และภาระงานด้านเอกสาร',
+  ideal:'หากคุณคือเจ้าของบริษัท “ขั้นตอนและกฎระเบียบที่ชัดเจนและไม่ยุ่งยาก” ควรมีความสำคัญเพียงใด?',
+  scen:'การเบิกอุปกรณ์ต้องผ่านการอนุมัติ 4 ขั้น ใช้เวลาประมาณ 2 สัปดาห์ คู่มือการทำงานมีครบแต่ไม่ค่อยอัปเดต',
+  starters:['ลดขั้นตอนอนุมัติที่ซ้ำซ้อน','ใช้ระบบเอกสารออนไลน์','ทบทวนคู่มือทุก 6 เดือน'],
+  items:[['ขั้นตอนการทำงานของบริษัทช่วยให้ฉันสามารถปฏิบัติงานได้อย่างราบรื่น',0],['ฉันรู้สึกว่ากฎระเบียบของบริษัทมีความเหมาะสมกับลักษณะงานที่ทำ',0],['ฉันต้องเสียเวลาไปกับขั้นตอนการทำงานที่ไม่จำเป็นอยู่บ่อยครั้ง',1],['แนวทางและขั้นตอนในการปฏิบัติงานของบริษัทมีความชัดเจน',0],['ระเบียบของบริษัททำให้ฉันทำงานได้ยากขึ้นโดยไม่จำเป็น',1]]},
+ {th:'ลักษณะงาน',en:'Nature of Work',place:'ห้องทำงาน',
+  def:'ความน่าสนใจ ความหมาย ความภาคภูมิใจ และความชอบในงานที่ทำ',
+  ideal:'หากคุณคือเจ้าของบริษัท “งานที่มีความหมาย น่าสนใจ และท้าทาย” ควรมีความสำคัญเพียงใด?',
+  scen:'งานของคุณคือดูแลระบบให้ลูกค้า ได้ใช้ทักษะจริง แต่ประมาณ 60% ของเวลาเป็นงานซ้ำ ๆ แบบเดิมทุกวัน',
+  starters:['หมุนเวียนงานให้ได้ลองสิ่งใหม่','ให้เวลาทำโปรเจกต์ที่สนใจ','เล่าให้เห็นผลกระทบของงานต่อลูกค้า'],
+  items:[['ฉันรู้สึกสนุกและเพลินกับงานในแต่ละวัน',0],['บริษัทเปิดโอกาสให้ฉันได้ใช้ความรู้และความสามารถของตนเองอย่างเต็มที่',0],['ฉันรู้สึกเบื่อหน่ายกับลักษณะงานที่ต้องทำเป็นประจำ',1],['ฉันรู้สึกว่างานที่ฉันทำมีคุณค่าหรือมีความสำคัญต่อผู้อื่น',0],['ฉันรู้สึกว่างานที่ได้รับมอบหมายไม่ตรงกับความสนใจของฉัน',1]]},
+ {th:'การสื่อสาร',en:'Communication',place:'สถานีสื่อสาร',
+  def:'ความชัดเจนของข้อมูล การถ่ายทอดคำสั่ง และการรับรู้เป้าหมายบริษัท',
+  ideal:'หากคุณคือเจ้าของบริษัท “การสื่อสารที่ชัดเจน ทันเวลา และโปร่งใส” ควรมีความสำคัญเพียงใด?',
+  scen:'ข่าวสำคัญมักประกาศผ่านอีเมล หลังจากคนส่วนใหญ่รู้จากวงสนทนาแล้ว แต่สามารถถามหัวหน้าได้ตลอด',
+  starters:['ประชุมสรุปทิศทางบริษัททุกเดือน','มีช่องทางข่าวสารกลางช่องเดียว','สรุปคำสั่งงานเป็นลายลักษณ์อักษร'],
+  items:[['ฉันได้รับข้อมูลที่จำเป็นต่อการทำงานอย่างทันการณ์และมีความเป็นปัจจุบัน',0],['ข้อมูลที่บริษัทสื่อสารให้พนักงานมีความชัดเจนและเข้าใจง่าย',0],['ฉันมักได้รับทราบข้อมูลสำคัญเกี่ยวกับงานช้าและไม่ทันการณ์',1],['ฉันสามารถสอบถามเพิ่มเติมได้เมื่อได้รับข้อมูลที่ไม่ชัดเจน',0],['ข้อมูลที่ได้รับจากฝ่ายต่าง ๆ ภายในบริษัทมักขัดแย้งกันจนทำให้ฉันสับสน',1]]}
+];
+const LV=['','คาดหวังน้อยที่สุด','คาดหวังน้อย','คาดหวังปานกลาง','คาดหวังมาก','คาดหวังมากที่สุด'];
+const AG=['ไม่จริงเลย','ไม่ค่อยจริง','ไม่แน่ใจ','ค่อนข้างจริง','จริงมาก'];
+const AGES=['ต่ำกว่า 18 ปี','18–24 ปี','25–34 ปี','35–44 ปี','45–54 ปี','55 ปีขึ้นไป'];
+const ORGS=['ASM Company','Saint Louis College'];
+const STATUSES=['พนักงานบริษัท','ผู้บริหาร','อื่น ๆ'];
+const OTHER='__other';
+function effOrg(p){p=p||S.profile;return p.org===OTHER?String(p.orgName||'').trim().slice(0,80):(p.org||'');}
+function orgKeys(R){return [...ORGS,...[...new Set(R.map(r=>r.org).filter(o=>o&&!ORGS.includes(o)))].sort()];}
+function orgMatch(r,f){return !f||(f===OTHER?(r.org&&!ORGS.includes(r.org)):f==='none'?!r.org:r.org===f);}
+const STYLES=['หัวกลม','หัวเหลี่ยม','หน้ายาว'];
+const SKINS=['#F6D7BC','#E8B98F','#C98E62','#8D5A3B'];
+const HAIRS=['สั้น','ยาว','ฟู','มวย','เกรียน'];
+const OUTFITS=['สูท','เชิ้ต','ฮู้ดดี้','เสื้อยืด'];
+const COLORS=['#1BC690','#3FD9F2','#4F7BFF','#F4B64A','#F06A9A','#A57BFF'];
+const SIMCO='บริษัท โนวาเทค (บริษัทจำลอง)';
+
+/* ---------- state ---------- */
+const KEY='worktopia-m9-field-v1';
+function fresh(){return{screen:'home',profile:{style:0,skin:1,hair:0,outfit:1,color:0,codename:'',org:'',age:'',status:'',sim:false},
+  ideal:Array(9).fill(null),idealDraft:null,idealStep:0,pos:0,answers:DIMS.map(()=>Array(5).fill(null)),cur:null,ideas:{},extra:'',sawGap:false,finished:false,demo:false};}
+let S=fresh();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&o.answers&&o.ideal)S=Object.assign(fresh(),o)}}catch(e){}}
+
+/* ---------- scoring ---------- */
+const avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
+const idealDone=()=>S.ideal.every(v=>v!=null);
+const answered=d=>S.answers[d].filter(v=>v!=null).length;
+const distDone=d=>answered(d)===5;
+const allReal=()=>DIMS.every((_,d)=>distDone(d));
+function realMean(d){if(!distDone(d))return null;return avg(S.answers[d].map((v,i)=>DIMS[d].items[i][1]?6-v:v));}
+function gap(d){const r=realMean(d);return(r==null||S.ideal[d]==null)?null:S.ideal[d]-r;}
+function priority(d){const g=gap(d);return g==null?-9:Math.max(g,0)*S.ideal[d]/5+(5-realMean(d))*0.01;}
+function gapLevel(g){if(g<=0)return{k:'ok',t:'เท่ากับหรือเกินความคาดหวัง'};if(g<=0.5)return{k:'ok',t:'ใกล้เคียงความคาดหวัง'};if(g<=1.5)return{k:'warn',t:'ควรพัฒนา'};return{k:'bad',t:'ต้องพัฒนาเร่งด่วน'};}
+function satLevel(m){if(m<=2.33)return{k:'bad',t:'ไม่พึงพอใจ'};if(m<=3.66)return{k:'warn',t:'พึงพอใจปานกลาง'};return{k:'ok',t:'พึงพอใจ'};}
+function rateIdea(t){t=(t||'').trim();if(t.length<8)return 0;let s=1;if(t.length>=40)s++;if(t.length>=90)s++;
+  if(/ควร|จัด|เพิ่ม|ลด|ปรับ|สร้าง|อบรม|ประชุม|ระบบ|กำหนด|เปิด|ให้มี|แผน|ทำ/.test(t))s++;
+  if(/\d|ทุก|ครั้ง|สัปดาห์|เดือน|ไตรมาส|ปีละ|วัดผล|ประเมิน|ติดตาม|ตัวชี้วัด|เป้าหมาย|%/.test(t))s++;return s;}
+function topDims(){return DIMS.map((_,d)=>d).sort((a,b)=>priority(b)-priority(a)).slice(0,3);}
+function xp(){let x=S.ideal.filter(v=>v!=null).length*20;
+  S.answers.forEach((a,d)=>{x+=a.filter(v=>v!=null).length*10;if(distDone(d))x+=30});
+  Object.values(S.ideas).forEach(i=>{x+=(i.stars||0)*30});if(S.sawGap)x+=50;if(S.finished)x+=100;return x;}
+const BADGES=[
+ {id:'dream',n:'สถาปนิกแห่งฝัน',d:'ออกแบบบริษัทในอุดมคติครบ 9 เขต',ok:()=>idealDone()},
+ {id:'explore',n:'นักสำรวจ 9 เขต',d:'สำรวจบริษัทจริงครบทุกเขต',ok:()=>allReal()},
+ {id:'gap',n:'นักวิเคราะห์ช่องว่าง',d:'เปิดดูผลการวิเคราะห์ช่องว่าง',ok:()=>S.sawGap},
+ {id:'idea',n:'นักปฏิรูปองค์กร',d:'ส่งไอเดียระดับ 5 ดาว',ok:()=>Object.values(S.ideas).some(i=>i.stars===5)},
+ {id:'done',n:'ผู้สร้าง Worktopia',d:'ทำภารกิจครบทั้ง 4 บท',ok:()=>S.finished}];
+function persona(){const ds=DIMS.map((_,d)=>d);const gm=avg(ds.map(d=>gap(d)));const rm=avg(ds.map(d=>realMean(d)));const im=avg(S.ideal);
+  if(gm<0.3)return{t:'ผู้พบบ้านที่ใช่',d:'บริษัทที่คุณสัมผัสใกล้เคียงกับบริษัทในฝันมาก จุดแข็งเหล่านี้ควรรักษาไว้'};
+  if(rm<2.5)return{t:'ผู้กล้าเปลี่ยนแปลง',d:'สภาพการทำงานจริงยังห่างไกลจากที่ควรเป็นหลายด้าน เสียงของคุณมีน้ำหนักต่อการพัฒนาองค์กร'};
+  if(im>=4.3&&gm>=1)return{t:'นักฝันผู้มุ่งมั่น',d:'คุณตั้งมาตรฐานบริษัทในฝันไว้สูง และเห็นช่องว่างชัดเจนในบางด้าน'};
+  return{t:'นักปรับสมดุล',d:'บางด้านดีอยู่แล้ว บางด้านยังต้องพัฒนา คุณมองเห็นทั้งสองฝั่งอย่างเป็นธรรม'};}
+const lvlOf=x=>({lv:Math.floor(x/200)+1,p:(x%200)/2});
+
+/* ---------- svg helpers ---------- */
+let avId=0;
+function playerIcon(){return `<svg class="av" viewBox="0 0 46 46" aria-hidden="true"><circle cx="23" cy="23" r="22" fill="#3FD9F2" fill-opacity=".14" stroke="#3FD9F2" stroke-opacity=".55"/><polygon points="23,10 35,17 23,24 11,17" fill="#3FD9F2"/><polygon points="11,17 23,24 23,36 11,29" fill="#11966C"/><polygon points="23,24 35,17 35,29 23,36" fill="#0B6E50"/></svg>`;}
+function avatarSVG(p){const id='avc'+(avId++);const c=COLORS[p.color],sk=SKINS[p.skin],hc='#2A1E1A';
+  let torso='',hairBack='',hairFront='',head='';
+  const tp='M16 122 C18 96 36 86 60 86 C84 86 102 96 104 122 Z';
+  if(p.outfit===0)torso=`<path d="${tp}" fill="#1B2B4A"/><polygon points="50,86 70,86 60,106" fill="#F1F5F9"/><polygon points="58,90 62,90 64,104 60,110 56,104" fill="${c}"/><path d="M50 86 L60 106 M70 86 L60 106" stroke="#0E1A30" stroke-width="2"/>`;
+  else if(p.outfit===1)torso=`<path d="${tp}" fill="${c}"/><polygon points="47,86 60,96 53,102" fill="#F1F5F9"/><polygon points="73,86 60,96 67,102" fill="#F1F5F9"/><circle cx="60" cy="104" r="1.8" fill="#0E1A30" opacity=".5"/><circle cx="60" cy="113" r="1.8" fill="#0E1A30" opacity=".5"/>`;
+  else if(p.outfit===2)torso=`<path d="${tp}" fill="${c}"/><path d="M40 90 Q60 104 80 90" stroke="rgba(0,0,0,.28)" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M55 97 L54 110 M65 97 L66 110" stroke="#F1F5F9" stroke-width="2" stroke-linecap="round"/>`;
+  else torso=`<path d="${tp}" fill="${c}"/><path d="M50 86 Q60 94 70 86" fill="${sk}"/>`;
+  if(p.style===0)head=`<circle cx="60" cy="52" r="22" fill="${sk}"/>`;
+  else if(p.style===1)head=`<rect x="38" y="30" width="44" height="45" rx="13" fill="${sk}"/>`;
+  else head=`<ellipse cx="60" cy="52" rx="20" ry="25" fill="${sk}"/>`;
+  const cap='M37 50 C36 31 49 25 60 25 C72 25 85 31 83 50 C78 40 68 36 60 36 C51 36 42 40 37 50 Z';
+  if(p.hair===0)hairFront=`<path d="${cap}" fill="${hc}"/>`;
+  else if(p.hair===1){hairBack=`<path d="M35 52 C33 28 48 22 60 22 C73 22 87 28 85 52 L87 84 C81 88 76 86 74 80 L75 52 L45 52 L46 80 C44 86 39 88 33 84 Z" fill="${hc}"/>`;hairFront=`<path d="${cap}" fill="${hc}"/>`;}
+  else if(p.hair===2)hairFront=`<g fill="${hc}"><circle cx="40" cy="42" r="9"/><circle cx="46" cy="31" r="10"/><circle cx="57" cy="26" r="10"/><circle cx="68" cy="27" r="10"/><circle cx="77" cy="33" r="9"/><circle cx="81" cy="43" r="8"/><path d="${cap}"/></g>`;
+  else if(p.hair===3)hairFront=`<circle cx="60" cy="20" r="9" fill="${hc}"/><path d="${cap}" fill="${hc}"/>`;
+  else hairFront=`<path d="M39 45 C40 31 50 28 60 28 C70 28 80 31 81 45 C74 37 66 34 60 34 C54 34 46 37 39 45 Z" fill="${hc}" opacity=".85"/>`;
+  return `<svg class="av" viewBox="0 0 120 120" aria-hidden="true"><defs><clipPath id="${id}"><circle cx="60" cy="60" r="58"/></clipPath></defs>
+  <circle cx="60" cy="60" r="58" fill="${c}" fill-opacity=".22" stroke="${c}" stroke-opacity=".6" stroke-width="2"/>
+  <g clip-path="url(#${id})">${hairBack}<rect x="52" y="70" width="16" height="20" fill="${sk}"/>${torso}
+  <circle cx="38" cy="55" r="5" fill="${sk}"/><circle cx="82" cy="55" r="5" fill="${sk}"/>${head}
+  <circle cx="52" cy="54" r="2.7" fill="#1B1B2A"/><circle cx="68" cy="54" r="2.7" fill="#1B1B2A"/>
+  <circle cx="47" cy="62" r="3.5" fill="#F06A9A" opacity=".25"/><circle cx="73" cy="62" r="3.5" fill="#F06A9A" opacity=".25"/>
+  <path d="M53 63 Q60 68 67 63" stroke="#1B1B2A" stroke-width="2" fill="none" stroke-linecap="round"/>${hairFront}</g></svg>`;}
+
+function mascotSVG(){return `<svg class="mascot" viewBox="0 0 100 100" aria-hidden="true">
+ <ellipse cx="50" cy="92" rx="20" ry="4" fill="#3FD9F2" opacity=".18"/>
+ <line x1="50" y1="22" x2="50" y2="10" stroke="#3FD9F2" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="8" r="5" fill="#1BC690"/>
+ <rect x="16" y="22" width="68" height="50" rx="18" fill="#15305C" stroke="#3FD9F2" stroke-width="2.5"/>
+ <rect x="25" y="34" width="50" height="22" rx="11" fill="#04101F"/>
+ <rect x="35" y="40" width="9" height="10" rx="4" fill="#3FD9F2"/><rect x="56" y="40" width="9" height="10" rx="4" fill="#3FD9F2"/>
+ <path d="M30 76 L38 84 M70 76 L62 84" stroke="#1BC690" stroke-width="4" stroke-linecap="round"/>
+ <rect x="10" y="40" width="7" height="16" rx="3.5" fill="#1BC690"/><rect x="83" y="40" width="7" height="16" rx="3.5" fill="#1BC690"/></svg>`;}
+
+/* small floor logos, 24x24 stroke icons */
+const ICONS=[
+ '<ellipse cx="12" cy="6" rx="7" ry="2.6"/><path d="M5 6v4c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6V6"/><path d="M5 10v4c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6v-4"/><path d="M5 14v4c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6v-4"/>',
+ '<circle cx="12" cy="10" r="6.5"/><circle cx="12" cy="10" r="1.4"/><path d="M12 3.5v13M5.5 10h13M7.4 5.4l9.2 9.2M16.6 5.4l-9.2 9.2"/><path d="M8.5 21 12 16.5 15.5 21"/>',
+ '<rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M12 3v18"/><path d="M8.5 9.5 12 6l3.5 3.5"/><path d="M8.5 14.5 12 18l3.5-3.5" opacity=".45"/>',
+ '<path d="M7.5 4h9v5a4.5 4.5 0 0 1-9 0z"/><path d="M7.5 6H4.5a3 3 0 0 0 3 4M16.5 6h3a3 3 0 0 1-3 4"/><path d="M12 13.5V17M8.5 20h7M9.5 17h5"/>',
+ '<path d="M12 3 4.5 6v5.5c0 4.4 3.2 8.2 7.5 9.5 4.3-1.3 7.5-5.1 7.5-9.5V6z"/><path d="m12 8 1.4 2.9 3.1.4-2.3 2.2.6 3.1L12 15.1l-2.8 1.5.6-3.1-2.3-2.2 3.1-.4z"/>',
+ '<circle cx="8.5" cy="8.5" r="2.8"/><circle cx="16" cy="9.5" r="2.3"/><path d="M3.5 19c.6-3.2 2.6-5 5-5s4.4 1.8 5 5"/><path d="M14 14.3c.6-.3 1.3-.5 2-.5 2 0 3.6 1.5 4.1 4.2"/>',
+ '<rect x="5.5" y="4.5" width="13" height="16.5" rx="1.5"/><path d="M9 3h6v3H9z"/><path d="m8.5 11 1.5 1.5 2.5-2.5M14 11.5h2M8.5 16l1.5 1.5 2.5-2.5M14 16.5h2"/>',
+ '<rect x="6" y="5" width="12" height="8.5" rx="1"/><path d="M4 16.5h16M10.5 13.5v3M13.5 13.5v3M5.5 16.5V21M18.5 16.5V21"/>',
+ '<path d="M12 11v10M8.5 21h7"/><circle cx="12" cy="9.5" r="1.6"/><path d="M8.6 6.1a5 5 0 0 0 0 6.8M15.4 6.1a5 5 0 0 1 0 6.8M6 3.6a8.6 8.6 0 0 0 0 11.8M18 3.6a8.6 8.6 0 0 1 0 11.8"/>'];
+function ico(k,cls){return `<svg class="ico${cls?' '+cls:''}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[k]}</svg>`;}
+function icoBadge(k){return `<span class="ico-badge">${ico(k)}</span>`;}
+
+/* one tower, 9 floors: floor k = dimension k (1 at the bottom). Floor width = score; dashed shell = ideal, solid = real */
+const FH=24,SLAB=19,BASEY=236;
+const wOf=v=>22+v*11;
+function isoPts(cx,cy,w,h){const q=w/2;return{L:`${cx-w},${cy} ${cx},${cy+q} ${cx},${cy+q-h} ${cx-w},${cy-h}`,R:`${cx},${cy+q} ${cx+w},${cy} ${cx+w},${cy-h} ${cx},${cy+q-h}`,T:`${cx},${cy-q-h} ${cx+w},${cy-h} ${cx},${cy+q-h} ${cx-w},${cy-h}`,q};}
+function floorSolid(cx,cy,w,cls,anim){const P=isoPts(cx,cy,w,SLAB);let win='';for(let x=0.18;x<0.95;x+=0.2){win+=`<line class="win" x1="${cx-w+w*x}" y1="${cy-SLAB*0.5+P.q*x}" x2="${cx-w+w*x}" y2="${cy-SLAB*0.5+P.q*x-6}"/><line class="win" x1="${cx+w*x}" y1="${cy+P.q-SLAB*0.5-P.q*x}" x2="${cx+w*x}" y2="${cy+P.q-SLAB*0.5-P.q*x-6}"/>`;}
+  return `<g class="${cls}${anim?' grow':''}"><polygon class="b-l" points="${P.L}"/><polygon class="b-r" points="${P.R}"/><polygon class="b-top" points="${P.T}"/>${win}</g>`;}
+function floorShell(cx,cy,w){const P=isoPts(cx,cy,w,SLAB),q=P.q;
+  return `<g><polygon class="holo" points="${cx-w},${cy} ${cx},${cy+q} ${cx+w},${cy} ${cx+w},${cy-SLAB} ${cx},${cy-q-SLAB} ${cx-w},${cy-SLAB}"/><path class="holo" style="fill:none" d="M${cx-w} ${cy-SLAB} L${cx} ${cy+q-SLAB} L${cx+w} ${cy-SLAB} M${cx} ${cy+q-SLAB} L${cx} ${cy+q}"/></g>`;}
+function mapSVG(o){const cx=0;let s='';
+  const isl=isoPts(cx,BASEY,104,10);
+  s+=`<polygon class="tile-l" points="${isl.L}"/><polygon class="tile-r" points="${isl.R}"/><polygon class="tile-top" points="${isl.T}"/>`;
+  s+=`<polygon class="core" points="${isoPts(cx,BASEY-10,16,FH*9+4).L}"/><polygon class="core core-r" points="${isoPts(cx,BASEY-10,16,FH*9+4).R}"/>`;
+  for(let k=0;k<9;k++){const cy=BASEY-10-k*FH,iv=o.ideal?o.ideal[k]:null,rv=o.real?o.real[k]:null;
+    const tint=o.tint&&o.tint[k]?' b-'+o.tint[k]:'',an=o.anim===k,hl=o.hl===k;
+    const plate=isoPts(cx,cy,26,3);s+=`<g class="floor${hl?' floor-hl':''}" data-d="${k}">`;
+    s+=`<polygon class="plate" points="${plate.T}"/>`;
+    if(rv!=null)s+=floorSolid(cx,cy,wOf(rv),tint.trim(),an);
+    if(iv!=null)s+=floorShell(cx,cy,wOf(iv));
+    const ly=cy-SLAB/2+2;s+=`<line class="lead" x1="${cx+82}" y1="${ly}" x2="${cx+112}" y2="${ly}"/><circle class="tile-num" cx="${cx+124}" cy="${ly}" r="10"/><g class="ico" transform="translate(${cx+117} ${ly-7}) scale(.5833)">${ICONS[k]}</g><text class="floor-t" x="${cx+140}" y="${ly+0.5}">${k+1} ${DIMS[k].th}</text>`;
+    s+=`</g>`;}
+  return `<svg viewBox="-116 -48 376 310" role="img" aria-label="ตึก Ideal Company 9 ชั้น ชั้นละ 1 ด้าน"><rect x="-116" y="-48" width="376" height="310" fill="none"/>${s}</svg>`;}
+function legend(extra){return `<div class="legend"><span><i class="sw holo-sw"></i>บริษัทในฝัน (ความคาดหวัง)</span><span><i class="sw real-sw"></i>บริษัทจริงที่คุณรับรู้</span>${extra||''}</div>`;}
+const star=on=>`<svg viewBox="0 0 20 20"><path class="${on?'star-on':'star-off'}" d="M10 1.5l2.6 5.5 6 .8-4.4 4.1 1.1 5.9L10 15l-5.3 2.8 1.1-5.9L1.4 7.8l6-.8z"/></svg>`;
+const starsHTML=n=>`<span class="stars" aria-label="${n} จาก 5 ดาว">${[1,2,3,4,5].map(k=>star(n>=k)).join('')}</span>`;
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const f1=n=>n.toFixed(2);
+
+/* ---------- screens ---------- */
+const app=document.getElementById('app');
+function hud(){if(S.screen==='home'||S.screen==='avatar')return'';const x=xp(),l=lvlOf(x),p=S.profile;
+  const ch=[['ch1','1 ฝัน',true,idealDone()],['ch2','2 จริง',idealDone(),allReal()],['ch3','3 ช่องว่าง',allReal(),S.sawGap],['ch4','4 พัฒนา',S.sawGap,S.finished],['report','รายงาน',S.finished||S.demo&&S.sawGap,false]];
+  const curMap={ch1:'ch1',ch2:'ch2',mission:'ch2',ch3:'ch3',ch4:'ch4',report:'report'};
+  return `<header class="hud"><div class="wrap">
+   <div class="hud-player">${playerIcon()}<div style="min-width:0"><div class="hud-name">${'นักออกแบบอนาคต'}</div>
+   <div class="lvl tnum">เลเวล ${l.lv} · ${x} XP</div><div class="xpbar"><i style="width:${l.p}%"></i></div></div></div>
+   ${S.demo?'<span class="demo-pill">ข้อมูลจำลอง</span>':''}
+   <nav class="chapters" aria-label="บทภารกิจ">${ch.map(c=>`<button class="chip-ch${curMap[S.screen]===c[0]?' active':''}${c[3]?' done':''}" data-action="go" data-to="${c[0]}" ${c[2]?'':'disabled'}>${c[1]}</button>`).join('')}${ADMIN_OK?`<button class="chip-ch${S.screen==='stats'?' active':''}" data-action="go" data-to="stats">Admin</button>`:''}</nav>
+   <button class="btn sm ghost" data-action="home" aria-label="กลับหน้าแรก">หน้าแรก</button>
+  </div></header>`;}
+
+function avatarScr(){const p=S.profile;
+  return `<main class="wrap screen"><div class="ch-head"><span class="eyebrow">ก่อนเริ่ม</span><h2>ข้อมูลผู้เล่น</h2></div>
+  <div class="panel stack profile-panel">
+    <div class="opt-group"><div class="opt-label">บริษัทหรือองค์กรของคุณ</div><div class="opts">${ORGS.map(o=>`<button class="opt org-opt" data-action="setOrg" data-v="${o}" aria-pressed="${p.org===o}">${o}</button>`).join('')}<button class="opt org-opt" data-action="setOrg" data-v="${OTHER}" aria-pressed="${p.org===OTHER}">อื่น ๆ</button></div>${p.org===OTHER?`<label for="orgName" class="muted" style="font-size:13px;margin-top:4px">ชื่อบริษัทหรือองค์กร</label><input id="orgName" class="field" maxlength="80" placeholder="พิมพ์ชื่อบริษัทหรือองค์กร" value="${esc(p.orgName||'')}">`:''}</div>
+    <div class="opt-group"><div class="opt-label">ช่วงอายุ</div><div class="opts">${AGES.map(a=>`<button class="opt" data-action="setAge" data-v="${a}" aria-pressed="${p.age===a}">${a}</button>`).join('')}</div></div>
+    <div class="opt-group"><div class="opt-label">สถานะ</div><div class="opts">${STATUSES.map(a=>`<button class="opt" data-action="setStatus" data-v="${a}" aria-pressed="${p.status===a}">${a}</button>`).join('')}</div></div>
+    <button class="toggle" data-action="toggleSim" aria-pressed="${p.sim}"><span class="knob"></span><span><b style="font-family:var(--display)">ใช้โหมดบริษัทจำลอง</b><br><span class="muted" style="font-size:13px">สำหรับผู้ที่ยังไม่มีประสบการณ์ทำงาน ในบทที่ 2 คุณจะจินตนาการว่าทำงานที่ ${SIMCO} มาแล้ว 1 ปี</span></span></button>
+    <p id="avErr" class="err" hidden>เลือกบริษัท (ถ้าเลือกอื่น ๆ ให้พิมพ์ชื่อ) ช่วงอายุ และสถานะก่อนเริ่ม</p>
+    <div class="row" style="justify-content:space-between"><button class="btn ghost" data-action="home">ย้อนกลับ</button><button class="btn primary" data-action="enterCity">เริ่มสร้างบริษัทในฝัน</button></div>
+  </div></main>`;}
+
+function ch1Scr(){if(!S.idealDraft)S.idealDraft=S.ideal.slice();const D=S.idealDraft,set=D.filter(v=>v!=null).length;
+  return `<main class="wrap screen"><div class="ch-head"><span class="eyebrow">Chapter 1 · Dream Builder</span><h2>สร้างบริษัทในอุดมคติ</h2><p>ให้คะแนนทั้ง 9 ด้านในหน้านี้ แล้วกดส่งครั้งเดียว ยิ่งคาดหวังมาก ชั้นนั้นของตึกในฝัน (เส้นประ) ยิ่งกว้าง ไม่มีคำตอบถูกหรือผิด</p></div>
+  <div class="two"><div class="panel map sticky-map" id="mapBox">${mapSVG({ideal:D})}${legend()}</div>
+   <div id="idealForm" class="stack">
+   ${DIMS.map((d,k)=>{const v=D[k],sv=v==null?3:v;return `<div class="panel ideal-card${v==null?'':' set'}" id="ic${k}">
+     <div class="ic-head">${icoBadge(k)}<div style="min-width:0"><div class="nm">${d.place}</div><div class="sub">${d.th}</div></div><span class="ic-val tnum" id="iv${k}">${v==null?'ยังไม่ได้เลือก':v+' · '+LV[v]}</span></div>
+     <p class="q-ideal">${d.ideal}</p>
+     <input type="range" class="islider${v==null?' unset':''}" id="is${k}" data-k="${k}" min="1" max="5" step="1" value="${sv}" style="--p:${(sv-1)*25}%" aria-label="ระดับความคาดหวัง เขต ${k+1} ${d.th}">
+     <div class="ticks"><span>1 น้อยที่สุด</span><span>2</span><span>3</span><span>4</span><span>5 มากที่สุด</span></div></div>`}).join('')}
+   <p id="idealErr" class="err" hidden></p>
+   <div class="submit-bar"><span class="muted tnum" id="idealCount">เลือกแล้ว ${set} จาก 9</span><button type="button" class="btn primary xl" data-action="submitIdeal">ส่งบริษัทในฝัน</button></div>
+   </div></div></main>`;}
+function setIdeal(el){const k=+el.dataset.k,v=+el.value,D=S.idealDraft;if(!D)return;D[k]=v;
+  el.classList.remove('unset');el.style.setProperty('--p',(v-1)*25+'%');
+  document.getElementById('iv'+k).textContent=v+' · '+LV[v];document.getElementById('ic'+k).classList.add('set');
+  document.getElementById('idealCount').textContent=`เลือกแล้ว ${D.filter(x=>x!=null).length} จาก 9`;
+  const box=document.getElementById('mapBox');if(box)box.innerHTML=mapSVG({ideal:D,hl:k,anim:k})+legend();
+  const er=document.getElementById('idealErr');if(er&&!D.some(x=>x==null))er.hidden=true;save();}
+['input','change','click'].forEach(t=>document.addEventListener(t,e=>{if(e.target.classList&&e.target.classList.contains('islider'))setIdeal(e.target);}));
+function submitIdeal(){const D=S.idealDraft||S.ideal.slice(),miss=D.map((v,k)=>v==null?k:-1).filter(k=>k>=0);
+  if(miss.length){const er=document.getElementById('idealErr');er.textContent=`ยังไม่ได้ให้คะแนน เขตที่ ${miss.map(k=>k+1).join(', ')}`;er.hidden=false;
+    const c=document.getElementById('ic'+miss[0]);if(c){c.scrollIntoView({behavior:'smooth',block:'center'});c.classList.add('need');setTimeout(()=>c.classList.remove('need'),1200);}return;}
+  withXP(()=>{S.ideal=D.slice();S.idealDraft=null;S.screen='ch2';},'ส่งบริษัทในฝันแล้ว ปลดล็อกบทที่ 2');window.scrollTo({top:0,behavior:'smooth'});}
+
+const ORDER=[];for(let r=0;r<5;r++)for(let d=0;d<9;d++)ORDER.push([d,(r+d)%5]);
+const nAns=()=>S.answers.flat().filter(v=>v!=null).length;
+function nextPos(from){for(let k=0;k<45;k++){const p=((from||0)+k)%45,[d,i]=ORDER[p];if(S.answers[d][i]==null)return p;}return -1;}
+function homeScr(){const demoIdeal=[5,4,4,4,4,3,5,5,4],demoReal=[2.6,2.2,3.4,3,2.6,2.8,4,3.2,2.4];
+  const hasProgress=S.ideal.some(v=>v!=null)&&!S.demo;
+  return `<main class="wrap screen"><section class="hero">
+  <div><div class="logo"><svg width="46" height="46" viewBox="0 0 46 46" aria-hidden="true"><polygon points="23,3 43,14 23,25 3,14" fill="#3FD9F2"/><polygon points="3,14 23,25 23,44 3,33" fill="#11966C"/><polygon points="23,25 43,14 43,33 23,44" fill="#0B6E50"/></svg>
+   <div><div class="logo-word">IDEAL <b>COMPANY</b></div></div></div>
+   <div style="margin-top:12px"><span class="mission-tag">MISSION 9</span></div>
+   <p class="tagline">ร่วมกันสร้างบริษัทในฝันของพวกเรา</p>
+   <p class="lead">ออกแบบบริษัทในอุดมคติ เทียบกับบริษัทที่คุณสัมผัสจริง แล้วช่วยกันหาว่าเรื่องไหนควรพัฒนาก่อน คำตอบส่งให้ทีมผู้วิจัยแบบไม่ระบุตัวตน</p>
+   <div class="hero-actions">
+    <button class="btn primary xl" data-action="start">${hasProgress?'เล่นต่อจากเดิม':'เริ่มภารกิจ'}</button>
+    <div class="row"><button class="btn ghost" data-action="howto">วิธีเล่น</button></div>
+   </div>
+   ${hasProgress?'<p style="margin-top:12px"><button class="btn sm ghost" data-action="askReset">เริ่มใหม่ทั้งหมด</button></p>':''}
+  </div>
+  <div class="city-stage"><div class="map">${mapSVG({ideal:demoIdeal,real:demoReal})}</div></div></section>
+  <footer class="home-foot"><button class="btn sm ghost" data-action="adminLogin">Admin</button></footer></main>`;}
+
+function dossierHTML(){return `<div class="scenario"><b>แฟ้มข้อมูล ${SIMCO}</b><ul class="list-plain" style="margin-top:6px">${DIMS.map(d=>`<li>${d.scen}</li>`).join('')}</ul></div>`;}
+function ch2Scr(){const done=DIMS.filter((_,d)=>distDone(d)).length,ans=nAns(),np=nextPos(S.pos||0);
+  return `<main class="wrap screen"><div class="ch-head"><span class="eyebrow">Chapter 2 · Reality Quest</span><h2>สำรวจบริษัทจริง</h2><p>${S.profile.sim?`จินตนาการว่าคุณทำงานที่ ${SIMCO} มาแล้ว 1 ปี อ่านแฟ้มข้อมูลด้านล่างก่อนเริ่ม`:`นึกถึงการทำงานหรือการเรียนที่ ${esc(effOrg()||'องค์กรของคุณ')}`} แล้วตอบภารกิจ 45 ข้อต่อเนื่องกัน ตอบครบแต่ละด้าน ชั้นนั้นของตึกจริงจะสร้างเสร็จ ไม่มีคำตอบถูกหรือผิด</p></div>
+  <div class="two"><div class="panel map">${mapSVG({ideal:S.ideal,real:DIMS.map((_,d)=>realMean(d))})}${legend()}</div>
+   <div class="panel stack">${S.profile.sim?dossierHTML():''}
+    <div class="stat-row"><div class="mini-stat"><div class="k">ตอบแล้ว</div><div class="v tnum">${ans} <small>จาก 45</small></div></div><div class="mini-stat"><div class="k">ชั้นที่สร้างเสร็จ</div><div class="v tnum">${done} <small>จาก 9</small></div></div></div>
+    ${np>=0?`<button class="btn primary xl" data-action="startRun">${ans?`ตอบต่อ ข้อที่ ${ans+1}`:'เริ่มตอบ 45 ข้อ'}</button>`:'<button class="btn primary xl" data-action="go" data-to="ch3">สแกนช่องว่างในบทที่ 3</button>'}
+   </div></div></main>`;}
+function missionScr(){const pos=S.pos||0,[d,i]=ORDER[pos],val=S.answers[d][i],ans=nAns();
+  return `<main class="wrap screen"><div class="mission stack">
+  <div class="row" style="justify-content:space-between"><button class="btn sm ghost" data-action="go" data-to="ch2">พักไว้ก่อน</button><span class="muted tnum" style="font-size:13px">ข้อ ${pos+1} จาก 45</span></div>
+  <div class="runbar" aria-hidden="true"><i style="width:${ans/45*100}%"></i></div>
+  ${S.profile.sim?'<div><button class="btn sm cyan" data-action="dossier">ดูแฟ้มข้อมูลบริษัทจำลอง</button></div>':''}
+  <div class="panel stack" style="padding:24px"><p class="muted" style="font-size:13px">ข้อความนี้จริงกับ${S.profile.sim?'บริษัทจำลอง':'บริษัทของคุณ'}แค่ไหน?</p>
+   <p class="item-text">${DIMS[d].items[i][0]}</p>
+   <div class="answers" role="group" aria-label="ระดับความจริง">${AG.map((t,k)=>`<button class="ans" data-action="answer" data-v="${k+1}" aria-pressed="${val===k+1}"><span class="d">${k+1}</span><span class="t">${t}</span></button>`).join('')}</div></div>
+  <div class="row" style="justify-content:space-between"><button class="btn ghost sm" data-action="prevQ" ${pos===0?'disabled':''}>ข้อก่อนหน้า</button><span class="muted" style="font-size:12.5px">แตะคำตอบแล้วไปข้อถัดไปอัตโนมัติ · ข้อละ 10 XP</span></div>
+  <div class="panel map run-map">${mapSVG({ideal:S.ideal,real:DIMS.map((_,k)=>realMean(k)),anim:S._anim})}</div>
+  </div></main>`;}
+
+/* ---------- admin area (code-gated; player data still needs owner/editor access) ---------- */
+const ADMIN_HASH='15fe896ad39584620e31c5bb7568d8934179531db3b8288624d929e0fa602505',ADMIN_FNV='d4d5c879';
+let ADMIN_OK=false;try{ADMIN_OK=sessionStorage.getItem('wt9-admin')==='1';}catch(e){}
+function fnv(t){let h=2166136261;for(const ch of t){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)>>>0;}return h.toString(16);}
+async function checkCode(code){const t='wt9:'+code.trim();
+  try{if(crypto&&crypto.subtle){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')===ADMIN_HASH;}}catch(e){}
+  return fnv(t)===ADMIN_FNV;}
+function adminLogin(){if(ADMIN_OK){openAdmin();return;}
+  modal(`<h2>เข้าสู่ส่วนผู้ดูแล</h2><div id="adminForm" class="stack"><label for="adminCode" class="opt-label">รหัสผู้ดูแล</label>
+   <input id="adminCode" class="field" type="password" inputmode="numeric" autocomplete="off" required>
+   <p id="adminErr" class="err" hidden>รหัสไม่ถูกต้อง ลองอีกครั้ง</p>
+   <div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost" data-action="closeModal">ยกเลิก</button><button type="button" class="btn primary" data-action="adminSubmit">เข้าสู่ระบบ</button></div></div>`);
+  setTimeout(()=>{const i=document.getElementById('adminCode');if(i)i.focus();},50);}
+function openAdmin(){ADMIN_OK=true;try{sessionStorage.setItem('wt9-admin','1');}catch(e){}closeModal();ensureSub();S.screen='stats';render();window.scrollTo(0,0);}
+async function adminSubmit(){const inp=document.getElementById('adminCode');if(!inp)return;
+  if(await checkCode(inp.value)){ADMIN_PASS=inp.value.trim();try{sessionStorage.setItem('ic-admin-pass',ADMIN_PASS);}catch(e){}openAdmin();}else{document.getElementById('adminErr').hidden=false;inp.select();}}
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='adminCode'){e.preventDefault();adminSubmit();}});
+const TABS=[['stats','สถิติ'],['article','บทความสรุปผล'],['items','ข้อคำถามและเฉลย'],['site','รายละเอียดเว็บ'],['download','ดาวน์โหลดข้อมูล'],['manage','จัดการข้อมูล']];
+function statsScr(){if(!ADMIN_OK)return homeScr();const t=STATS.tab||'stats';
+  const body={stats:statsTab,items:itemsTab,site:siteTab,download:downloadTab,manage:manageTab,article:articleTab}[t]();
+  return `<main class="wrap screen"><div class="ch-head"><span class="eyebrow">ส่วนผู้ดูแล</span><div class="row" style="justify-content:space-between"><h2>Ideal Company Admin</h2><div class="row"><button class="btn sm cyan" data-action="demo">ทดลองด้วยข้อมูลจำลอง</button><button class="btn sm ghost" data-action="adminLogout">ออกจากส่วนผู้ดูแล</button></div></div>
+   <p>ผู้เล่นไม่เห็นหน้านี้ ${DB?'ทุกเครื่องที่ใส่รหัสถูกต้องดูและจัดการข้อมูลได้':'<span class="c-warn">ยังไม่ได้เชื่อมต่อระบบเก็บผล ใส่ URL ของ Google Apps Script ใน SITE_CONFIG ของไฟล์ index.html</span>'}</p></div>
+   <div class="tabs" role="tablist">${TABS.map(x=>`<button role="tab" class="tab" aria-selected="${x[0]===t}" data-action="tab" data-t="${x[0]}">${x[1]}</button>`).join('')}</div>
+   <div style="margin-top:18px">${body}</div>
+   <textarea id="csvBox" class="field" readonly ${STATS.csv?'':'hidden'} style="min-height:140px;margin-top:14px;font-size:12px" aria-label="ข้อมูลสำหรับคัดลอก">${esc(STATS.csv)}</textarea></main>`;}
+function itemsTab(){const pos={};ORDER.forEach(([d,i],p)=>pos[d*5+i]=p+1);
+  return `<div class="panel"><h3 style="font-size:18px">ข้อคำถามบทที่ 2 (45 ข้อ)</h3><p class="muted" style="font-size:13px;margin:4px 0 10px">มาตร 1–5: ${AG.map((t,i)=>`${i+1} ${t}`).join(' · ')} ข้อเชิงลบ (R) กลับคะแนนเป็น 6 − คะแนนดิบ ลำดับในเกมสลับด้านและทิศทางเหมือนกันทุกคน</p>
+   <div class="tbl-wrap"><table class="dtable"><thead><tr><th class="n">รหัส</th><th class="n">ลำดับในเกม</th><th>ด้าน</th><th>ข้อความ</th><th>ทิศทาง</th></tr></thead><tbody>
+   ${DIMS.flatMap((D,d)=>D.items.map((it,i)=>`<tr><td class="n">${d*5+i+1}</td><td class="n">${pos[d*5+i]}</td><td style="white-space:nowrap">${D.th}</td><td style="min-width:240px">${it[0]}</td><td>${it[1]?'<span class="rev">ลบ (R)</span>':'บวก'}</td></tr>`)).join('')}</tbody></table></div></div>
+  <div class="panel" style="margin-top:20px"><h3 style="font-size:18px;margin-bottom:10px">คำถามความคาดหวังบทที่ 1</h3><p class="muted" style="font-size:13px;margin-bottom:10px">มาตร 1–5: ${LV.slice(1).map((t,i)=>`${i+1} ${t}`).join(' · ')}</p>
+   <div class="tbl-wrap"><table class="dtable"><thead><tr><th>ด้าน</th><th>ชื่อเขตในเกม</th><th>นิยามโดยย่อ</th><th>คำถาม</th></tr></thead><tbody>
+   ${DIMS.map(D=>`<tr><td style="white-space:nowrap">${D.th}<br><span class="muted">${D.en}</span></td><td style="white-space:nowrap">${D.place}</td><td style="min-width:180px">${D.def}</td><td style="min-width:240px">${D.ideal}</td></tr>`).join('')}</tbody></table></div></div>
+  <div class="panel" style="margin-top:20px"><h3 style="font-size:18px;margin-bottom:10px">สถานการณ์ของ${SIMCO}</h3>
+   <div class="tbl-wrap"><table class="dtable"><thead><tr><th>ด้าน</th><th>สถานการณ์</th><th>ไอเดียตั้งต้นบทที่ 4</th></tr></thead><tbody>
+   ${DIMS.map(D=>`<tr><td style="white-space:nowrap">${D.th}</td><td style="min-width:220px">${D.scen}</td><td style="min-width:180px">${D.starters.join(' · ')}</td></tr>`).join('')}</tbody></table></div></div>${criteriaHTML()}`;}
+function siteTab(){return `<div class="panel stack"><h3 style="font-size:18px">โครงสร้างเกม</h3>
+  <div class="tbl-wrap"><table class="dtable"><thead><tr><th>ขั้น</th><th>สิ่งที่ผู้เล่นทำ</th><th>ข้อมูลที่ได้</th><th>ผู้เล่นเห็นอะไร</th></tr></thead><tbody>
+   <tr><td>ข้อมูลผู้เล่น</td><td>เลือกบริษัท ช่วงอายุ สถานะ และโหมดบริษัทจำลอง</td><td>ช่วงอายุ สถานะ โหมด (ไม่ส่งชื่อรหัสหรือหน้าตา)</td><td>ตัวละครของตน</td></tr>
+   <tr><td>บทที่ 1 Dream Builder</td><td>ให้คะแนนความคาดหวัง 9 ด้าน (1–5)</td><td>ideal_1–9</td><td>ชั้นของตึกในฝันกว้างตามคะแนน</td></tr>
+   <tr><td>บทที่ 2 Reality Quest</td><td>ตอบ 45 ข้อต่อเนื่อง สลับด้าน</td><td>item_raw_1–45</td><td>ชั้นของตึกจริงเมื่อตอบครบด้าน</td></tr>
+   <tr><td>บทที่ 3 Gap Scanner</td><td>ดูแผนที่ผล</td><td>คำนวณ real และ gap</td><td>สีชั้น 3 ระดับ และ 3 เขตที่ควรพัฒนา ไม่มีตัวเลข</td></tr>
+   <tr><td>บทที่ 4 Change Maker</td><td>เสนอไอเดียให้ 3 เขตที่ห่างสุด + ข้อเสนอแนะอื่น</td><td>ideas, extra</td><td>ดาว 1–5 และ XP</td></tr>
+   <tr><td>ใบรับรองภารกิจ</td><td>ดูบุคลิกภาพผลลัพธ์และเหรียญ</td><td>ส่งผลอัตโนมัติ 1 รายการต่อบัญชี (ผลล่าสุดแทนที่)</td><td>สถานะการส่งผล</td></tr></tbody></table></div>
+  <h3 style="font-size:18px">ระบบรางวัล</h3><ul class="list-plain"><li>XP: ความคาดหวัง 20/ด้าน · คำตอบบทที่ 2 10/ข้อ · สร้างชั้นครบด้าน +30 · ดาวไอเดีย 30/ดาว · เปิดบทที่ 3 +50 · จบภารกิจ +100 · ทุก 200 XP ขึ้น 1 เลเวล</li>
+   <li>เหรียญ: ${BADGES.map(b=>`${b.n} (${b.d})`).join(' · ')}</li>
+   <li>บุคลิกภาพผลลัพธ์: ผู้พบบ้านที่ใช่ (ช่องว่างเฉลี่ย &lt; 0.30) · ผู้กล้าเปลี่ยนแปลง (ความพึงพอใจเฉลี่ย &lt; 2.50) · นักฝันผู้มุ่งมั่น (คาดหวังเฉลี่ย ≥ 4.30 และช่องว่าง ≥ 1.00) · นักปรับสมดุล (กรณีอื่น)</li>
+   <li>สีชั้นฝั่งผู้เล่น: เขียว ช่องว่าง ≤ 0.50 · เหลือง 0.51–1.50 · แดง &gt; 1.50</li></ul>
+  <h3 style="font-size:18px">ข้อมูลที่เก็บต่อผู้เล่น 1 คน</h3>
+  <div class="tbl-wrap"><table class="dtable"><thead><tr><th>ฟิลด์</th><th>ความหมาย</th></tr></thead><tbody>
+   ${[['at','เวลาที่ส่งผล'],['age','ช่วงอายุ'],['org','บริษัทหรือองค์กรที่เลือก'],['status','สถานะ'],['sim','true = ประเมินบริษัทจำลอง'],['ideal','คะแนนความคาดหวัง 9 ด้าน เรียงตามด้าน 1–9'],['items','คะแนนดิบ 45 ข้อ เรียงตามรหัสข้อ 1–45 (ก่อนกลับคะแนน)'],['ideas','ไอเดีย: ด้าน ข้อความ ดาว'],['extra','ข้อเสนอแนะอื่น'],['persona','บุคลิกภาพผลลัพธ์ที่ผู้เล่นเห็น'],['xp','คะแนนสะสม']].map(r=>`<tr><td><code>${r[0]}</code></td><td>${r[1]}</td></tr>`).join('')}</tbody></table></div>
+  <h3 style="font-size:18px">สิทธิ์และความเป็นส่วนตัว</h3><ul class="list-plain"><li>ผู้เล่นที่ลงชื่อเข้าใช้และได้สิทธิ์ Contributor (หรือเป็นคนในองค์กรที่เปิดผ่านลิงก์) ส่งผลอัตโนมัติ ผู้เล่นคนอื่นได้รหัสผลลัพธ์ไปส่งให้ผู้จัด แล้วนำเข้าในแท็บจัดการข้อมูล</li>
+   <li>หน้าเกมของผู้เล่นไม่แสดงผลของคนอื่น ผลรวมเปิดดูได้จากส่วน Admin ทุกเครื่องที่ใส่รหัสผู้ดูแลถูกต้อง</li>
+   <li>รหัสผู้ดูแลเป็นตัวกั้นหลักของส่วน Admin ควรเก็บรหัสไว้เฉพาะทีมผู้วิจัย</li>
+   <li>ความคืบหน้าระหว่างเล่นเก็บในเบราว์เซอร์ของผู้เล่นเอง</li>
+   <li>แท็บจัดการข้อมูลลบผลได้จากทุกเครื่องที่ใส่รหัสถูกต้อง การลบเป็นการลบถาวร</li></ul></div>`;}
+function downloadTab(){const all=STATS.rows.filter(validRow);
+  return `<div class="dl-grid">
+   <div class="panel stack"><h3 style="font-size:17px">ผลของผู้เล่น (CSV)</h3><p class="muted" style="font-size:13.5px">1 แถวต่อผู้เล่น: ข้อมูลกลุ่ม ความคาดหวัง คะแนนจริง ช่องว่าง 9 ด้าน คะแนนดิบ 45 ข้อ และไอเดีย เปิดใน Excel ได้ภาษาไทย</p><p class="tnum">${all.length} คน</p><button class="btn primary" data-action="dl" data-k="csv" ${all.length?'':'disabled'}>ดาวน์โหลด CSV</button></div>
+   <div class="panel stack"><h3 style="font-size:17px">ข้อมูลดิบ (JSON)</h3><p class="muted" style="font-size:13.5px">ทุกรายการตามที่ระบบเก็บ ไม่มีรหัสบัญชี เหมาะสำหรับนำไปวิเคราะห์ต่อ</p><p class="tnum">${all.length} รายการ</p><button class="btn" data-action="dl" data-k="json" ${all.length?'':'disabled'}>ดาวน์โหลด JSON</button></div>
+   <div class="panel stack"><h3 style="font-size:17px">ชุดข้อคำถามและเฉลย (CSV)</h3><p class="muted" style="font-size:13.5px">45 ข้อ พร้อมด้าน ทิศทาง ลำดับในเกม และคำถามความคาดหวัง 9 ข้อ</p><p class="tnum">54 แถว</p><button class="btn" data-action="dl" data-k="key">ดาวน์โหลดเฉลย</button></div></div>
+   ${all.length?'':`<p class="muted" style="margin-top:12px">${DB?(STATS.err?'โหลดข้อมูลไม่ได้':'ยังไม่มีผู้เล่นส่งผล'):'ยังไม่ได้เชื่อมต่อระบบเก็บผล'}</p>`}`;}
+function keyCsv(){const q=v=>{const s=String(v);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};const pos={};ORDER.forEach(([d,i],p)=>pos[d*5+i]=p+1);
+  const L=[['part','code','game_order','dimension','dimension_en','text','direction'].join(',')];
+  DIMS.forEach((D,d)=>L.push(['ideal',d+1,d+1,D.th,D.en,D.ideal,'positive'].map(q).join(',')));
+  DIMS.forEach((D,d)=>D.items.forEach((it,i)=>L.push(['reality',d*5+i+1,pos[d*5+i],D.th,D.en,it[0],it[1]?'reverse':'positive'].map(q).join(','))));
+  return '﻿'+L.join('\n');}
+async function saveFile(name,text,mime){let dl=null;try{dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null;}catch(e){}
+  if(dl){try{await dl.save({filename:name,data:new Blob([text],{type:mime})});toast('ส่งไฟล์ให้ดาวน์โหลดแล้ว');return;}catch(e){if(e&&e.code==='declined')return;}}
+  if(!window.claude){try{const u=URL.createObjectURL(new Blob([text],{type:mime})),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);toast('ดาวน์โหลดแล้ว');return;}catch(e){}}
+  STATS.csv=text.replace(/^﻿/,'');render();const b=document.getElementById('csvBox');if(b){b.focus();b.select();}toast('ดาวน์โหลดไม่ได้ในหน้านี้ เลือกข้อความไว้ให้คัดลอกแล้ว');}
+function dl(k){const all=STATS.rows.filter(validRow),stamp=new Date().toISOString().slice(0,10);
+  if(k==='csv')return saveFile(`ideal-company-results-${stamp}.csv`,csvText(all),'text/csv;charset=utf-8');
+  if(k==='json')return saveFile(`ideal-company-raw-${stamp}.json`,JSON.stringify(all.map(({id,...r},n)=>Object.assign({respondent:'R'+String(n+1).padStart(3,'0')},r)),null,2),'application/json');
+  return saveFile('ideal-company-question-key.csv',keyCsv(),'text/csv;charset=utf-8');}
+
+function playerLevel(g){if(g<=0.5)return{k:'ok',t:'ใกล้ฝัน'};if(g<=1.5)return{k:'warn',t:'ยังห่างจากฝัน'};return{k:'bad',t:'ห่างจากฝันมาก'};}
+function ch3Scr(){const ds=DIMS.map((_,d)=>d),top=topDims(),strong=ds.filter(d=>gap(d)<=0.5).sort((a,b)=>gap(a)-gap(b));
+  const tint=ds.map(d=>{const k=playerLevel(gap(d)).k;return k==='ok'?'':k});
+  const nBad=ds.filter(d=>playerLevel(gap(d)).k!=='ok').length;
+  return `<main class="wrap screen"><div class="ch-head"><span class="eyebrow">Chapter 3 · Gap Scanner</span><h2>ฝันกับจริง ห่างกันแค่ไหน</h2><p>สแกนตึกเสร็จแล้ว ตึก 1 ตึกมี 9 ชั้น ชั้นละ 1 ด้าน กรอบเส้นประคือบริษัทในฝัน ชั้นทึบคือสิ่งที่คุณสัมผัสจริง สีของแต่ละชั้นบอกว่าใกล้ฝันแค่ไหน</p></div>
+  <div class="two"><div class="panel map">${mapSVG({ideal:S.ideal,real:ds.map(realMean),tint})}${legend('<span><i class="sw bg-ok"></i>ใกล้ฝัน</span><span><i class="sw bg-warn"></i>ยังห่าง</span><span><i class="sw bg-bad"></i>ห่างมาก</span>')}</div>
+   <div class="panel stack"><div class="mascot-line">${mascotSVG()}<div class="bubble">${nBad===0?'เมืองนี้ใกล้บริษัทในฝันของคุณแทบทุกเขตเลย':nBad>=6?`มี ${nBad} เขตที่ยังห่างจากฝัน ภารกิจบทที่ 4 สำคัญมาก`:`มี ${nBad} เขตที่ยังห่างจากฝัน มาช่วยกันออกแบบทางแก้ในบทที่ 4`}</div></div>
+    <h3 style="font-size:17px">เขตที่ควรพัฒนาก่อน</h3>
+    <div class="dist-list">${top.map((d,n)=>{const L=playerLevel(gap(d));return `<div class="dist-item" style="cursor:default">${icoBadge(d)}<span style="min-width:0"><span class="nm" style="display:block">${DIMS[d].place}</span><span class="sub">${DIMS[d].th}</span></span><span class="status" style="color:var(--${L.k});border-color:var(--${L.k})">${L.t}</span></div>`}).join('')}</div>
+    <h3 style="font-size:17px">เขตที่ใกล้ฝันที่สุด</h3><p class="muted">${strong.length?strong.slice(0,4).map(d=>DIMS[d].place).join(' · '):'ยังไม่มีเขตที่ใกล้ฝัน'}</p>
+    <button class="btn primary" data-action="go" data-to="ch4">${S.demo?'ดูตัวอย่างบทที่ 4':'ไปบทที่ 4 เสนอไอเดียพัฒนา'}</button>
+   </div></div></main>`;}
+
+function ch4Scr(){const top=topDims();
+  return `<main class="wrap screen"><div class="ch-head"><span class="eyebrow">Chapter 4 · Change Maker</span><h2>เปลี่ยนบริษัทจริงให้ใกล้ฝัน</h2><p>ถ้าคุณเป็นผู้บริหารหนึ่งวัน คุณจะทำอะไรกับ 3 เขตที่ยังห่างจากฝันที่สุด ไอเดียที่บอกว่าจะทำอะไร ทำบ่อยแค่ไหน หรือวัดผลอย่างไร จะได้ดาวและ XP มากกว่า (สูงสุด 5 ดาว · 150 XP ต่อไอเดีย)</p></div>
+  <div class="stack">${top.map((d,n)=>{const I=S.ideas[d]||{text:'',stars:0};return `<div class="idea-card"><div class="row" style="justify-content:space-between"><div><div class="eyebrow">ชั้นที่ควรพัฒนา อันดับ ${n+1}</div><h3 class="ico-h">${icoBadge(d)}${DIMS[d].th} · ${DIMS[d].place}</h3></div>${I.stars?starsHTML(I.stars):''}</div>
+   <label for="idea${d}" class="muted" style="font-size:13.5px">ถ้าคุณเป็นผู้บริหาร คุณจะพัฒนาเรื่อง${DIMS[d].th}อย่างไร?</label>
+   <textarea id="idea${d}" class="field" maxlength="500" placeholder="เช่น ${DIMS[d].starters[0]} โดย...">${esc(I.text)}</textarea>
+   <div class="starters"><span class="muted" style="font-size:12.5px">ไอเดียตั้งต้น:</span>${DIMS[d].starters.map(t=>`<button class="starter" data-action="starter" data-d="${d}" data-t="${esc(t)}">${t}</button>`).join('')}</div>
+   <div class="row" style="justify-content:space-between"><div class="idea-result" id="res${d}">${I.stars?ideaFeedback(I.stars):''}</div><button class="btn cyan sm" data-action="submitIdea" data-d="${d}">${I.stars?'ส่งไอเดียฉบับปรับปรุง':'ส่งไอเดีย'}</button></div></div>`}).join('')}
+   <div class="idea-card"><h3>ข้อเสนอแนะอื่น ๆ (ไม่บังคับ)</h3><label for="extra" class="muted" style="font-size:13.5px">มีเรื่องอื่นที่อยากให้บริษัทในฝันมีไหม?</label><textarea id="extra" class="field" maxlength="500">${esc(S.extra)}</textarea></div>
+   <p id="ideaErr" class="err" hidden>ส่งไอเดียอย่างน้อย 1 ข้อก่อนรับใบรับรองภารกิจ</p>
+   <div class="row" style="justify-content:space-between"><button class="btn ghost" data-action="go" data-to="ch3">กลับไปดูช่องว่าง</button><button class="btn primary" data-action="finish">รับใบรับรองภารกิจ</button></div></div></main>`;}
+function ideaFeedback(n){return [,'<span class="muted">ได้ 1 ดาว ลองเขียนให้ยาวขึ้นว่าจะทำอะไร</span>','<span class="muted">ได้ 2 ดาว บอกว่าจะทำอะไร เช่น จัด ปรับ เพิ่ม</span>','<span class="muted">ได้ 3 ดาว บอกความถี่หรือวิธีวัดผล เช่น ทุกเดือน ติดตามผล</span>','<span class="muted">ได้ 4 ดาว เพิ่มรายละเอียดอีกนิดจะได้ดาวเต็ม</span>','<span class="c-ok">5 ดาว ไอเดียเป็นรูปธรรม นำไปใช้ได้จริง</span>'][n]||'';}
+
+function badgeIcon(i,on){const c=on?['#3FD9F2','#1BC690','#4F7BFF','#F4B64A','#F06A9A'][i]:'#5F7799';
+  const g=[`<polygon points="21,9 33,16 21,23 9,16" fill="${c}"/><polygon points="9,16 21,23 21,34 9,27" fill="${c}" opacity=".6"/><polygon points="21,23 33,16 33,27 21,34" fill="${c}" opacity=".4"/>`,
+   `<circle cx="21" cy="21" r="11" fill="none" stroke="${c}" stroke-width="3"/><path d="M21 13 L24 21 L21 29 L18 21Z" fill="${c}"/>`,
+   `<path d="M10 30 L10 14 M16 30 L16 20 M22 30 L22 10 M28 30 L28 18 M34 30 L34 24" stroke="${c}" stroke-width="3.5" stroke-linecap="round"/>`,
+   `<path d="M21 8 a8 8 0 0 1 5 14 v4 h-10 v-4 a8 8 0 0 1 5 -14z" fill="${c}"/><rect x="16" y="28" width="10" height="3" rx="1.5" fill="${c}"/>`,
+   `<path d="M21 7l4 8 9 1.3-6.5 6.3 1.5 9L21 27.4 13 31.6l1.5-9L8 16.3 17 15z" fill="${c}"/>`][i];
+  return `<svg viewBox="0 0 42 42" aria-hidden="true"><circle cx="21" cy="21" r="20" fill="${c}" fill-opacity=".12" stroke="${c}" stroke-opacity=".5"/>${g}</svg>`;}
+
+function reportScr(){return `<main class="wrap screen"><div class="congrats">
+   <svg class="cg-badge" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="56" fill="#1BC690" fill-opacity=".12" stroke="#3FD9F2" stroke-opacity=".6" stroke-width="2"/><polygon points="60,26 88,42 60,58 32,42" fill="#3FD9F2"/><polygon points="32,42 60,58 60,92 32,76" fill="#11966C"/><polygon points="60,58 88,42 88,76 60,92" fill="#0B6E50"/><path d="M47 70 l9 9 l17 -19" stroke="#E8F1FB" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+   <div class="eyebrow">ใบรับรองภารกิจ Ideal Company</div>
+   <h2 class="cg-title">ขอแสดงความยินดี</h2>
+   <p class="cg-lead">คุณสร้างบริษัทในฝันได้สำเร็จ</p>
+   <p class="cg-body">ขอบคุณที่ร่วมออกแบบอนาคตขององค์กร ทุกคำตอบและทุกไอเดียของคุณจะช่วยให้ที่ทำงานพัฒนาไปใกล้บริษัทในฝันมากขึ้น</p>
+   <div id="subBox" aria-live="polite">${subHTML()}</div>
+  </div></main>`;}
+
+/* ---------- submission (anonymous, one record per player, latest wins) ---------- */
+let DB=null,USER=null,UID=null,IS_ADMIN=false,SUB={s:'idle'};
+function subHTML(){const m={idle:['muted','ผลของคุณจะถูกส่งให้ทีมผู้วิจัยแบบไม่ระบุตัวตน'],sending:['muted','กำลังส่งผลให้ทีมผู้วิจัย…'],
+  sent:['c-ok','ส่งผลให้ทีมผู้วิจัยแล้ว ขอบคุณที่ร่วมภารกิจ ผลส่งแบบไม่ระบุตัวตน ถ้าเล่นใหม่ ผลล่าสุดจะแทนที่ผลเดิม'],
+  demo:['c-warn','โหมดข้อมูลจำลอง ผลนี้ไม่ถูกส่งไปที่ใด'],
+  nodb:['',''],error:['','']}[SUB.s]||['muted',''];
+  if(SUB.s==='nodb'||SUB.s==='error')return codeBlock();
+  return SUB.s==='sending'?`<span class="muted">${m[1]}</span>`:'';}
+function paintSub(){const el=document.getElementById('subBox');if(el)el.innerHTML=subHTML();}
+function buildRecord(){return{v:1,at:new Date().toISOString(),age:S.profile.age,status:S.profile.status,sim:!!S.profile.sim,
+  org:effOrg(),ideal:S.ideal.slice(),items:S.answers.flat(),persona:persona().t,xp:xp(),
+  ideas:Object.entries(S.ideas).filter(([,v])=>v.text).map(([d,v])=>({d:+d,text:String(v.text).slice(0,500),stars:v.stars|0})),extra:String(S.extra||'').slice(0,500)};}
+async function submit(){if(S.demo){SUB={s:'demo'};return paintSub();}
+  if(!DB||!UID){SUB={s:'nodb'};return paintSub();}
+  SUB={s:'sending'};paintSub();const rec=buildRecord(),ref=DB.doc('responses/'+UID);
+  try{await ref.set(rec);}catch(e){
+    if(e&&e.code==='unavailable'){await new Promise(r=>setTimeout(r,700+Math.random()*900));try{await ref.set(rec);}catch(e2){SUB={s:'error'};return paintSub();}}
+    else{SUB={s:'error'};return paintSub();}}
+  S.submitted=true;save();SUB={s:'sent'};paintSub();}
+
+/* ---------- researcher dashboard (editors and owner only) ---------- */
+let STATS={rows:[],loaded:false,err:null,sample:false,f:{org:'',age:'',status:'',mode:''},unsub:null,csv:'',tab:'stats'};
+const clamp=v=>Math.min(5,Math.max(1,v));
+const isScore=v=>Number.isInteger(v)&&v>=1&&v<=5;
+function validRow(r){return r&&Array.isArray(r.ideal)&&r.ideal.length===9&&r.ideal.every(isScore)&&Array.isArray(r.items)&&r.items.length===45&&r.items.every(isScore);}
+function rowReal(r){return DIMS.map((D,d)=>avg(D.items.map((it,i)=>{const v=r.items[d*5+i];return it[1]?6-v:v})));}
+function rowIdeas(r){return Array.isArray(r.ideas)?r.ideas.filter(i=>i&&Number.isInteger(i.d)&&i.d>=0&&i.d<9&&typeof i.text==='string'):[];}
+function sd(a){const m=avg(a);return Math.sqrt(avg(a.map(x=>(x-m)**2)));}
+function prng(seed){let s=seed;return()=>{s=(s*1664525+1013904223)%4294967296;return s/4294967296;};}
+function sampleRows(){const rnd=prng(42),out=[],base=[2.5,2.3,3.4,3.0,2.7,2.9,3.9,3.3,2.5],ib=[4.7,4.2,4.1,4.2,3.9,3.3,4.5,4.4,4.1];
+  for(let n=0;n<36;n++){const age=AGES[1+Math.floor(rnd()*4)],status=STATUSES[Math.floor(rnd()*rnd()*STATUSES.length)],sim=rnd()<.15,shift=(rnd()-.5)*1.2;
+    const ideal=ib.map(m=>clamp(Math.round(m+(rnd()-.5)*1.6))),items=[];
+    DIMS.forEach((D,d)=>D.items.forEach(it=>{const v=clamp(Math.round(base[d]+shift+(rnd()-.5)*2));items.push(it[1]?6-v:v)}));
+    const r={id:'sample'+n,at:new Date(Date.now()-n*25200e3).toISOString(),age,status,sim,ideal,items,ideas:[],extra:'',org:n%6===5?'บริษัทตัวอย่าง':ORGS[n%3===0?1:0]};
+    if(rnd()<.55){const re=rowReal(r);let d=0;ideal.forEach((v,k)=>{if(v-re[k]>ideal[d]-re[d])d=k});r.ideas=[{d,text:DIMS[d].starters[Math.floor(rnd()*3)]+' และติดตามผลทุกไตรมาส',stars:1+Math.floor(rnd()*5)}];}
+    out.push(r);}return out;}
+function agg(R){const reals=R.map(rowReal);
+  const dims=DIMS.map((_,d)=>{const iv=R.map(r=>r.ideal[d]),rv=reals.map(x=>x[d]),im=avg(iv),rm=avg(rv),g=im-rm;return{d,im,rm,rsd:sd(rv),g,p:Math.max(g,0)*im/5+(5-rm)*0.01};});
+  const items=DIMS.flatMap((D,d)=>D.items.map((it,i)=>{const m=avg(R.map(r=>r.items[d*5+i]));return{d,i,text:it[0],rev:it[1],raw:m,scored:it[1]?6-m:m};}));
+  return{n:R.length,dims,items,reals,sat:avg(reals.map(x=>avg(x))),gm:avg(dims.map(x=>x.g)),fit:Math.round(100-avg(dims.map(x=>Math.abs(x.g)))/4*100)};}
+function groups(R,reals,fn,keys){return keys.map(k=>{const idx=R.map((_,i)=>i).filter(i=>fn(R[i])===k);return{k,n:idx.length,sat:idx.length?avg(idx.map(i=>avg(reals[i]))):0};}).filter(x=>x.n);}
+function hbars(list){return list.map(g=>{const L=satLevel(g.sat);return `<div class="hbar"><span>${esc(g.k)}</span><span class="tr"><i class="bg-${L.k}" style="width:${(g.sat-1)/4*100}%"></i></span><span class="vl">${f1(g.sat)} · ${g.n} คน</span></div>`}).join('');}
+function ensureSub(){if(STATS.unsub||!DB)return;
+  try{STATS.unsub=DB.collection('responses').limit(1000).onSnapshot(s=>{STATS.rows=s.docs.filter(d=>d.exists).map(d=>Object.assign({},d.data(),{id:d.id}));STATS.loaded=true;STATS.err=null;if(S.screen==='stats')render();},
+    e=>{STATS.err=(e&&e.code)||'error';STATS.unsub=null;if(S.screen==='stats')render();});}catch(e){STATS.err='error';}}
+function filteredRows(){const all=STATS.sample?sampleRows():STATS.rows.filter(validRow),f=STATS.f;
+  return{all,R:all.filter(r=>orgMatch(r,f.org)&&(!f.age||r.age===f.age)&&(!f.status||r.status===f.status)&&(!f.mode||(f.mode==='sim')===!!r.sim)).sort((a,b)=>String(b.at||'').localeCompare(String(a.at||'')))};}
+function statsTab(){
+  const {all,R}=filteredRows(),f=STATS.f;
+  const sel=(id,label,val,opts)=>`<label for="${id}">${label}<select id="${id}" class="field">${opts.map(o=>`<option value="${esc(o[0])}"${o[0]===val?' selected':''}>${esc(o[1])}</option>`).join('')}</select></label>`;
+  const head=`
+   ${STATS.sample?'<div class="sample-banner">กำลังแสดงข้อมูลจำลอง 36 คน เพื่อดูหน้าตาแดชบอร์ด ไม่ใช่ผลจริง</div>':''}
+   <div class="admin-bar">${sel('fAge','ช่วงอายุ',f.age,[['','ทุกช่วงอายุ'],...AGES.map(a=>[a,a])])}${sel('fOrg','บริษัท',f.org,[['','ทุกบริษัท'],...ORGS.map(a=>[a,a]),[OTHER,'บริษัทอื่น ๆ']])}${sel('fStatus','สถานะ',f.status,[['','ทุกสถานะ'],...STATUSES.map(a=>[a,a])])}${sel('fMode','บริษัทที่ประเมิน',f.mode,[['','ทั้งหมด'],['real','บริษัทจริง'],['sim','บริษัทจำลอง']])}
+    <span style="flex:1"></span><button class="btn sm" data-action="exportCsv" ${R.length?'':'disabled'}>ส่งออก CSV</button><button class="btn sm ghost" data-action="toggleSample">${STATS.sample?'กลับไปดูข้อมูลจริง':'ดูตัวอย่างด้วยข้อมูลจำลอง'}</button></div>
+`;
+  let body='';
+  if(!STATS.sample&&STATS.err)body=`<div class="panel empty">โหลดข้อมูลไม่ได้ ตรวจว่ารหัสผู้ดูแลตรงกับใน Apps Script และ URL ถูกต้อง แล้วเปิดหน้านี้ใหม่</div>`;
+  else if(!STATS.sample&&!DB)body=`<div class="panel empty">ลงชื่อเข้าใช้ claude.ai เพื่อดูข้อมูลที่ผู้เล่นส่งมา</div>`;
+  else if(!STATS.sample&&!STATS.loaded)body=`<div class="panel empty">กำลังโหลดผลการสำรวจ…</div>`;
+  else if(!all.length)body=`<div class="panel empty stack"><h3 style="font-size:19px">ยังไม่มีผู้เล่นส่งผล</h3><p class="muted">เมื่อผู้เล่นจบบทที่ 4 ผลจะขึ้นที่นี่ทันที แชร์ลิงก์เกมจากเมนู Share ให้ผู้เล่นในสิทธิ์ Contributor หรือเปิดลิงก์ให้คนในองค์กร ผู้ที่ได้สิทธิ์ Viewer จะเล่นได้แต่ส่งผลไม่ได้</p><div><button class="btn cyan" data-action="toggleSample">ดูตัวอย่างด้วยข้อมูลจำลอง</button></div></div>`;
+  else if(!R.length)body=`<div class="panel empty">ไม่มีผู้ตอบที่ตรงกับตัวกรองนี้</div>`;
+  else{const A=agg(R),sat=satLevel(A.sat),order=[...A.dims].sort((a,b)=>b.p-a.p),pct=v=>(v-1)/4*100;
+    const dumb=order.map(x=>{const L=gapLevel(x.g),lo=Math.min(x.rm,x.im),hi=Math.max(x.rm,x.im);return `<div class="dumb-row"><div class="lb">${DIMS[x.d].th}<small>${DIMS[x.d].en}</small></div>
+      <div class="track">${[0,25,50,75,100].map(p=>`<span class="grid" style="left:${p}%"></span>`).join('')}<span class="seg bg-${L.k}" style="left:${pct(lo)}%;width:${pct(hi)-pct(lo)}%;opacity:.55"></span><span class="dot bg-${L.k}" style="left:${pct(x.rm)}%" title="จริง ${f1(x.rm)}"></span><span class="dot ideal" style="left:${pct(x.im)}%" title="คาดหวัง ${f1(x.im)}"></span></div>
+      <div class="gapv tnum c-${L.k}">${f1(x.g)}</div></div>`}).join('');
+    const orgs=groups(R,A.reals,r=>r.org,orgKeys(R)),ages=groups(R,A.reals,r=>r.age,AGES),sts=groups(R,A.reals,r=>r.status,STATUSES),modes=groups(R,A.reals,r=>r.sim?'บริษัทจำลอง':'บริษัทจริง',['บริษัทจริง','บริษัทจำลอง']);
+    const ideas=R.flatMap(r=>rowIdeas(r).map(i=>({...i,age:r.age,status:r.status,at:r.at}))).sort((a,b)=>(b.stars-a.stars)||String(b.at).localeCompare(String(a.at)));
+    const extras=R.filter(r=>typeof r.extra==='string'&&r.extra.trim()).map(r=>r.extra.trim());
+    body=`<div class="kpis"><div class="kpi"><div class="k">ผู้ตอบ</div><div class="v tnum">${A.n}<small> คน</small></div><div class="s muted">จากทั้งหมด ${all.length} คน</div></div>
+      <div class="kpi"><div class="k">ความพึงพอใจเฉลี่ย</div><div class="v tnum">${f1(A.sat)}<small> / 5</small></div><div class="s c-${sat.k}">${sat.t}</div></div>
+      <div class="kpi"><div class="k">ช่องว่างเฉลี่ย</div><div class="v tnum c-${gapLevel(A.gm).k}">${f1(A.gm)}</div><div class="s muted">${gapLevel(A.gm).t}</div></div>
+      <div class="kpi"><div class="k">ดัชนีความสอดคล้อง</div><div class="v tnum">${A.fit}<small>%</small></div><div class="s muted">100% = ฝันกับจริงตรงกัน</div></div></div>
+     <div class="two"><div class="panel"><h3 style="font-size:18px;margin-bottom:8px">ความคาดหวังเทียบความจริง เรียงตามลำดับความสำคัญ</h3>
+       <div class="axis"><span></span><div class="scale">${[1,2,3,4,5].map(v=>`<span style="left:${pct(v)}%">${v}</span>`).join('')}</div><span style="text-align:right">ช่องว่าง</span></div><div class="dumb">${dumb}</div>
+       <div class="legend"><span><i class="sw" style="border:2px solid var(--cyan);border-radius:50%;width:12px;height:12px"></i>ค่าเฉลี่ยความคาดหวัง</span><span><i class="sw bg-ok" style="border-radius:50%;width:12px;height:12px"></i>ค่าเฉลี่ยบริษัทจริง</span><span class="c-ok">ใกล้/เกินคาด</span><span class="c-warn">ควรพัฒนา</span><span class="c-bad">เร่งด่วน</span></div></div>
+      <div class="panel stack"><h3 style="font-size:18px">ความพึงพอใจตามกลุ่ม</h3><div><div class="opt-label" style="margin-bottom:4px">ช่วงอายุ</div>${hbars(ages)}</div><div><div class="opt-label" style="margin-bottom:4px">บริษัท</div>${orgs.length?hbars(orgs):'<p class="muted" style="font-size:12.5px">ยังไม่มีข้อมูลบริษัท</p>'}</div><div><div class="opt-label" style="margin-bottom:4px">สถานะ</div>${hbars(sts)}</div><div><div class="opt-label" style="margin-bottom:4px">บริษัทที่ประเมิน</div>${hbars(modes)}</div><p class="muted" style="font-size:12px">ความยาวแถบ = ความพึงพอใจเฉลี่ย (1–5) สีตามเกณฑ์แปลผล</p></div></div>
+     <div class="panel" style="margin-top:20px"><h3 style="font-size:18px;margin-bottom:10px">สรุปรายด้าน</h3><div class="tbl-wrap"><table class="dtable"><thead><tr><th>อันดับ</th><th>ด้าน</th><th class="n">คาดหวัง</th><th class="n">จริง</th><th class="n">SD จริง</th><th class="n">ช่องว่าง</th><th>แปลผลความพึงพอใจ</th><th>แปลผลช่องว่าง</th></tr></thead><tbody>
+      ${order.map((x,n)=>`<tr><td class="n">${n+1}</td><td>${DIMS[x.d].th}</td><td class="n">${f1(x.im)}</td><td class="n">${f1(x.rm)}</td><td class="n">${f1(x.rsd)}</td><td class="n c-${gapLevel(x.g).k}">${f1(x.g)}</td><td class="c-${satLevel(x.rm).k}">${satLevel(x.rm).t}</td><td class="c-${gapLevel(x.g).k}">${gapLevel(x.g).t}</td></tr>`).join('')}</tbody></table></div></div>
+     <div class="panel" style="margin-top:20px"><h3 style="font-size:18px">ไอเดียจากผู้เล่น <span class="muted" style="font-size:14px;font-weight:500">${ideas.length} ไอเดีย</span></h3><p class="muted" style="font-size:13px;margin:4px 0 10px">เรียงตามดาวแล้วตามเวลาล่าสุด</p>
+      ${ideas.length?`<div class="tbl-wrap"><table class="dtable"><thead><tr><th>ด้าน</th><th>ดาว</th><th>ไอเดีย</th><th>ผู้เสนอ</th></tr></thead><tbody>${ideas.slice(0,100).map(i=>`<tr><td style="white-space:nowrap">${DIMS[i.d].th}</td><td>${starsHTML(Math.min(5,Math.max(0,i.stars|0)))}</td><td style="min-width:220px">${esc(i.text)}</td><td class="muted" style="white-space:nowrap">${esc(i.age)}<br>${esc(i.status)}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">ยังไม่มีไอเดีย</p>'}
+      ${extras.length?`<h3 style="font-size:16px;margin-top:16px">ข้อเสนอแนะอื่น ๆ</h3><ul class="list-plain" style="margin-top:8px">${extras.slice(0,50).map(t=>`<li class="muted">${esc(t)}</li>`).join('')}</ul>`:''}</div>
+     <div class="panel" style="margin-top:20px"><h3 style="font-size:18px">ค่าเฉลี่ยรายข้อ (เฉลยการให้คะแนน)</h3><p class="muted" style="font-size:13px;margin:4px 0 10px">ข้อเชิงลบ (R) กลับคะแนนเป็น 6 − คะแนนดิบก่อนคำนวณรายด้าน</p>
+      <div class="tbl-wrap"><table class="dtable"><thead><tr><th class="n">ข้อ</th><th>ด้าน</th><th>ข้อความ</th><th>ทิศทาง</th><th class="n">ดิบ</th><th class="n">หลังกลับ</th></tr></thead><tbody>
+      ${A.items.map((it,k)=>`<tr><td class="n">${k+1}</td><td style="white-space:nowrap">${DIMS[it.d].th}</td><td style="min-width:240px">${it.text}</td><td>${it.rev?'<span class="rev">ลบ (R)</span>':'บวก'}</td><td class="n">${f1(it.raw)}</td><td class="n c-${satLevel(it.scored).k}">${f1(it.scored)}</td></tr>`).join('')}</tbody></table></div></div>`;}
+  return `${head}<div style="margin-top:20px">${body}</div>${criteriaHTML()}`;}
+function criteriaHTML(){return `<div class="panel howread" style="margin-top:20px"><h3 style="font-size:16px;color:var(--fg)">เกณฑ์การแปลผล</h3>
+   <div class="tbl-wrap"><table><tr><th>ค่าเฉลี่ยบริษัทจริง (1–5)</th><th>การแปลผล</th></tr><tr><td class="tnum">3.67–5.00</td><td>พึงพอใจ</td></tr><tr><td class="tnum">2.34–3.66</td><td>พึงพอใจปานกลาง</td></tr><tr><td class="tnum">1.00–2.33</td><td>ไม่พึงพอใจ</td></tr></table></div>
+   <div class="tbl-wrap"><table><tr><th>ช่องว่าง (คาดหวัง − จริง)</th><th>การแปลผล</th></tr><tr><td class="tnum">≤ 0</td><td>เท่ากับหรือเกินความคาดหวัง เป็นจุดแข็ง</td></tr><tr><td class="tnum">0.01–0.50</td><td>ใกล้เคียงความคาดหวัง</td></tr><tr><td class="tnum">0.51–1.50</td><td>ควรพัฒนา</td></tr><tr><td class="tnum">มากกว่า 1.50</td><td>ต้องพัฒนาเร่งด่วน</td></tr></table></div>
+   <p style="margin-top:8px">ลำดับความสำคัญ = ช่องว่าง × (ความคาดหวัง ÷ 5) ดัชนีความสอดคล้อง = 100 − (ค่าเฉลี่ย |ช่องว่าง| ÷ 4 × 100) ดาวของไอเดีย (1–5): 1 ดาวเมื่อยาว 8 ตัวอักษรขึ้นไป +1 เมื่อยาว 40 ตัวอักษรขึ้นไป +1 เมื่อยาว 90 ตัวอักษรขึ้นไป +1 เมื่อมีคำบอกการกระทำ +1 เมื่อมีตัวเลข ความถี่ หรือวิธีวัดผล</p></div>`;}
+function csvText(R){const q=v=>{const s=String(v==null?'':v);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
+  const h=['respondent','submitted_at','organization','age','status','company',...DIMS.map((_,d)=>'ideal_'+(d+1)),...DIMS.map((_,d)=>'real_'+(d+1)),...DIMS.map((_,d)=>'gap_'+(d+1)),...Array.from({length:45},(_,i)=>'item_raw_'+(i+1)),'ideas','extra'];
+  const lines=[h.join(',')];
+  R.forEach((r,n)=>{const re=rowReal(r);lines.push(['R'+String(n+1).padStart(3,'0'),r.at||'',r.org||'',r.age,r.status,r.sim?'simulated':'real',...r.ideal,...re.map(f1),...r.ideal.map((v,k)=>f1(v-re[k])),...r.items,
+    rowIdeas(r).map(i=>`[${DIMS[i.d].th} ${i.stars|0}*] ${i.text}`).join(' | '),r.extra||''].map(q).join(','));});
+  return '﻿'+lines.join('\n');}
+async function exportCsv(){const {R}=filteredRows();const txt=csvText(R);if(!window.claude)return saveFile(`ideal-company-results-${R.length}.csv`,txt,'text/csv;charset=utf-8');
+  let dl=null;try{dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null;}catch(e){}
+  if(dl){try{await dl.save({filename:`ideal-company-results-${R.length}.csv`,data:new Blob([txt],{type:'text/csv;charset=utf-8'})});return;}catch(e){if(e&&e.code==='declined')return;}}
+  STATS.csv=txt.replace(/^﻿/,'');render();const b=document.getElementById('csvBox');if(b){b.focus();b.select();}toast('ข้อความ CSV พร้อมคัดลอก');}
+
+/* ---------- result code: fallback for players who cannot write ---------- */
+function b64e(t){const u=new TextEncoder().encode(t);let s='';u.forEach(c=>s+=String.fromCharCode(c));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function b64d(t){t=t.replace(/-/g,'+').replace(/_/g,'/');while(t.length%4)t+='=';const s=atob(t),u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return new TextDecoder().decode(u);}
+function resultCode(){const r=buildRecord();const c=[r.v,r.at,(ORGS.indexOf(r.org)>=0?ORGS.indexOf(r.org):r.org),AGES.indexOf(r.age),STATUSES.indexOf(r.status),r.sim?1:0,r.ideal.join(''),r.items.join(''),r.ideas.map(i=>[i.d,i.stars,i.text]),r.extra,r.xp];
+  const body=b64e(JSON.stringify(c));return 'WT9-'+body+'-'+fnv(body);}
+function parseCode(code){const m=/WT9-([A-Za-z0-9_-]+)-([0-9a-f]+)/.exec(code||'');if(!m||fnv(m[1])!==m[2])return null;
+  try{const c=JSON.parse(b64d(m[1]));const digits=x=>String(x).split('').map(Number);
+    const r={v:c[0]|0,at:String(c[1]||''),org:typeof c[2]==='string'?c[2].slice(0,80):(ORGS[c[2]]||''),age:AGES[c[3]]||'',status:STATUSES[c[4]]||'',sim:c[5]===1,ideal:digits(c[6]),items:digits(c[7]),
+      ideas:(Array.isArray(c[8])?c[8]:[]).slice(0,9).map(i=>({d:i[0]|0,stars:Math.min(5,Math.max(0,i[1]|0)),text:String(i[2]||'').slice(0,500)})),extra:String(c[9]||'').slice(0,500),xp:c[10]|0,via:'code'};
+    if(!validRow(r))return null;r.persona='';return{r,id:'code-'+m[2]};}catch(e){return null;}}
+function codeBlock(){const c=resultCode();return `<div class="code-box"><p><b style="font-family:var(--display)">ส่งผลด้วยรหัสผลลัพธ์</b><br><span class="muted">ระบบส่งผลอัตโนมัติจากเครื่องนี้ไม่ได้ คัดลอกรหัสด้านล่างแล้วส่งให้ผู้จัดกิจกรรม เช่น ทางแชตหรืออีเมล รหัสนี้ไม่มีชื่อหรือข้อมูลระบุตัวตน</span></p>
+  <textarea id="resCode" class="field" readonly aria-label="รหัสผลลัพธ์">${c}</textarea><div class="row"><button class="btn sm primary" data-action="copyCode">คัดลอกรหัสผลลัพธ์</button><button class="btn sm ghost" data-action="resubmit">ลองส่งอัตโนมัติอีกครั้ง</button></div></div>`;}
+function copyCode(){const b=document.getElementById('resCode');if(!b)return;const t=b.value;const fb=()=>{b.focus();b.select();toast('เลือกรหัสแล้ว กดคัดลอกได้เลย');};
+  try{navigator.clipboard.writeText(t).then(()=>toast('คัดลอกรหัสผลลัพธ์แล้ว'),fb);}catch(e){fb();}}
+let IMP={busy:false,msg:''};
+async function importCodes(){const ta=document.getElementById('impBox');if(!ta||!DB||IMP.busy)return;const raw=ta.value;
+  const found=raw.match(/WT9-[A-Za-z0-9_-]+-[0-9a-f]+/g)||[];if(!found.length){IMP.msg='<span class="c-bad">ไม่พบรหัสผลลัพธ์ในข้อความ รหัสขึ้นต้นด้วย WT9-</span>';return render();}
+  IMP={busy:true,msg:'กำลังนำเข้า…'};render();let ok=0,bad=0,dup=0,fail=0;const seen=new Set(STATS.rows.map(r=>r.id));
+  for(const c of found){const p=parseCode(c);if(!p){bad++;continue;}if(seen.has(p.id)){dup++;continue;}
+    try{await DB.doc('responses/'+p.id).set(p.r);seen.add(p.id);ok++;}catch(e){fail++;}}
+  IMP={busy:false,msg:`<span class="${ok?'c-ok':'c-warn'}">นำเข้าแล้ว ${ok} รายการ</span>${dup?` · ซ้ำกับที่มีอยู่ ${dup}`:''}${bad?` · <span class="c-bad">รหัสไม่ถูกต้อง ${bad}</span>`:''}${fail?` · <span class="c-bad">บันทึกไม่สำเร็จ ${fail}</span>`:''}`};
+  if(ok)ta.value='';render();}
+function importPanel(){return `<div class="panel stack" style="margin-bottom:16px"><div><h3 style="font-size:18px">นำเข้ารหัสผลลัพธ์</h3><p class="muted" style="font-size:13.5px;margin-top:4px">สำหรับผู้เล่นที่ส่งผลอัตโนมัติไม่ได้ เช่น คนนอกองค์กรที่เปิดผ่านลิงก์ วางรหัสได้หลายรหัสพร้อมกัน ระบบตรวจรหัสเสีย และข้ามรหัสที่นำเข้าแล้ว</p></div>
+  <textarea id="impBox" class="field" placeholder="วางรหัสที่ขึ้นต้นด้วย WT9- ที่นี่" style="min-height:90px;font-size:12px"></textarea>
+  <div class="row" style="justify-content:space-between"><span style="font-size:13.5px">${IMP.msg}</span><button class="btn sm primary" data-action="importCodes" ${IMP.busy?'disabled':''}>นำเข้า</button></div></div>`;}
+
+/* ---------- standalone website backend (Google Apps Script + Google Sheets) ---------- */
+let ADMIN_PASS='';try{ADMIN_PASS=sessionStorage.getItem('ic-admin-pass')||'';}catch(e){}
+function localUid(){let id='';try{id=localStorage.getItem('ic-player-id')||'';}catch(e){}
+  if(!/^p-[a-z0-9]{20,}$/.test(id)){const a=new Uint8Array(16);(crypto&&crypto.getRandomValues?crypto.getRandomValues(a):a.forEach((_,i)=>a[i]=Math.random()*256|0));
+    id='p-'+[...a].map(x=>x.toString(36).padStart(2,'0')).join('').slice(0,26);try{localStorage.setItem('ic-player-id',id);}catch(e){}}return id;}
+async function api(method,payload){const url=SITE_CONFIG.ENDPOINT;let r;
+  if(method==='GET'){r=await fetch(url+'?'+new URLSearchParams(payload).toString(),{method:'GET'});}
+  else{r=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});}
+  const j=await r.json();if(!j.ok){const e=new Error(j.error||'error');e.code=j.error==='unauthorized'?'unauthorized':'unavailable';throw e;}return j;}
+function makeSheetDB(){const listeners=new Set();let timer=null,last=[];
+  async function pull(){try{const j=await api('GET',{action:'list',code:ADMIN_PASS});last=j.rows||[];
+      const snap={docs:last.map(r=>({id:r.id,exists:true,data:()=>r.data}))};listeners.forEach(l=>l.ok(snap));}
+    catch(e){listeners.forEach(l=>l.err&&l.err({code:e.code||'unavailable'}));}}
+  return{doc(path){const id=path.split('/')[1];return{
+      set:async data=>{await api('POST',{action:'save',id,data});},
+      delete:async()=>{await api('POST',{action:'delete',ids:[id],code:ADMIN_PASS});clearTimeout(timer);timer=setTimeout(()=>{pull();timer=null;poll();},400);}}},
+    collection(){return{limit(){return{onSnapshot(ok,err){const l={ok,err};listeners.add(l);pull();poll();return()=>{listeners.delete(l);};}}}}}};
+  function poll(){if(timer)return;timer=setTimeout(function t(){timer=null;if(listeners.size&&ADMIN_OK){pull();poll();}},30000);}}
+
+/* ---------- article: findings + I-O psychology recommendations ---------- */
+const IOP=[
+ {theory:'ทฤษฎีความเสมอภาค (Equity Theory) ของ Adams',why:'พนักงานเปรียบเทียบสัดส่วนระหว่างสิ่งที่ทุ่มเทกับค่าตอบแทนที่ได้ กับเพื่อนร่วมงานและตลาดแรงงาน เมื่อรับรู้ว่าไม่เป็นธรรม จะลดความทุ่มเท หรือหางานใหม่',
+  acts:['สำรวจค่าตอบแทนเทียบตลาดอย่างน้อยปีละครั้ง และปรับโครงสร้างเงินเดือนให้แข่งขันได้','กำหนดช่วงเงินเดือนของแต่ละตำแหน่งและอธิบายหลักเกณฑ์ให้พนักงานเข้าใจ เพื่อเพิ่มความยุติธรรมเชิงกระบวนการ (procedural justice)','เชื่อมการปรับเงินเดือนกับผลประเมินที่มีเกณฑ์ชัดเจน แทนการปรับเท่ากันทุกคน']},
+ {theory:'ทฤษฎีสองปัจจัยของ Herzberg (ปัจจัยค้ำจุน) และแนวคิดสวัสดิการแบบยืดหยุ่น',why:'สวัสดิการเป็นปัจจัยค้ำจุน (hygiene factor) ถ้าขาดจะทำให้ไม่พอใจทันที แม้มีครบก็ไม่ได้สร้างแรงจูงใจเพิ่มมากนัก จึงควรทำให้ครบ เหมาะกับความต้องการ และใช้ง่าย',
+  acts:['สำรวจความต้องการสวัสดิการแยกตามช่วงอายุและสถานะ เพราะแต่ละกลุ่มให้คุณค่าต่างกัน','จัดสวัสดิการแบบเลือกได้ (flexible benefits) ภายในงบที่กำหนด','ลดขั้นตอนการเบิก เช่น เบิกผ่านระบบออนไลน์ และกำหนดเวลาจ่ายคืนที่ชัดเจน']},
+ {theory:'ทฤษฎีความคาดหวัง (Expectancy Theory) ของ Vroom และแนวคิดการพัฒนาเส้นทางอาชีพ',why:'แรงจูงใจเกิดเมื่อพนักงานเชื่อว่าความพยายามนำไปสู่ผลงาน และผลงานนำไปสู่การเลื่อนตำแหน่ง ถ้าเกณฑ์ไม่ชัดหรือไม่เป็นธรรม ความเชื่อมโยงนี้จะขาด',
+  acts:['ประกาศเกณฑ์การเลื่อนตำแหน่งเป็นลายลักษณ์อักษร และใช้คณะกรรมการพิจารณาร่วมเพื่อลดอคติ','จัดทำแผนพัฒนารายบุคคล (Individual Development Plan) ร่วมกับหัวหน้าปีละ 1–2 ครั้ง','เปิดเส้นทางเติบโตแบบผู้เชี่ยวชาญ (dual career ladder) สำหรับคนที่ไม่ต้องการเป็นผู้บริหาร']},
+ {theory:'ทฤษฎีการเสริมแรง (Reinforcement Theory) และแบบจำลองความคาดหวัง',why:'พฤติกรรมที่ได้รับการเสริมแรงทันทีและสม่ำเสมอมีแนวโน้มเกิดซ้ำ การยอมรับที่ไม่สม่ำเสมอหรือเน้นแต่ความผิดพลาดทำให้พนักงานรู้สึกว่าความทุ่มเทไม่มีความหมาย',
+  acts:['สร้างระบบชื่นชมที่ทำได้ทันที เช่น การชมในที่ประชุมทีม หรือระบบให้เพื่อนร่วมงานชื่นชมกัน (peer recognition)','ประกาศเกณฑ์รางวัลล่วงหน้าและให้รางวัลอย่างสม่ำเสมอ','ฝึกหัวหน้าให้ใช้อัตราส่วน feedback เชิงบวกต่อเชิงแก้ไขที่สมดุล']},
+ {theory:'ทฤษฎีความสัมพันธ์ระหว่างผู้นำกับสมาชิก (Leader–Member Exchange: LMX) และภาวะผู้นำการเปลี่ยนแปลง (Transformational Leadership)',why:'คุณภาพความสัมพันธ์ระหว่างหัวหน้ากับลูกทีมสัมพันธ์กับความพึงพอใจ ความผูกพัน และความตั้งใจลาออก หัวหน้าที่รับฟังและปฏิบัติอย่างยุติธรรมช่วยลดช่องว่างระหว่างกลุ่ม "คนใน" กับ "คนนอก"',
+  acts:['อบรมหัวหน้างานด้านการให้ feedback การโค้ช และการรับฟังเชิงรุก','กำหนดการพูดคุยตัวต่อตัว (one-on-one) ระหว่างหัวหน้ากับลูกทีมอย่างน้อยเดือนละครั้ง','ใช้การประเมินแบบ 360 องศาหรือให้ลูกทีมประเมินหัวหน้า เพื่อสะท้อนพฤติกรรมการบริหาร']},
+ {theory:'แนวคิดการสนับสนุนทางสังคม (Social Support) และความปลอดภัยทางจิตใจในทีม (Psychological Safety) ของ Edmondson',why:'ทีมที่สมาชิกกล้าพูด ขอความช่วยเหลือ และไว้วางใจกัน มีผลงานและความพึงพอใจสูงกว่า ความขัดแย้งหรือภาระงานที่ไม่สมดุลทำให้บรรยากาศตึงเครียด',
+  acts:['กำหนดบทบาทและความรับผิดชอบในทีมให้ชัด เพื่อลดภาระที่ตกกับบางคน','จัดกิจกรรมสร้างทีม และระบบพี่เลี้ยง (buddy) สำหรับพนักงานใหม่','ฝึกทักษะการจัดการความขัดแย้งและการสื่อสารอย่างสร้างสรรค์']},
+ {theory:'แนวคิดความยุติธรรมเชิงกระบวนการ และแบบจำลองความต้องการ–ทรัพยากรในงาน (Job Demands–Resources: JD-R)',why:'ขั้นตอนที่ซ้ำซ้อนเป็น "ความต้องการเชิงขัดขวาง" (hindrance demand) ที่เพิ่มความเครียดโดยไม่ช่วยให้งานดีขึ้น ส่วนกฎที่ชัดเจนและมีเหตุผลเป็นทรัพยากรที่ช่วยให้ทำงานได้',
+  acts:['ทบทวนกระบวนการอนุมัติ (process mapping) และตัดขั้นตอนที่ไม่เพิ่มคุณค่า','ให้พนักงานหน้างานมีส่วนร่วมออกแบบหรือแก้ไขขั้นตอน','ทำคู่มือที่อัปเดตสม่ำเสมอ และแจ้งเหตุผลทุกครั้งที่เปลี่ยนกฎ']},
+ {theory:'แบบจำลองคุณลักษณะงาน (Job Characteristics Model) ของ Hackman และ Oldham และแนวคิด Job Crafting',why:'งานที่มีความหลากหลายของทักษะ เห็นผลงานชัด มีความสำคัญ มีอิสระ และได้รับ feedback ทำให้รู้สึกว่างานมีความหมาย และเพิ่มแรงจูงใจภายใน',
+  acts:['หมุนเวียนงาน (job rotation) หรือขยายขอบเขตงาน (job enrichment) ให้ได้ใช้ทักษะหลากหลาย','ให้อิสระในการตัดสินใจวิธีทำงาน และเปิดให้พนักงานปรับแต่งงานของตน (job crafting)','สื่อสารให้เห็นผลกระทบของงานต่อลูกค้าและสังคม']},
+ {theory:'แนวคิดการสื่อสารในองค์การ (Organizational Communication) และความยุติธรรมด้านข้อมูล (Informational Justice)',why:'พนักงานที่ได้รับข้อมูลครบ ทันเวลา และมีคำอธิบาย จะเข้าใจเป้าหมาย ลดข่าวลือ และไว้วางใจองค์กรมากขึ้น การสื่อสารที่ขัดกันทำให้เกิดความกำกวมในบทบาท (role ambiguity)',
+  acts:['ประชุมสรุปทิศทางองค์กร (town hall) อย่างน้อยเดือนละครั้ง พร้อมช่วงถามตอบ','กำหนดช่องทางข่าวสารหลักช่องทางเดียว เพื่อลดข้อมูลที่ขัดกัน','สรุปคำสั่งงานเป็นลายลักษณ์อักษร และเปิดช่องทางสอบถามที่ตอบได้ภายในเวลาที่กำหนด']}];
+function filterLabel(){const f=STATS.f,a=[];if(f.org)a.push(f.org===OTHER?'บริษัทอื่น ๆ':f.org);if(f.age)a.push('อายุ '+f.age);if(f.status)a.push(f.status);if(f.mode)a.push(f.mode==='sim'?'ประเมินบริษัทจำลอง':'ประเมินบริษัทจริง');return a.length?a.join(' · '):'ผู้ตอบทั้งหมด';}
+function buildArticle(R){const A=agg(R),n=A.n,sat=satLevel(A.sat),order=[...A.dims].sort((a,b)=>b.p-a.p);
+  const urgent=order.filter(x=>gapLevel(x.g).k==='bad'),improve=order.filter(x=>gapLevel(x.g).k==='warn'),good=[...A.dims].filter(x=>x.g<=0.5).sort((a,b)=>a.g-b.g);
+  const hiExp=[...A.dims].sort((a,b)=>b.im-a.im).slice(0,3),loReal=[...A.dims].sort((a,b)=>a.rm-b.rm).slice(0,3),hiReal=[...A.dims].sort((a,b)=>b.rm-a.rm).slice(0,3);
+  const nm=x=>DIMS[x.d].th,lst=a=>a.map(nm).join(' ');
+  const by=(fn,keys)=>groups(R,A.reals,fn,keys);
+  const grpLines=[];[['บริษัท',by(r=>r.org,orgKeys(R))],['ช่วงอายุ',by(r=>r.age,AGES)],['สถานะ',by(r=>r.status,STATUSES)]].forEach(([lab,g])=>{
+    const ok=g.filter(x=>x.n>=3);if(ok.length<2)return;const hi=ok.reduce((a,b)=>b.sat>a.sat?b:a),lo=ok.reduce((a,b)=>b.sat<a.sat?b:a),diff=hi.sat-lo.sat;
+    grpLines.push(diff>=0.3?`เมื่อแยกตาม${lab} กลุ่ม ${hi.k} มีความพึงพอใจเฉลี่ยสูงสุด (${f1(hi.sat)}, ${hi.n} คน) และกลุ่ม ${lo.k} ต่ำสุด (${f1(lo.sat)}, ${lo.n} คน) ต่างกัน ${f1(diff)} คะแนน ควรออกแบบมาตรการให้เหมาะกับกลุ่มที่ต่ำกว่า`
+      :`เมื่อแยกตาม${lab} ความพึงพอใจของแต่ละกลุ่มใกล้เคียงกัน (ต่างกันไม่เกิน ${f1(diff)} คะแนน)`);});
+  const ideas=R.flatMap(r=>rowIdeas(r)).sort((a,b)=>b.stars-a.stars);
+  const ideaBy=order.slice(0,3).map(x=>({x,list:ideas.filter(i=>i.d===x.d).slice(0,3)})).filter(o=>o.list.length);
+  const B=[];
+  B.push({h:'บทคัดย่อ',p:[`การสำรวจความพึงพอใจในงานผ่านเกม Ideal Company มีผู้ตอบ ${n} คน (${filterLabel()}) โดยวัดทั้งความคาดหวังต่อบริษัทในอุดมคติและการรับรู้สภาพการทำงานจริง 9 ด้าน ตามกรอบ Job Satisfaction Survey (JSS) ของ Spector ผลพบว่าความพึงพอใจเฉลี่ยอยู่ที่ ${f1(A.sat)} จาก 5 อยู่ในระดับ${sat.t} และช่องว่างระหว่างความคาดหวังกับความเป็นจริงเฉลี่ย ${f1(A.gm)} คะแนน (ดัชนีความสอดคล้อง ${A.fit}%) ด้านที่ควรพัฒนาเป็นลำดับแรกคือ ${order.slice(0,3).map(nm).join(' ')}`]});
+  B.push({h:'1. ที่มาและวิธีการ',p:['ความพึงพอใจในงาน (job satisfaction) เป็นทัศนคติของพนักงานที่มีต่องานและองค์ประกอบต่าง ๆ ของงาน งานวิจัยด้านจิตวิทยาอุตสาหกรรมและองค์การพบว่าเกี่ยวข้องกับความผูกพันต่อองค์การ พฤติกรรมการเป็นสมาชิกที่ดี และความตั้งใจลาออก การสำรวจนี้จึงไม่ได้ดูแค่ระดับความพึงพอใจ แต่ดู "ช่องว่าง" ระหว่างสิ่งที่พนักงานคาดหวังกับสิ่งที่ได้รับจริง ตามแนวคิดความสอดคล้องระหว่างบุคคลกับสิ่งแวดล้อม (Person–Environment Fit)',
+    'ผู้ตอบให้คะแนนความคาดหวัง 9 ด้าน (1–5) ในบทบาทเจ้าของบริษัท จากนั้นตอบข้อความเกี่ยวกับบริษัทจริง 45 ข้อ (ด้านละ 5 ข้อ มีข้อเชิงลบที่กลับคะแนน) ช่องว่างคำนวณจากค่าคาดหวังลบค่าจริง และจัดลำดับความสำคัญด้วยช่องว่างถ่วงน้ำหนักตามระดับความคาดหวัง']});
+  B.push({h:'2. ผลการสำรวจภาพรวม',p:[`ความพึงพอใจเฉลี่ยทุกด้านเท่ากับ ${f1(A.sat)} (${sat.t}) ขณะที่ความคาดหวังเฉลี่ยสูงกว่า ผู้ตอบให้ความสำคัญสูงสุดกับ ${hiExp.map(x=>`${nm(x)} (${f1(x.im)})`).join(' ')} ด้านที่ได้คะแนนจริงสูงสุดคือ ${hiReal.map(x=>`${nm(x)} (${f1(x.rm)})`).join(' ')} และต่ำสุดคือ ${loReal.map(x=>`${nm(x)} (${f1(x.rm)})`).join(' ')}`,
+    urgent.length?`มี ${urgent.length} ด้านที่ช่องว่างเกิน 1.50 คะแนน ซึ่งถือว่าต้องพัฒนาเร่งด่วน ได้แก่ ${lst(urgent)}`:`ไม่มีด้านใดที่ช่องว่างเกิน 1.50 คะแนน`,
+    improve.length?`ด้านที่ควรพัฒนา (ช่องว่าง 0.51–1.50) ได้แก่ ${lst(improve)}`:'',
+    good.length?`ด้านที่ใกล้เคียงหรือเกินความคาดหวัง (ช่องว่างไม่เกิน 0.50) และเป็นจุดแข็งขององค์กร ได้แก่ ${lst(good)}`:'ยังไม่มีด้านที่ใกล้เคียงความคาดหวัง'].filter(Boolean),
+   table:{head:['อันดับ','ด้าน','คาดหวัง','จริง','ช่องว่าง','แปลผล'],rows:order.map((x,k)=>[k+1,nm(x),f1(x.im),f1(x.rm),f1(x.g),gapLevel(x.g).t])}});
+  if(grpLines.length)B.push({h:'3. ความแตกต่างระหว่างกลุ่ม',p:grpLines.concat(['หมายเหตุ เปรียบเทียบเฉพาะกลุ่มที่มีผู้ตอบอย่างน้อย 3 คน ผลนี้เป็นค่าเฉลี่ยเชิงพรรณนา ยังไม่ได้ทดสอบนัยสำคัญทางสถิติ'])});
+  const recs=order.filter(x=>x.g>0.5).slice(0,4);const sec=grpLines.length?4:3;
+  B.push({h:`${sec}. แนวทางการแก้ไขตามหลักจิตวิทยาอุตสาหกรรมและองค์การ`,p:[recs.length?'ข้อเสนอต่อไปนี้เรียงตามลำดับความสำคัญจากช่องว่างที่พบ แต่ละด้านอ้างอิงทฤษฎีที่อธิบายสาเหตุ และเสนอมาตรการที่นำไปปฏิบัติได้':'ทุกด้านมีช่องว่างไม่เกิน 0.50 คะแนน องค์กรควรรักษามาตรฐานเดิม และติดตามผลเป็นระยะ'],
+   subs:recs.map((x,k)=>{const T=IOP[x.d],items=DIMS[x.d].items.map((it,i)=>A.items.find(q=>q.d===x.d&&q.i===i)).sort((a,b)=>a.scored-b.scored);const w=items[0];
+     return{h:`${sec}.${k+1} ${nm(x)} (ช่องว่าง ${f1(x.g)} · ${gapLevel(x.g).t})`,p:[`กรอบแนวคิด: ${T.theory} ${T.why}`,`ข้อที่ได้คะแนนต่ำสุดในด้านนี้คือ “${w.text}” (คะแนนเฉลี่ย ${f1(w.scored)} จาก 5${w.rev?' หลังกลับคะแนน':''}) จึงควรเริ่มแก้ที่ประเด็นนี้`],ul:T.acts};})});
+  if(good.length)B.push({h:`${sec+1}. จุดแข็งที่ควรรักษา`,p:[`${lst(good)} อยู่ในระดับใกล้เคียงหรือเกินความคาดหวัง องค์กรควรรักษาแนวปฏิบัติเดิม และใช้จุดแข็งนี้ในการสื่อสารภาพลักษณ์นายจ้าง (employer branding) และการรักษาบุคลากร`]});
+  if(ideaBy.length)B.push({h:`${sec+(good.length?2:1)}. ข้อเสนอจากผู้ตอบ`,p:[`ผู้ตอบเสนอไอเดียทั้งหมด ${ideas.length} ไอเดีย ตัวอย่างไอเดียที่ได้ดาวสูงในด้านที่ควรพัฒนา:`],ul:ideaBy.flatMap(o=>o.list.map(i=>`${nm(o.x)}: ${i.text}`))});
+  const last=B.length;
+  B.push({h:`${last}. ข้อจำกัด`,p:[`ผลนี้มาจากผู้ตอบ ${n} คน${n<30?' ซึ่งยังน้อย ควรตีความอย่างระมัดระวัง':''} เป็นการรายงานด้วยตนเอง (self-report) และเป็นค่าเฉลี่ยเชิงพรรณนา ผู้ตอบในโหมดบริษัทจำลองประเมินสถานการณ์สมมติ ไม่ใช่บริษัทจริง ควรแยกวิเคราะห์ก่อนนำไปใช้ตัดสินใจ`]});
+  B.push({h:`${last+1}. สรุป`,p:[`ภาพรวมพนักงาน${sat.k==='ok'?'พึงพอใจต่อองค์กร':sat.k==='warn'?'พึงพอใจในระดับปานกลาง':'ยังไม่พึงพอใจต่อองค์กร'} โดยช่องว่างสำคัญอยู่ที่ ${order.slice(0,3).map(nm).join(' ')} องค์กรควรเริ่มจากมาตรการในด้านอันดับแรก กำหนดผู้รับผิดชอบและตัวชี้วัด แล้ววัดซ้ำด้วยเกมนี้ภายใน 6 เดือน เพื่อดูว่าช่องว่างลดลงหรือไม่`]});
+  return{title:`สรุปผลความพึงพอใจในงาน 9 ด้าน: ${filterLabel()}`,date:new Date().toLocaleDateString('th-TH',{dateStyle:'long'}),n,blocks:B};}
+function artHTML(a){const t=b=>b.table?`<div class="tbl-wrap"><table class="dtable"><thead><tr>${b.table.head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${b.table.rows.map(r=>`<tr>${r.map((c,i)=>`<td${i>1&&i<5?' class="n"':''}>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:'';
+  const blk=(b,lv)=>`<section><${lv}>${esc(b.h)}</${lv}>${(b.p||[]).map(x=>`<p>${esc(x)}</p>`).join('')}${t(b)}${b.ul?`<ul>${b.ul.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}${(b.subs||[]).map(s=>blk(s,'h4')).join('')}</section>`;
+  return `<article class="report-art"><h2>${esc(a.title)}</h2><p class="muted">ผู้ตอบ ${a.n} คน · จัดทำ ${esc(a.date)}</p>${a.blocks.map(b=>blk(b,'h3')).join('')}</article>`;}
+function artText(a){const L=[a.title,`ผู้ตอบ ${a.n} คน · จัดทำ ${a.date}`,''];const blk=b=>{L.push(b.h);(b.p||[]).forEach(x=>L.push(x));if(b.table){L.push(b.table.head.join(' | '));b.table.rows.forEach(r=>L.push(r.join(' | ')));}(b.ul||[]).forEach(x=>L.push('- '+x));(b.subs||[]).forEach(blk);L.push('');};a.blocks.forEach(blk);return L.join('\n');}
+let ART=null;
+function articleTab(){const {all,R}=filteredRows(),f=STATS.f;
+  const sel=(id,label,val,opts)=>`<label for="${id}">${label}<select id="${id}" class="field">${opts.map(o=>`<option value="${esc(o[0])}"${o[0]===val?' selected':''}>${esc(o[1])}</option>`).join('')}</select></label>`;
+  const bar=`${STATS.sample?'<div class="sample-banner">กำลังใช้ข้อมูลจำลอง 36 คน บทความนี้ไม่ใช่ผลจริง</div>':''}<div class="admin-bar">${sel('fOrg','บริษัท',f.org,[['','ทุกบริษัท'],...ORGS.map(a=>[a,a]),[OTHER,'บริษัทอื่น ๆ']])}${sel('fAge','ช่วงอายุ',f.age,[['','ทุกช่วงอายุ'],...AGES.map(a=>[a,a])])}${sel('fStatus','สถานะ',f.status,[['','ทุกสถานะ'],...STATUSES.map(a=>[a,a])])}${sel('fMode','บริษัทที่ประเมิน',f.mode,[['','ทั้งหมด'],['real','บริษัทจริง'],['sim','บริษัทจำลอง']])}
+    <span style="flex:1"></span><button class="btn sm" data-action="artCopy" ${R.length?'':'disabled'}>คัดลอกบทความ</button><button class="btn sm" data-action="artDl" ${R.length?'':'disabled'}>ดาวน์โหลด (.txt)</button><button class="btn sm ghost" data-action="toggleSample">${STATS.sample?'กลับไปใช้ข้อมูลจริง':'ลองกับข้อมูลจำลอง'}</button></div>
+   <p class="muted" style="font-size:13px;margin-top:8px">บทความสร้างอัตโนมัติจากข้อมูลตามตัวกรอง และอัปเดตเมื่อมีผู้ตอบเพิ่ม ใช้เป็นร่างแรกแล้วตรวจทานก่อนเผยแพร่</p>`;
+  if(!R.length){ART=null;return `${bar}<div class="panel empty" style="margin-top:16px">${all.length?'ไม่มีผู้ตอบที่ตรงกับตัวกรองนี้':(DB||STATS.sample?'ยังไม่มีผู้เล่นส่งผล ลองกด "ลองกับข้อมูลจำลอง" เพื่อดูตัวอย่างบทความ':'ยังไม่ได้เชื่อมต่อระบบเก็บผล')}</div>`;}
+  ART=buildArticle(R);return `${bar}<div class="panel" style="margin-top:16px">${artHTML(ART)}</div>`;}
+function artCopy(){if(!ART)return;const txt=artText(ART);const fb=()=>{STATS.csv=txt;render();const b=document.getElementById('csvBox');if(b){b.focus();b.select();}toast('เลือกข้อความแล้ว กดคัดลอกได้เลย');};
+  try{navigator.clipboard.writeText(txt).then(()=>toast('คัดลอกบทความแล้ว'),fb);}catch(e){fb();}}
+
+/* ---------- manage / delete data ---------- */
+let SEL=new Set(),DEL={busy:false,done:0,total:0};
+function fmtTime(t){try{return new Date(t).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'});}catch(e){return t||'-';}}
+function manageRows(){const f=STATS.mf||{org:'',from:'',to:''};
+  return STATS.rows.slice().sort((a,b)=>String(b.at||'').localeCompare(String(a.at||''))).filter(r=>
+    orgMatch(r,f.org)&&(!f.from||String(r.at||'')>=f.from)&&(!f.to||String(r.at||'').slice(0,10)<=f.to));}
+function manageTab(){return (DB?importPanel():'')+manageTabInner();}
+function manageTabInner(){if(!DB)return `<div class="panel empty">ยังไม่ได้เชื่อมต่อระบบเก็บผล ใส่ URL ของ Google Apps Script ใน SITE_CONFIG ของไฟล์ index.html</div>`;
+  if(STATS.err)return `<div class="panel empty">โหลดข้อมูลไม่ได้ ตรวจว่ารหัสผู้ดูแลตรงกับใน Apps Script และ URL ถูกต้อง แล้วเปิดหน้านี้ใหม่</div>`;
+  if(!STATS.loaded)return `<div class="panel empty">กำลังโหลดข้อมูล…</div>`;
+  const f=STATS.mf||(STATS.mf={org:'',from:'',to:''}),rows=manageRows(),ids=new Set(STATS.rows.map(r=>r.id));
+  [...SEL].forEach(id=>{if(!ids.has(id))SEL.delete(id)});
+  const nSel=SEL.size,allOn=rows.length&&rows.every(r=>SEL.has(r.id));
+  return `<div class="panel stack"><div><h3 style="font-size:18px">จัดการชุดข้อมูล</h3><p class="muted" style="font-size:13.5px;margin-top:4px">เลือกผลที่ต้องการลบ เช่น ผลทดสอบหรือผลที่ตอบด้วยคำถามชุดเก่า การลบเป็นการลบถาวรและกู้คืนไม่ได้ ควรดาวน์โหลดสำรองไว้ก่อน</p></div>
+   <div class="admin-bar"><label for="mOrg">บริษัท<select id="mOrg" class="field"><option value="">ทุกบริษัท</option>${ORGS.map(o=>`<option value="${o}"${f.org===o?' selected':''}>${o}</option>`).join('')}<option value="${OTHER}"${f.org===OTHER?' selected':''}>บริษัทอื่น ๆ</option><option value="none"${f.org==='none'?' selected':''}>ไม่ระบุบริษัท (ผลรุ่นเก่า)</option></select></label>
+    <label for="mFrom">ส่งตั้งแต่วันที่<input id="mFrom" type="date" class="field" value="${f.from}"></label><label for="mTo">ถึงวันที่<input id="mTo" type="date" class="field" value="${f.to}"></label>
+    <span style="flex:1"></span><button class="btn sm" data-action="dl" data-k="json" ${STATS.rows.length?'':'disabled'}>สำรองข้อมูล (JSON)</button></div>
+   <div class="row" style="justify-content:space-between"><span class="muted tnum">แสดง ${rows.length} จาก ${STATS.rows.length} รายการ · เลือกแล้ว <b style="color:var(--fg)">${nSel}</b></span>
+    <div class="row"><button class="btn sm ghost" data-action="selNone" ${nSel?'':'disabled'}>ล้างการเลือก</button><button class="btn sm danger" data-action="askDelete" ${nSel&&!DEL.busy?'':'disabled'}>${DEL.busy?`กำลังลบ ${DEL.done}/${DEL.total}`:`ลบที่เลือก (${nSel})`}</button></div></div>
+   ${rows.length?`<div class="tbl-wrap"><table class="dtable"><thead><tr><th><input type="checkbox" id="selAll" aria-label="เลือกทั้งหมดที่แสดง" ${allOn?'checked':''}></th><th>เวลาที่ส่ง</th><th>บริษัท</th><th>ช่วงอายุ</th><th>สถานะ</th><th>ประเมิน</th><th class="n">ไอเดีย</th><th>ข้อมูล</th></tr></thead><tbody>
+    ${rows.map(r=>`<tr class="${SEL.has(r.id)?'sel-row':''}"><td><input type="checkbox" class="rowSel" data-id="${esc(r.id)}" aria-label="เลือกรายการนี้" ${SEL.has(r.id)?'checked':''}></td><td class="tnum" style="white-space:nowrap">${esc(fmtTime(r.at))}</td><td style="white-space:nowrap">${esc(r.org||'—')}</td><td style="white-space:nowrap">${esc(r.age||'—')}</td><td style="white-space:nowrap">${esc(r.status||'—')}</td><td>${r.sim?'จำลอง':'จริง'}</td><td class="n">${rowIdeas(r).length}</td><td>${validRow(r)?'<span class="c-ok">ครบ</span>':'<span class="c-bad">ไม่ครบ</span>'}${r.via==='code'?' <span class="rev" style="color:var(--cyan);border-color:var(--cyan)">รหัส</span>':''}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">ไม่มีรายการที่ตรงกับตัวกรอง</p>'}
+  </div>`;}
+function askDelete(){const n=SEL.size;if(!n)return;
+  modal(`<h2>ลบ ${n} รายการ?</h2><p class="muted">ผลของผู้เล่นที่เลือกจะถูกลบถาวรและกู้คืนไม่ได้ สถิติและไฟล์ดาวน์โหลดจะไม่นับรายการเหล่านี้อีก ถ้าผู้เล่นคนเดิมเล่นจบใหม่ ผลใหม่จะถูกบันทึกตามปกติ</p>
+   <label for="delConfirm" class="opt-label" style="display:block;margin-top:14px">พิมพ์ <b style="color:var(--bad)">ลบ</b> เพื่อยืนยัน</label><input id="delConfirm" class="field" autocomplete="off" style="margin-top:6px">
+   <p id="delErr" class="err" hidden>พิมพ์คำว่า ลบ ให้ถูกต้องก่อน</p>
+   <div class="row" style="justify-content:flex-end;margin-top:16px"><button class="btn ghost" data-action="closeModal">ยกเลิก</button><button class="btn danger" data-action="doDelete">ลบถาวร ${n} รายการ</button></div>`);
+  setTimeout(()=>{const i=document.getElementById('delConfirm');if(i)i.focus();},50);}
+async function doDelete(){const c=document.getElementById('delConfirm');if(!c||c.value.trim()!=='ลบ'){const e=document.getElementById('delErr');if(e)e.hidden=false;return;}
+  closeModal();if(!DB||DEL.busy)return;const ids=[...SEL];DEL={busy:true,done:0,total:ids.length};render();let fail=0;
+  for(const id of ids){try{await DB.doc('responses/'+id).delete();SEL.delete(id);}catch(e){
+      if(e&&e.code==='unavailable'){await new Promise(r=>setTimeout(r,800));try{await DB.doc('responses/'+id).delete();SEL.delete(id);}catch(e2){fail++;}}else fail++;}
+    DEL.done++;if(DEL.done%5===0)render();}
+  DEL.busy=false;render();toast(fail?`ลบแล้ว ${ids.length-fail} รายการ ลบไม่สำเร็จ ${fail} รายการ`:`ลบแล้ว ${ids.length} รายการ`);}
+document.addEventListener('change',e=>{const t=e.target;
+  if(t.classList&&t.classList.contains('rowSel')){t.checked?SEL.add(t.dataset.id):SEL.delete(t.dataset.id);render();}
+  else if(t.id==='selAll'){const rows=manageRows();rows.forEach(r=>t.checked?SEL.add(r.id):SEL.delete(r.id));render();}
+  else if(t.id==='mOrg'||t.id==='mFrom'||t.id==='mTo'){STATS.mf=STATS.mf||{org:'',from:'',to:''};STATS.mf[{mOrg:'org',mFrom:'from',mTo:'to'}[t.id]]=t.value;render();}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='delConfirm'){e.preventDefault();doDelete();}});
+
+/* ---------- render ---------- */
+function render(){avId=0;const map={home:homeScr,avatar:avatarScr,ch1:ch1Scr,ch2:ch2Scr,mission:missionScr,ch3:ch3Scr,ch4:ch4Scr,report:reportScr,stats:statsScr};
+  app.innerHTML=hud()+(map[S.screen]||homeScr)();S._anim=null;save();}
+function go(s){if(s==='ch3'&&allReal())S.sawGap=S.sawGap||true;S.screen=s;withXP(()=>{});window.scrollTo({top:0,behavior:'smooth'});}
+let toastT;function toast(html){const t=document.getElementById('toast');t.innerHTML=html;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2200);}
+function withXP(fn,msg){const before=xp();fn();const gain=xp()-before;render();if(gain>0||msg)toast(`${msg||''}${gain>0?` <span class="xp">+${gain} XP</span>`:''}`);}
+
+function modal(html){const r=document.getElementById('modalRoot');r.innerHTML=`<div class="modal" data-action="closeModal"><div class="modal-box" role="dialog" aria-modal="true">${html}</div></div>`;}
+function closeModal(){document.getElementById('modalRoot').innerHTML='';}
+function howto(){modal(`<h2>วิธีเล่น Ideal Company</h2><div class="mascot-line">${mascotSVG()}<p class="muted">คุณคือ “นักออกแบบอนาคตขององค์กร” ร่วมกันสร้างตึก 9 ชั้นของ Ideal Company ซึ่งแทนความพึงพอใจในงาน 9 ด้านตามกรอบ Job Satisfaction Survey (JSS) ใช้เวลาประมาณ 10 นาที</p></div>
+ <ol><li><b>ข้อมูลผู้เล่น</b> เลือกบริษัท ช่วงอายุ และสถานะ ถ้ายังไม่มีประสบการณ์ทำงาน เปิดโหมดบริษัทจำลอง</li>
+ <li><b>บทที่ 1 Dream Builder</b> เลื่อนแถบ 1–5 บอกว่าบริษัทในฝันควรให้ความสำคัญกับแต่ละด้านแค่ไหน ชั้นของตึกในฝันจะกว้างขึ้นตามคะแนน</li>
+ <li><b>บทที่ 2 Reality Quest</b> ตอบภารกิจ 45 ข้อต่อเนื่องกันว่าข้อความจริงกับบริษัทของคุณแค่ไหน พักแล้วกลับมาตอบต่อได้</li>
+ <li><b>บทที่ 3 Gap Scanner</b> ดูแผนที่ว่าเขตไหนใกล้ฝัน เขตไหนยังห่าง และ 3 เขตที่ควรพัฒนาก่อน</li>
+ <li><b>บทที่ 4 Change Maker</b> เสนอไอเดียพัฒนา ไอเดียที่บอกว่าจะทำอะไรและทำบ่อยแค่ไหนได้ดาวและ XP มากกว่า</li></ol>
+ <p class="muted" style="font-size:13px">ไม่มีคำตอบถูกหรือผิด เมื่อจบบทที่ 4 คำตอบจะถูกส่งให้ทีมผู้วิจัยแบบไม่ระบุตัวตน ชื่อรหัสและหน้าตาตัวละครไม่ถูกส่ง</p>
+ <div class="row" style="justify-content:flex-end;margin-top:14px"><button class="btn primary" data-action="closeModal">เข้าใจแล้ว</button></div>`);}
+function askReset(){modal(`<h2>เริ่มภารกิจใหม่?</h2><p class="muted">คำตอบ ไอเดีย และ XP ทั้งหมดในเครื่องนี้จะถูกล้าง</p><div class="row" style="justify-content:flex-end;margin-top:16px"><button class="btn ghost" data-action="closeModal">ยกเลิก</button><button class="btn primary" data-action="doReset">ล้างและเริ่มใหม่</button></div>`);}
+
+function loadDemo(){S=fresh();S.demo=true;S.profile={style:0,skin:1,hair:1,outfit:0,color:1,codename:'ผู้เล่นตัวอย่าง',org:'ASM Company',age:'25–34 ปี',status:'พนักงานบริษัท',sim:false};
+  S.ideal=[5,4,4,4,4,3,5,5,4];const tg=[2.4,2.2,3.4,3.0,2.6,2.8,4.0,3.2,2.4],nz=[-0.4,0.3,0.4,-0.3,0];
+  S.answers=DIMS.map((D,d)=>D.items.map((it,i)=>{const v=Math.min(5,Math.max(1,Math.round(tg[d]+nz[i])));return it[1]?6-v:v}));
+  S.ideas={0:{text:'ปรับเงินเดือนตามผลประเมินจริงปีละ 2 ครั้ง และเปิดเผยช่วงเงินเดือนของแต่ละตำแหน่งให้พนักงานทราบ',stars:3},1:{text:'ประกาศเกณฑ์เลื่อนขั้นให้ชัด',stars:2}};
+  S.sawGap=true;S.screen='ch3';}
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{const el=e.target.closest('[data-action]');if(!el)return;const a=el.dataset.action;
+  if(a==='closeModal'){if(el.classList.contains('modal')&&e.target!==el)return;closeModal();return;}
+  switch(a){
+  case'start':if(S.demo){S=fresh();SUB={s:'idle'};}S.screen=(S.profile.age&&effOrg()&&STATUSES.includes(S.profile.status))?(idealDone()?(allReal()?'ch3':'ch2'):'ch1'):'avatar';render();window.scrollTo(0,0);break;
+  case'demo':loadDemo();SUB={s:'demo'};render();toast('โหลดข้อมูลจำลองแล้ว');window.scrollTo(0,0);break;
+  case'howto':howto();break;
+  case'home':S.screen='home';render();break;
+  case'askReset':askReset();break;
+  case'doReset':S=fresh();SUB={s:'idle'};closeModal();render();toast('เริ่มภารกิจใหม่แล้ว');break;
+  case'setP':S.profile[el.dataset.k]=+el.dataset.v;keepName();render();break;
+  case'setAge':S.profile.age=el.dataset.v;keepName();render();break;
+  case'setOrg':keepName();S.profile.org=el.dataset.v;render();if(el.dataset.v===OTHER){const i=document.getElementById('orgName');if(i)i.focus();}break;
+  case'setStatus':S.profile.status=el.dataset.v;keepName();render();break;
+  case'toggleSim':S.profile.sim=!S.profile.sim;keepName();render();break;
+  case'randNameUnused':{const a1=['นักออกแบบ','สถาปนิก','นักสำรวจ','ผู้พิทักษ์','นักบุกเบิก'],n=a1[Math.floor(Math.random()*a1.length)]+'#'+(10+Math.floor(Math.random()*90));S.profile.codename=n;render();break;}
+  case'enterCity':keepName();if(!effOrg()||!S.profile.age||!S.profile.status){document.getElementById('avErr').hidden=false;return;}S.screen='ch1';render();toast('ยินดีต้อนรับสู่ Ideal Company');window.scrollTo(0,0);break;
+  case'idealStep':commitSlider();S.idealStep=+el.dataset.v;render();break;
+  case'idealPrev':commitSlider();S.idealStep=Math.max(0,S.idealStep-1);render();break;
+  case'idealNext':{const k=S.idealStep;withXP(()=>{commitSlider(true);if(k<8)S.idealStep=k+1;else{const miss=S.ideal.findIndex(v=>v==null);if(miss>=0)S.idealStep=miss;else S.screen='ch2';}},k===8&&idealDone()?'ปลดล็อกบทที่ 2':`ออกแบบ${DIMS[k].place}แล้ว`);window.scrollTo({top:0,behavior:'smooth'});break;}
+  case'openDist':{const d=+el.dataset.d,a5=S.answers[d].findIndex(v=>v==null);S.cur={d,q:a5<0?0:a5};S.screen='mission';render();window.scrollTo(0,0);break;}
+  case'startRun':{const np=nextPos(S.pos||0);S.pos=np<0?0:np;S.screen='mission';render();window.scrollTo(0,0);break;}
+  case'answer':{const pos=S.pos||0,[d,i]=ORDER[pos],v=+el.dataset.v;el.setAttribute('aria-pressed','true');
+    setTimeout(()=>{const wasDone=distDone(d);let msg='';withXP(()=>{S.answers[d][i]=v;if(!wasDone&&distDone(d)){S._anim=d;msg=`สร้างชั้น ${d+1} เสร็จ`;}
+      const np=nextPos(pos+1);if(np<0){S.sawGap=true;S.screen='ch3';msg='สร้างเมืองครบ 9 เขตแล้ว';}else S.pos=np;},msg);window.scrollTo({top:0,behavior:'smooth'});},160);break;}
+  case'prevQ':S.pos=Math.max(0,(S.pos||0)-1);render();break;
+  case'dossier':modal(`<h2>แฟ้มข้อมูลบริษัท</h2>${dossierHTML()}<div class="row" style="justify-content:flex-end;margin-top:14px"><button class="btn primary" data-action="closeModal">กลับไปตอบต่อ</button></div>`);break;
+  case'adminLogin':adminLogin();break;
+  case'adminSubmit':adminSubmit();break;
+  case'submitIdeal':submitIdeal();break;
+  case'adminLogout':ADMIN_OK=false;ADMIN_PASS='';if(STATS.unsub){STATS.unsub();STATS.unsub=null;}try{sessionStorage.removeItem('wt9-admin');sessionStorage.removeItem('ic-admin-pass');}catch(e){}S.screen='home';STATS.csv='';render();break;
+  case'artCopy':artCopy();break;
+  case'artDl':if(ART)saveFile(`ideal-company-article-${new Date().toISOString().slice(0,10)}.txt`,artText(ART),'text/plain;charset=utf-8');break;
+  case'copyCode':copyCode();break;
+  case'importCodes':importCodes();break;
+  case'askDelete':askDelete();break;
+  case'doDelete':doDelete();break;
+  case'selNone':SEL.clear();render();break;
+  case'tab':STATS.tab=el.dataset.t;STATS.csv='';render();break;
+  case'dl':dl(el.dataset.k);break;
+  case'go':{const to=el.dataset.to;if(to==='stats'){if(!ADMIN_OK){adminLogin();break;}ensureSub();}if(to==='ch3'&&allReal()){withXP(()=>{S.sawGap=true;S.screen='ch3'});}else{saveIdeaDrafts();S.screen=to;render();}window.scrollTo({top:0,behavior:'smooth'});break;}
+  case'starter':{const ta=document.getElementById('idea'+el.dataset.d);ta.value=(ta.value.trim()?ta.value.trim()+' ':'')+el.dataset.t+' ';ta.focus();break;}
+  case'submitIdea':{const d=+el.dataset.d,t=document.getElementById('idea'+d).value,st=rateIdea(t);
+    if(!st){document.getElementById('res'+d).innerHTML='<span class="err">เขียนไอเดียอย่างน้อย 1 ประโยค</span>';return;}
+    saveIdeaDrafts();const prev=S.ideas[d]?.stars||0;withXP(()=>{S.ideas[d]={text:t.trim(),stars:Math.max(st,prev)}},st===5?'ไอเดียระดับ 5 ดาว':'ส่งไอเดียแล้ว');break;}
+  case'finish':{saveIdeaDrafts();if(!Object.values(S.ideas).some(i=>i.stars)){document.getElementById('ideaErr').hidden=false;return;}withXP(()=>{S.finished=true;S.submitted=false;S.screen='report'},'ภารกิจสำเร็จ');window.scrollTo(0,0);submit();break;}
+  case'resubmit':submit();break;
+  case'exportCsv':exportCsv();break;
+  case'toggleSample':STATS.sample=!STATS.sample;STATS.csv='';render();break;}
+});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('g[data-action]')){e.preventDefault();e.target.dispatchEvent(new MouseEvent('click',{bubbles:true}));}if(e.key==='Escape')closeModal();});
+document.addEventListener('input',e=>{if(e.target.id==='idealSlider'){const v=+e.target.value;e.target.style.setProperty('--p',(v-1)*25+'%');document.getElementById('sv').textContent=v;document.getElementById('sl').textContent=LV[v];
+  const k=S.idealStep,box=document.getElementById('mapBox');box.innerHTML=mapSVG({ideal:S.ideal.map((x,i)=>i===k?v:x),hl:k,anim:k})+legend();}
+  if(e.target.id==='codename')S.profile.codename=e.target.value;
+  if(e.target.id==='extra')S.extra=e.target.value;
+  if(e.target.id==='orgName'){S.profile.orgName=e.target.value;save();}});
+document.addEventListener('change',e=>{const m={fAge:'age',fOrg:'org',fStatus:'status',fMode:'mode'}[e.target.id];if(m){STATS.f[m]=e.target.value;STATS.csv='';render();}});
+function keepName(){const on=document.getElementById('orgName');if(on)S.profile.orgName=on.value;const n=document.getElementById('codename');if(n)S.profile.codename=n.value;}
+function commitSlider(force){const s=document.getElementById('idealSlider');if(s&&(force||S.ideal[S.idealStep]!=null))S.ideal[S.idealStep]=+s.value;}
+function saveIdeaDrafts(){topDims().forEach(d=>{const ta=document.getElementById('idea'+d);if(ta&&S.ideas[d])S.ideas[d].text=ta.value.trim()||S.ideas[d].text;});const ex=document.getElementById('extra');if(ex)S.extra=ex.value;}
+/* ---------- boot ---------- */
+async function initCaps(){const c=window.claude;if(!c||!c.use){if(SITE_CONFIG.ENDPOINT){DB=makeSheetDB();UID=localUid();if(ADMIN_OK&&S.screen==='stats')ensureSub();render();if(S.finished&&!S.demo&&!S.submitted)submit();}return;}
+  try{USER=await c.use('user');}catch(e){}try{DB=await c.use('db');}catch(e){}
+  if(USER){try{IS_ADMIN=!!(await USER.canEdit());}catch(e){}try{UID=await USER.id();}catch(e){}}
+  if(ADMIN_OK&&S.screen==='stats')ensureSub();
+  render();if(S.finished&&!S.demo&&!S.submitted)submit();}
+function start(data){if(data&&data.answers)S=Object.assign(fresh(),data);else load();render();initCaps();}
+try{window.claude?.hot?.snapshot?.(()=>S);}catch(e){}
+const hot=window.claude&&window.claude.hot;
+hot&&hot.ready?hot.ready(start):start(hot&&hot.data?hot.data:{});
+})();
+</script>
+
+</body>
+</html>
