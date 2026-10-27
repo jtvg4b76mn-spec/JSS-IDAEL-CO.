@@ -4,9 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Ideal Company ร่วมกันสร้างบริษัทในฝันของพวกเรา เกมสำรวจความพึงพอใจในงาน 9 ด้าน">
-<!-- ภาพตอนแชร์ลิงก์: เมื่อได้ลิงก์เว็บแล้ว เปลี่ยน ideal-company-cover.png ใน 2 บรรทัดด้านล่างเป็นลิงก์เต็ม เช่น https://ชื่อเว็บของคุณ/ideal-company-cover.png -->
-<meta property="og:type" content="website">
 <meta property="og:url" content="https://jtvg4b76mn-spec.github.io/JSS-IDAEL-CO./">
+<meta property="og:type" content="website">
 <meta property="og:title" content="Ideal Company">
 <meta property="og:description" content="ร่วมกันสร้างบริษัทในฝันของพวกเรา · เกมสำรวจความพึงพอใจในงาน 9 ด้าน">
 <meta property="og:image" content="https://jtvg4b76mn-spec.github.io/JSS-IDAEL-CO./ideal-company-cover.png">
@@ -301,6 +300,15 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   border:1px solid var(--emerald);border-radius:999px;padding:10px 18px;font-family:var(--display);font-weight:600;box-shadow:0 10px 30px -10px rgba(0,0,0,.7);
   display:flex;gap:10px;align-items:center;white-space:nowrap;max-width:calc(100vw - 32px);overflow:hidden;text-overflow:ellipsis}
 .toast .xp{color:var(--emerald)}
+.sub-line{text-align:center;font-family:var(--display);font-weight:600;margin-top:4px}
+.pf-sec{display:flex;flex-direction:column;gap:16px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.pf-sec h3{font-size:16px;color:var(--cyan);letter-spacing:.02em}
+.pf{border-radius:12px;transition:box-shadow .2s}
+.pf.need{box-shadow:0 0 0 2px rgba(240,108,108,.55);padding:8px;margin:-8px}
+.pf-select{max-width:420px}
+.age-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.gen-chip{font-family:var(--display);font-weight:600;font-size:14px;color:var(--cyan);background:var(--cyan-soft);border:1px solid rgba(63,217,242,.45);border-radius:999px;padding:6px 12px}
+.gen-chip.empty{color:var(--muted);background:transparent;border-color:var(--line);font-weight:500}
 .ico{fill:none;stroke:var(--cyan);stroke-width:1.7;vector-effect:none;stroke-linecap:round;stroke-linejoin:round}
 .ico-badge{width:34px;height:34px;flex:none;border-radius:10px;display:grid;place-items:center;background:var(--cyan-soft);border:1px solid rgba(63,217,242,.45)}
 .ico-badge .ico{width:21px;height:21px}
@@ -400,7 +408,7 @@ select.field{padding:8px 10px;min-width:150px}
 (function(){
 "use strict";
 /* ===== ตั้งค่าเว็บไซต์: วาง URL ของ Google Apps Script Web App ระหว่างเครื่องหมายคำพูด ===== */
-const SITE_CONFIG={ENDPOINT:''};
+const SITE_CONFIG={ENDPOINT:'https://script.google.com/macros/s/AKfycbzyOd41zDNs7ywh2wUdZFf_qqrLiKzrikIXCezYz3OsKlfNQ-hNKVd_R71hQE7r8i_e/exec'};
 
 
 /* ---------- content ---------- */
@@ -469,6 +477,73 @@ const OTHER='__other';
 function effOrg(p){p=p||S.profile;return p.org===OTHER?String(p.orgName||'').trim().slice(0,80):(p.org||'');}
 function orgKeys(R){return [...ORGS,...[...new Set(R.map(r=>r.org).filter(o=>o&&!ORGS.includes(o)))].sort()];}
 function orgMatch(r,f){return !f||(f===OTHER?(r.org&&!ORGS.includes(r.org)):f==='none'?!r.org:r.org===f);}
+/* ---------- player profile fields ---------- */
+const GENDERS=['ชาย','หญิง','LGBTQ+','ไม่ระบุ'];
+const MARITAL=['โสด','สมรส / อยู่ด้วยกัน','หย่าร้าง / แยกกันอยู่','หม้าย'];
+const FAMILY=['1 คน (อยู่คนเดียว)','2 คน','3–4 คน','5–6 คน','7 คนขึ้นไป'];
+const EDU=['ต่ำกว่ามัธยมศึกษาตอนปลาย','ม.6 / ปวช.','ปวส. / อนุปริญญา','ปริญญาตรี','ปริญญาโท','ปริญญาเอก'];
+const DEPTS=['ฝ่ายบริหาร','ทรัพยากรบุคคล','บัญชี / การเงิน','การตลาด / ขาย','ผลิต / ปฏิบัติการ','ไอที / เทคโนโลยี','บริการลูกค้า','วิชาการ / การสอน','ธุรการ / สนับสนุน'];
+const TENURE=['น้อยกว่า 1 ปี','1–3 ปี','4–6 ปี','7–10 ปี','มากกว่า 10 ปี'];
+const DIST=['น้อยกว่า 5 กม.','5–10 กม.','11–20 กม.','21–30 กม.','มากกว่า 30 กม.'];
+const COMMUTE=['รถยนต์ส่วนตัว','รถจักรยานยนต์','รถโดยสารสาธารณะ / รถไฟฟ้า','รถรับส่งของบริษัท','เดิน / จักรยาน','อื่น ๆ'];
+const HOSP=['ภายใน 1 เดือน','1–6 เดือนที่แล้ว','6–12 เดือนที่แล้ว','1–3 ปีที่แล้ว','มากกว่า 3 ปี','ไม่เคย / จำไม่ได้'];
+const GENS=['Gen Alpha','Gen Z','Gen Y','Gen X','Baby Boomer','Silent Gen'];
+const GEN_RANGE={'Gen Alpha':'เกิด ค.ศ. 2013 ขึ้นไป','Gen Z':'เกิด ค.ศ. 1997–2012','Gen Y':'เกิด ค.ศ. 1981–1996','Gen X':'เกิด ค.ศ. 1965–1980','Baby Boomer':'เกิด ค.ศ. 1946–1964','Silent Gen':'เกิดก่อน ค.ศ. 1946'};
+const THIS_YEAR=new Date().getFullYear();
+function ageNum(p){const n=parseInt((p||S.profile).ageYears,10);return n>=15&&n<=80?n:null;}
+function genOfAge(a){if(a==null)return '';const by=THIS_YEAR-a;return by>=2013?'Gen Alpha':by>=1997?'Gen Z':by>=1981?'Gen Y':by>=1965?'Gen X':by>=1946?'Baby Boomer':'Silent Gen';}
+function ageBucket(a){if(a==null)return '';return a<18?AGES[0]:a<25?AGES[1]:a<35?AGES[2]:a<45?AGES[3]:a<55?AGES[4]:AGES[5];}
+function effDept(p){p=p||S.profile;return p.dept===OTHER?String(p.deptOther||'').trim().slice(0,60):(p.dept||'');}
+const PF=[ // key, label, options, kind
+ ['gender','เพศ',GENDERS,'chip'],['ageYears','อายุ (ปี)',null,'age'],['marital','สถานภาพ',MARITAL,'chip'],['family','จำนวนสมาชิกในครอบครัว (รวมตัวคุณ)',FAMILY,'chip'],['edu','วุฒิการศึกษาสูงสุด',EDU,'select'],
+ ['org','บริษัทหรือองค์กร',null,'org'],['dept','แผนก',DEPTS,'dept'],['position','ตำแหน่งปัจจุบัน',null,'text'],['status','สถานะ',STATUSES,'chip'],['tenure','อายุงานในองค์กรนี้',TENURE,'chip'],
+ ['distance','ระยะทางจากที่พักถึงที่ทำงาน',DIST,'chip'],['commute','วิธีการเดินทางหลัก',COMMUTE,'select'],['hospital','รับการรักษาในโรงพยาบาลครั้งล่าสุด',HOSP,'select']];
+function pfFilled(k){const p=S.profile;if(k==='ageYears')return ageNum()!=null;if(k==='org')return !!effOrg();if(k==='dept')return !!effDept();if(k==='position')return !!String(p.position||'').trim();return !!p[k];}
+function profileOK(){return PF.every(f=>pfFilled(f[0]));}
+function pfField(f){const [k,l,opts,kind]=f,p=S.profile;let body='';
+  if(kind==='chip')body=`<div class="opts">${opts.map(o=>`<button class="opt" data-action="setF" data-k="${k}" data-v="${esc(o)}" aria-pressed="${p[k]===o}">${o}</button>`).join('')}</div>`;
+  else if(kind==='select')body=`<select id="pf_${k}" class="field pf-select"><option value="">เลือก${l.replace(/\s*\(.*\)/,'')}</option>${opts.map(o=>`<option${p[k]===o?' selected':''}>${o}</option>`).join('')}</select>`;
+  else if(kind==='age'){const a=ageNum(),g=genOfAge(a);body=`<div class="age-row"><input id="pf_age" class="field" type="number" inputmode="numeric" min="15" max="80" placeholder="เช่น 28" value="${esc(p.ageYears||'')}" style="max-width:140px"><span id="genOut" class="gen-chip${g?'':' empty'}">${g?`${g} · ${GEN_RANGE[g]}`:'กรอกอายุ 15–80 ปี ระบบจะแบ่งเจเนอเรชันให้'}</span></div>`;}
+  else if(kind==='text')body=`<input id="pf_position" class="field" maxlength="60" placeholder="พิมพ์ตำแหน่ง เช่น เจ้าหน้าที่บัญชี" value="${esc(p.position||'')}">`;
+  else if(kind==='org')body=`<div class="opts">${ORGS.map(o=>`<button class="opt org-opt" data-action="setOrg" data-v="${o}" aria-pressed="${p.org===o}">${o}</button>`).join('')}<button class="opt org-opt" data-action="setOrg" data-v="${OTHER}" aria-pressed="${p.org===OTHER}">อื่น ๆ</button></div>${p.org===OTHER?`<input id="orgName" class="field" maxlength="80" placeholder="พิมพ์ชื่อบริษัทหรือองค์กร" value="${esc(p.orgName||'')}" style="margin-top:8px">`:''}`;
+  else if(kind==='dept')body=`<select id="pf_dept" class="field pf-select"><option value="">เลือกแผนก</option>${opts.map(o=>`<option${p.dept===o?' selected':''}>${o}</option>`).join('')}<option value="${OTHER}"${p.dept===OTHER?' selected':''}>อื่น ๆ (พิมพ์เอง)</option></select>${p.dept===OTHER?`<input id="deptOther" class="field" maxlength="60" placeholder="พิมพ์ชื่อแผนก" value="${esc(p.deptOther||'')}" style="margin-top:8px">`:''}`;
+  return `<div class="opt-group pf" id="pfg_${k}"><div class="opt-label">${l}</div>${body}</div>`;}
+function avatarScr(){const p=S.profile,sec=(t,keys)=>`<section class="pf-sec"><h3>${t}</h3>${PF.filter(f=>keys.includes(f[0])).map(pfField).join('')}</section>`;
+  return `<main class="wrap screen"><div class="ch-head"><span class="eyebrow">ก่อนเริ่ม</span><h2>ข้อมูลผู้เล่น</h2></div>
+  <div class="panel stack profile-panel">
+   ${sec('ข้อมูลส่วนตัว',['gender','ageYears','marital','family','edu'])}
+   ${sec('การทำงาน',['org','dept','position','status','tenure'])}
+   ${sec('การเดินทางและสุขภาพ',['distance','commute','hospital'])}
+   <button class="toggle" data-action="toggleSim" aria-pressed="${p.sim}"><span class="knob"></span><span><b style="font-family:var(--display)">ใช้โหมดบริษัทจำลอง</b><br><span class="muted" style="font-size:13px">สำหรับผู้ที่ยังไม่มีประสบการณ์ทำงาน ในบทที่ 2 คุณจะจินตนาการว่าทำงานที่ ${SIMCO} มาแล้ว 1 ปี</span></span></button>
+   <p id="avErr" class="err" hidden></p>
+   <div class="row" style="justify-content:space-between"><button class="btn ghost" data-action="home">ย้อนกลับ</button><button class="btn primary" data-action="enterCity">เริ่มสร้างบริษัทในฝัน</button></div>
+  </div></main>`;}
+function keepProfile(){const g=id=>document.getElementById(id),p=S.profile;
+  if(g('orgName'))p.orgName=g('orgName').value;if(g('deptOther'))p.deptOther=g('deptOther').value;if(g('pf_position'))p.position=g('pf_position').value;if(g('pf_age'))p.ageYears=g('pf_age').value;}
+function profileEnter(){keepProfile();const miss=PF.filter(f=>!pfFilled(f[0]));
+  document.querySelectorAll('.pf.need').forEach(x=>x.classList.remove('need'));
+  if(miss.length){const er=document.getElementById('avErr');er.textContent='ยังไม่ได้กรอก: '+miss.map(f=>f[1].replace(/\s*\(.*\)/,'')).join(' · ');er.hidden=false;
+    miss.forEach(f=>{const el=document.getElementById('pfg_'+f[0]);if(el)el.classList.add('need');});
+    const first=document.getElementById('pfg_'+miss[0][0]);if(first)first.scrollIntoView({behavior:'smooth',block:'center'});return;}
+  S.profile.age=ageBucket(ageNum());S.screen='ch1';render();toast('ยินดีต้อนรับสู่ Ideal Company');window.scrollTo(0,0);}
+document.addEventListener('input',e=>{const t=e.target,p=S.profile;
+  if(t.id==='pf_age'){p.ageYears=t.value;const g=genOfAge(ageNum()),o=document.getElementById('genOut');if(o){o.textContent=g?`${g} · ${GEN_RANGE[g]}`:'กรอกอายุ 15–80 ปี ระบบจะแบ่งเจเนอเรชันให้';o.classList.toggle('empty',!g);}save();}
+  else if(t.id==='pf_position'){p.position=t.value;save();}else if(t.id==='deptOther'){p.deptOther=t.value;save();}});
+document.addEventListener('change',e=>{const t=e.target;if(!t.id||!t.id.startsWith('pf_')||t.tagName!=='SELECT')return;keepProfile();
+  const k=t.id.slice(3);S.profile[k]=t.value;save();const grp=document.getElementById('pfg_'+k);if(grp)grp.classList.remove('need');
+  if(k==='dept'){render();const i=document.getElementById('deptOther');if(i)i.focus();}});
+function demogOf(){const p=S.profile,a=ageNum();return{gender:p.gender||'',ageYears:a,generation:genOfAge(a),marital:p.marital||'',family:p.family||'',edu:p.edu||'',
+  dept:effDept(),position:String(p.position||'').trim().slice(0,60),tenure:p.tenure||'',distance:p.distance||'',commute:p.commute||'',hospital:p.hospital||''};}
+const DEMOG_KEYS=['gender','ageYears','generation','marital','family','edu','dept','position','tenure','distance','commute','hospital'];
+const DEMOG_LABEL={gender:'เพศ',ageYears:'อายุ (ปี)',generation:'เจเนอเรชัน',marital:'สถานภาพ',family:'จำนวนสมาชิกในครอบครัว',edu:'วุฒิการศึกษา',dept:'แผนก',position:'ตำแหน่ง',tenure:'อายุงาน',distance:'ระยะทางถึงที่ทำงาน',commute:'วิธีการเดินทาง',hospital:'รักษาในโรงพยาบาลครั้งล่าสุด'};
+const FILTERS=[['fOrg','org','บริษัท'],['fGen','generation','เจเนอเรชัน'],['fGender','gender','เพศ'],['fDept','dept','แผนก'],['fTenure','tenure','อายุงาน'],['fStatus','status','สถานะ'],['fMode','mode','บริษัทที่ประเมิน']];
+function deptKeys(R){return [...DEPTS,...[...new Set(R.map(r=>r.dept).filter(d=>d&&!DEPTS.includes(d)))].sort()];}
+function filterBar(all){const f=STATS.f,sel=(id,label,val,opts)=>`<label for="${id}">${label}<select id="${id}" class="field">${opts.map(o=>`<option value="${esc(o[0])}"${o[0]===val?' selected':''}>${esc(o[1])}</option>`).join('')}</select></label>`;
+  return sel('fOrg','บริษัท',f.org,[['','ทุกบริษัท'],...ORGS.map(a=>[a,a]),[OTHER,'บริษัทอื่น ๆ']])+sel('fGen','เจเนอเรชัน',f.generation,[['','ทุกเจเนอเรชัน'],...GENS.map(a=>[a,a])])+sel('fGender','เพศ',f.gender,[['','ทุกเพศ'],...GENDERS.map(a=>[a,a])])
+   +sel('fDept','แผนก',f.dept,[['','ทุกแผนก'],...deptKeys(all||[]).map(a=>[a,a])])+sel('fTenure','อายุงาน',f.tenure,[['','ทุกอายุงาน'],...TENURE.map(a=>[a,a])])+sel('fStatus','สถานะ',f.status,[['','ทุกสถานะ'],...STATUSES.map(a=>[a,a])])+sel('fMode','บริษัทที่ประเมิน',f.mode,[['','ทั้งหมด'],['real','บริษัทจริง'],['sim','บริษัทจำลอง']]);}
+function groupSets(R,reals){const g=(fn,keys)=>groups(R,reals,fn,keys);
+  return [['บริษัท',g(r=>r.org,orgKeys(R))],['เจเนอเรชัน',g(r=>r.generation,GENS)],['เพศ',g(r=>r.gender,GENDERS)],['แผนก',g(r=>r.dept,deptKeys(R))],['อายุงาน',g(r=>r.tenure,TENURE)],['วุฒิการศึกษา',g(r=>r.edu,EDU)],['สถานภาพ',g(r=>r.marital,MARITAL)],['ระยะทางถึงที่ทำงาน',g(r=>r.distance,DIST)],['สถานะ',g(r=>r.status,STATUSES)],['บริษัทที่ประเมิน',g(r=>r.sim?'บริษัทจำลอง':'บริษัทจริง',['บริษัทจริง','บริษัทจำลอง'])]];}
+
 const STYLES=['หัวกลม','หัวเหลี่ยม','หน้ายาว'];
 const SKINS=['#F6D7BC','#E8B98F','#C98E62','#8D5A3B'];
 const HAIRS=['สั้น','ยาว','ฟู','มวย','เกรียน'];
@@ -478,7 +553,7 @@ const SIMCO='บริษัท โนวาเทค (บริษัทจำ�
 
 /* ---------- state ---------- */
 const KEY='worktopia-m9-field-v1';
-function fresh(){return{screen:'home',profile:{style:0,skin:1,hair:0,outfit:1,color:0,codename:'',org:'',age:'',status:'',sim:false},
+function fresh(){return{screen:'home',profile:{style:0,skin:1,hair:0,outfit:1,color:0,codename:'',org:'',orgName:'',age:'',status:'',sim:false,gender:'',ageYears:'',marital:'',family:'',edu:'',dept:'',deptOther:'',position:'',tenure:'',distance:'',commute:'',hospital:''},
   ideal:Array(9).fill(null),idealDraft:null,idealStep:0,pos:0,answers:DIMS.map(()=>Array(5).fill(null)),cur:null,ideas:{},extra:'',sawGap:false,finished:false,demo:false};}
 let S=fresh();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
@@ -605,17 +680,6 @@ function hud(){if(S.screen==='home'||S.screen==='avatar')return'';const x=xp(),l
    <button class="btn sm ghost" data-action="home" aria-label="กลับหน้าแรก">หน้าแรก</button>
   </div></header>`;}
 
-function avatarScr(){const p=S.profile;
-  return `<main class="wrap screen"><div class="ch-head"><span class="eyebrow">ก่อนเริ่ม</span><h2>ข้อมูลผู้เล่น</h2></div>
-  <div class="panel stack profile-panel">
-    <div class="opt-group"><div class="opt-label">บริษัทหรือองค์กรของคุณ</div><div class="opts">${ORGS.map(o=>`<button class="opt org-opt" data-action="setOrg" data-v="${o}" aria-pressed="${p.org===o}">${o}</button>`).join('')}<button class="opt org-opt" data-action="setOrg" data-v="${OTHER}" aria-pressed="${p.org===OTHER}">อื่น ๆ</button></div>${p.org===OTHER?`<label for="orgName" class="muted" style="font-size:13px;margin-top:4px">ชื่อบริษัทหรือองค์กร</label><input id="orgName" class="field" maxlength="80" placeholder="พิมพ์ชื่อบริษัทหรือองค์กร" value="${esc(p.orgName||'')}">`:''}</div>
-    <div class="opt-group"><div class="opt-label">ช่วงอายุ</div><div class="opts">${AGES.map(a=>`<button class="opt" data-action="setAge" data-v="${a}" aria-pressed="${p.age===a}">${a}</button>`).join('')}</div></div>
-    <div class="opt-group"><div class="opt-label">สถานะ</div><div class="opts">${STATUSES.map(a=>`<button class="opt" data-action="setStatus" data-v="${a}" aria-pressed="${p.status===a}">${a}</button>`).join('')}</div></div>
-    <button class="toggle" data-action="toggleSim" aria-pressed="${p.sim}"><span class="knob"></span><span><b style="font-family:var(--display)">ใช้โหมดบริษัทจำลอง</b><br><span class="muted" style="font-size:13px">สำหรับผู้ที่ยังไม่มีประสบการณ์ทำงาน ในบทที่ 2 คุณจะจินตนาการว่าทำงานที่ ${SIMCO} มาแล้ว 1 ปี</span></span></button>
-    <p id="avErr" class="err" hidden>เลือกบริษัท (ถ้าเลือกอื่น ๆ ให้พิมพ์ชื่อ) ช่วงอายุ และสถานะก่อนเริ่ม</p>
-    <div class="row" style="justify-content:space-between"><button class="btn ghost" data-action="home">ย้อนกลับ</button><button class="btn primary" data-action="enterCity">เริ่มสร้างบริษัทในฝัน</button></div>
-  </div></main>`;}
-
 function ch1Scr(){if(!S.idealDraft)S.idealDraft=S.ideal.slice();const D=S.idealDraft,set=D.filter(v=>v!=null).length;
   return `<main class="wrap screen"><div class="ch-head"><span class="eyebrow">Chapter 1 · Dream Builder</span><h2>สร้างบริษัทในอุดมคติ</h2><p>ให้คะแนนทั้ง 9 ด้านในหน้านี้ แล้วกดส่งครั้งเดียว ยิ่งคาดหวังมาก ชั้นนั้นของตึกในฝัน (เส้นประ) ยิ่งกว้าง ไม่มีคำตอบถูกหรือผิด</p></div>
   <div class="two"><div class="panel map sticky-map" id="mapBox">${mapSVG({ideal:D})}${legend()}</div>
@@ -701,7 +765,7 @@ const TABS=[['stats','สถิติ'],['article','บทความสรุ�
 function statsScr(){if(!ADMIN_OK)return homeScr();const t=STATS.tab||'stats';
   const body={stats:statsTab,items:itemsTab,site:siteTab,download:downloadTab,manage:manageTab,article:articleTab}[t]();
   return `<main class="wrap screen"><div class="ch-head"><span class="eyebrow">ส่วนผู้ดูแล</span><div class="row" style="justify-content:space-between"><h2>Ideal Company Admin</h2><div class="row"><button class="btn sm cyan" data-action="demo">ทดลองด้วยข้อมูลจำลอง</button><button class="btn sm ghost" data-action="adminLogout">ออกจากส่วนผู้ดูแล</button></div></div>
-   <p>ผู้เล่นไม่เห็นหน้านี้ ${DB?'ทุกเครื่องที่ใส่รหัสถูกต้องดูและจัดการข้อมูลได้':'<span class="c-warn">ยังไม่ได้เชื่อมต่อระบบเก็บผล ใส่ URL ของ Google Apps Script ใน SITE_CONFIG ของไฟล์ index.html</span>'}</p></div>
+   <p>ผู้เล่นไม่เห็นหน้านี้ ${adminNote()}</p></div>
    <div class="tabs" role="tablist">${TABS.map(x=>`<button role="tab" class="tab" aria-selected="${x[0]===t}" data-action="tab" data-t="${x[0]}">${x[1]}</button>`).join('')}</div>
    <div style="margin-top:18px">${body}</div>
    <textarea id="csvBox" class="field" readonly ${STATS.csv?'':'hidden'} style="min-height:140px;margin-top:14px;font-size:12px" aria-label="ข้อมูลสำหรับคัดลอก">${esc(STATS.csv)}</textarea></main>`;}
@@ -729,8 +793,8 @@ function siteTab(){return `<div class="panel stack"><h3 style="font-size:18px">�
    <li>สีชั้นฝั่งผู้เล่น: เขียว ช่องว่าง ≤ 0.50 · เหลือง 0.51–1.50 · แดง &gt; 1.50</li></ul>
   <h3 style="font-size:18px">ข้อมูลที่เก็บต่อผู้เล่น 1 คน</h3>
   <div class="tbl-wrap"><table class="dtable"><thead><tr><th>ฟิลด์</th><th>ความหมาย</th></tr></thead><tbody>
-   ${[['at','เวลาที่ส่งผล'],['age','ช่วงอายุ'],['org','บริษัทหรือองค์กรที่เลือก'],['status','สถานะ'],['sim','true = ประเมินบริษัทจำลอง'],['ideal','คะแนนความคาดหวัง 9 ด้าน เรียงตามด้าน 1–9'],['items','คะแนนดิบ 45 ข้อ เรียงตามรหัสข้อ 1–45 (ก่อนกลับคะแนน)'],['ideas','ไอเดีย: ด้าน ข้อความ ดาว'],['extra','ข้อเสนอแนะอื่น'],['persona','บุคลิกภาพผลลัพธ์ที่ผู้เล่นเห็น'],['xp','คะแนนสะสม']].map(r=>`<tr><td><code>${r[0]}</code></td><td>${r[1]}</td></tr>`).join('')}</tbody></table></div>
-  <h3 style="font-size:18px">สิทธิ์และความเป็นส่วนตัว</h3><ul class="list-plain"><li>ผู้เล่นที่ลงชื่อเข้าใช้และได้สิทธิ์ Contributor (หรือเป็นคนในองค์กรที่เปิดผ่านลิงก์) ส่งผลอัตโนมัติ ผู้เล่นคนอื่นได้รหัสผลลัพธ์ไปส่งให้ผู้จัด แล้วนำเข้าในแท็บจัดการข้อมูล</li>
+   ${[['at','เวลาที่ส่งผล'],['age','ช่วงอายุ'],['org','บริษัทหรือองค์กรที่เลือก'],...DEMOG_KEYS.map(k=>[k,DEMOG_LABEL[k]+(k==='generation'?' (คำนวณจากอายุ)':'')]),['status','สถานะ'],['sim','true = ประเมินบริษัทจำลอง'],['ideal','คะแนนความคาดหวัง 9 ด้าน เรียงตามด้าน 1–9'],['items','คะแนนดิบ 45 ข้อ เรียงตามรหัสข้อ 1–45 (ก่อนกลับคะแนน)'],['ideas','ไอเดีย: ด้าน ข้อความ ดาว'],['extra','ข้อเสนอแนะอื่น'],['persona','บุคลิกภาพผลลัพธ์ที่ผู้เล่นเห็น'],['xp','คะแนนสะสม']].map(r=>`<tr><td><code>${r[0]}</code></td><td>${r[1]}</td></tr>`).join('')}</tbody></table></div>
+  <h3 style="font-size:18px">สิทธิ์และความเป็นส่วนตัว</h3><ul class="list-plain"><li>เมื่อใส่ URL ของ Apps Script ใน index.html ผู้เล่นทุกคนส่งผลอัตโนมัติโดยไม่ต้องมีบัญชี ถ้ายังไม่ใส่ ผู้เล่นได้รหัสผลลัพธ์ไปส่งให้ผู้จัด แล้วนำเข้าในแท็บจัดการข้อมูล</li>
    <li>หน้าเกมของผู้เล่นไม่แสดงผลของคนอื่น ผลรวมเปิดดูได้จากส่วน Admin ทุกเครื่องที่ใส่รหัสผู้ดูแลถูกต้อง</li>
    <li>รหัสผู้ดูแลเป็นตัวกั้นหลักของส่วน Admin ควรเก็บรหัสไว้เฉพาะทีมผู้วิจัย</li>
    <li>ความคืบหน้าระหว่างเล่นเก็บในเบราว์เซอร์ของผู้เล่นเอง</li>
@@ -776,8 +840,8 @@ function ch4Scr(){const top=topDims();
    <div class="starters"><span class="muted" style="font-size:12.5px">ไอเดียตั้งต้น:</span>${DIMS[d].starters.map(t=>`<button class="starter" data-action="starter" data-d="${d}" data-t="${esc(t)}">${t}</button>`).join('')}</div>
    <div class="row" style="justify-content:space-between"><div class="idea-result" id="res${d}">${I.stars?ideaFeedback(I.stars):''}</div><button class="btn cyan sm" data-action="submitIdea" data-d="${d}">${I.stars?'ส่งไอเดียฉบับปรับปรุง':'ส่งไอเดีย'}</button></div></div>`}).join('')}
    <div class="idea-card"><h3>ข้อเสนอแนะอื่น ๆ (ไม่บังคับ)</h3><label for="extra" class="muted" style="font-size:13.5px">มีเรื่องอื่นที่อยากให้บริษัทในฝันมีไหม?</label><textarea id="extra" class="field" maxlength="500">${esc(S.extra)}</textarea></div>
-   <p id="ideaErr" class="err" hidden>ส่งไอเดียอย่างน้อย 1 ข้อก่อนรับใบรับรองภารกิจ</p>
-   <div class="row" style="justify-content:space-between"><button class="btn ghost" data-action="go" data-to="ch3">กลับไปดูช่องว่าง</button><button class="btn primary" data-action="finish">รับใบรับรองภารกิจ</button></div></div></main>`;}
+   <p id="ideaErr" class="err" hidden>ส่งไอเดียอย่างน้อย 1 ข้อก่อนส่งคำตอบ</p>
+   <div class="row" style="justify-content:space-between"><button class="btn ghost" data-action="go" data-to="ch3">กลับไปดูช่องว่าง</button><button class="btn primary" data-action="finish">ส่งคำตอบ</button></div></div></main>`;}
 function ideaFeedback(n){return [,'<span class="muted">ได้ 1 ดาว ลองเขียนให้ยาวขึ้นว่าจะทำอะไร</span>','<span class="muted">ได้ 2 ดาว บอกว่าจะทำอะไร เช่น จัด ปรับ เพิ่ม</span>','<span class="muted">ได้ 3 ดาว บอกความถี่หรือวิธีวัดผล เช่น ทุกเดือน ติดตามผล</span>','<span class="muted">ได้ 4 ดาว เพิ่มรายละเอียดอีกนิดจะได้ดาวเต็ม</span>','<span class="c-ok">5 ดาว ไอเดียเป็นรูปธรรม นำไปใช้ได้จริง</span>'][n]||'';}
 
 function badgeIcon(i,on){const c=on?['#3FD9F2','#1BC690','#4F7BFF','#F4B64A','#F06A9A'][i]:'#5F7799';
@@ -804,13 +868,13 @@ function subHTML(){const m={idle:['muted','ผลของคุณจะถู�
   demo:['c-warn','โหมดข้อมูลจำลอง ผลนี้ไม่ถูกส่งไปที่ใด'],
   nodb:['',''],error:['','']}[SUB.s]||['muted',''];
   if(SUB.s==='nodb'||SUB.s==='error')return codeBlock();
-  return SUB.s==='sending'?`<span class="muted">${m[1]}</span>`:'';}
+  return SUB.s==='sending'?`<p class="sub-line muted">กำลังส่งคำตอบ…</p>`:SUB.s==='sent'?`<p class="sub-line c-ok">ส่งคำตอบเรียบร้อยแล้ว</p>`:'';}
 function paintSub(){const el=document.getElementById('subBox');if(el)el.innerHTML=subHTML();}
-function buildRecord(){return{v:1,at:new Date().toISOString(),age:S.profile.age,status:S.profile.status,sim:!!S.profile.sim,
+function buildRecord(){return{v:2,...demogOf(),at:new Date().toISOString(),age:ageBucket(ageNum())||S.profile.age,status:S.profile.status,sim:!!S.profile.sim,
   org:effOrg(),ideal:S.ideal.slice(),items:S.answers.flat(),persona:persona().t,xp:xp(),
   ideas:Object.entries(S.ideas).filter(([,v])=>v.text).map(([d,v])=>({d:+d,text:String(v.text).slice(0,500),stars:v.stars|0})),extra:String(S.extra||'').slice(0,500)};}
 async function submit(){if(S.demo){SUB={s:'demo'};return paintSub();}
-  if(!DB||!UID){SUB={s:'nodb'};return paintSub();}
+  if(!DB||!UID||LOCAL_ONLY){SUB={s:'nodb'};return paintSub();}
   SUB={s:'sending'};paintSub();const rec=buildRecord(),ref=DB.doc('responses/'+UID);
   try{await ref.set(rec);}catch(e){
     if(e&&e.code==='unavailable'){await new Promise(r=>setTimeout(r,700+Math.random()*900));try{await ref.set(rec);}catch(e2){SUB={s:'error'};return paintSub();}}
@@ -818,7 +882,7 @@ async function submit(){if(S.demo){SUB={s:'demo'};return paintSub();}
   S.submitted=true;save();SUB={s:'sent'};paintSub();}
 
 /* ---------- researcher dashboard (editors and owner only) ---------- */
-let STATS={rows:[],loaded:false,err:null,sample:false,f:{org:'',age:'',status:'',mode:''},unsub:null,csv:'',tab:'stats'};
+let STATS={rows:[],loaded:false,err:null,sample:false,f:{org:'',age:'',status:'',mode:'',generation:'',gender:'',dept:'',tenure:''},unsub:null,csv:'',tab:'stats'};
 const clamp=v=>Math.min(5,Math.max(1,v));
 const isScore=v=>Number.isInteger(v)&&v>=1&&v<=5;
 function validRow(r){return r&&Array.isArray(r.ideal)&&r.ideal.length===9&&r.ideal.every(isScore)&&Array.isArray(r.items)&&r.items.length===45&&r.items.every(isScore);}
@@ -831,6 +895,7 @@ function sampleRows(){const rnd=prng(42),out=[],base=[2.5,2.3,3.4,3.0,2.7,2.9,3.
     const ideal=ib.map(m=>clamp(Math.round(m+(rnd()-.5)*1.6))),items=[];
     DIMS.forEach((D,d)=>D.items.forEach(it=>{const v=clamp(Math.round(base[d]+shift+(rnd()-.5)*2));items.push(it[1]?6-v:v)}));
     const r={id:'sample'+n,at:new Date(Date.now()-n*25200e3).toISOString(),age,status,sim,ideal,items,ideas:[],extra:'',org:n%6===5?'บริษัทตัวอย่าง':ORGS[n%3===0?1:0]};
+    {const pk=a=>a[Math.floor(rnd()*a.length)],ay=20+Math.floor(rnd()*38);Object.assign(r,{ageYears:ay,generation:genOfAge(ay),age:ageBucket(ay),gender:pk(GENDERS.slice(0,3)),marital:pk(MARITAL),family:pk(FAMILY),edu:pk(EDU),dept:pk(DEPTS),position:'',tenure:pk(TENURE),distance:pk(DIST),commute:pk(COMMUTE),hospital:pk(HOSP)});}
     if(rnd()<.55){const re=rowReal(r);let d=0;ideal.forEach((v,k)=>{if(v-re[k]>ideal[d]-re[d])d=k});r.ideas=[{d,text:DIMS[d].starters[Math.floor(rnd()*3)]+' และติดตามผลทุกไตรมาส',stars:1+Math.floor(rnd()*5)}];}
     out.push(r);}return out;}
 function agg(R){const reals=R.map(rowReal);
@@ -843,20 +908,20 @@ function ensureSub(){if(STATS.unsub||!DB)return;
   try{STATS.unsub=DB.collection('responses').limit(1000).onSnapshot(s=>{STATS.rows=s.docs.filter(d=>d.exists).map(d=>Object.assign({},d.data(),{id:d.id}));STATS.loaded=true;STATS.err=null;if(S.screen==='stats')render();},
     e=>{STATS.err=(e&&e.code)||'error';STATS.unsub=null;if(S.screen==='stats')render();});}catch(e){STATS.err='error';}}
 function filteredRows(){const all=STATS.sample?sampleRows():STATS.rows.filter(validRow),f=STATS.f;
-  return{all,R:all.filter(r=>orgMatch(r,f.org)&&(!f.age||r.age===f.age)&&(!f.status||r.status===f.status)&&(!f.mode||(f.mode==='sim')===!!r.sim)).sort((a,b)=>String(b.at||'').localeCompare(String(a.at||'')))};}
+  return{all,R:all.filter(r=>orgMatch(r,f.org)&&(!f.age||r.age===f.age)&&(!f.generation||r.generation===f.generation)&&(!f.gender||r.gender===f.gender)&&(!f.dept||r.dept===f.dept)&&(!f.tenure||r.tenure===f.tenure)&&(!f.status||r.status===f.status)&&(!f.mode||(f.mode==='sim')===!!r.sim)).sort((a,b)=>String(b.at||'').localeCompare(String(a.at||'')))};}
 function statsTab(){
   const {all,R}=filteredRows(),f=STATS.f;
   const sel=(id,label,val,opts)=>`<label for="${id}">${label}<select id="${id}" class="field">${opts.map(o=>`<option value="${esc(o[0])}"${o[0]===val?' selected':''}>${esc(o[1])}</option>`).join('')}</select></label>`;
   const head=`
    ${STATS.sample?'<div class="sample-banner">กำลังแสดงข้อมูลจำลอง 36 คน เพื่อดูหน้าตาแดชบอร์ด ไม่ใช่ผลจริง</div>':''}
-   <div class="admin-bar">${sel('fAge','ช่วงอายุ',f.age,[['','ทุกช่วงอายุ'],...AGES.map(a=>[a,a])])}${sel('fOrg','บริษัท',f.org,[['','ทุกบริษัท'],...ORGS.map(a=>[a,a]),[OTHER,'บริษัทอื่น ๆ']])}${sel('fStatus','สถานะ',f.status,[['','ทุกสถานะ'],...STATUSES.map(a=>[a,a])])}${sel('fMode','บริษัทที่ประเมิน',f.mode,[['','ทั้งหมด'],['real','บริษัทจริง'],['sim','บริษัทจำลอง']])}
+   <div class="admin-bar">${filterBar(all)}
     <span style="flex:1"></span><button class="btn sm" data-action="exportCsv" ${R.length?'':'disabled'}>ส่งออก CSV</button><button class="btn sm ghost" data-action="toggleSample">${STATS.sample?'กลับไปดูข้อมูลจริง':'ดูตัวอย่างด้วยข้อมูลจำลอง'}</button></div>
 `;
   let body='';
   if(!STATS.sample&&STATS.err)body=`<div class="panel empty">โหลดข้อมูลไม่ได้ ตรวจว่ารหัสผู้ดูแลตรงกับใน Apps Script และ URL ถูกต้อง แล้วเปิดหน้านี้ใหม่</div>`;
-  else if(!STATS.sample&&!DB)body=`<div class="panel empty">ลงชื่อเข้าใช้ claude.ai เพื่อดูข้อมูลที่ผู้เล่นส่งมา</div>`;
+  else if(!STATS.sample&&!DB)body=`<div class="panel empty">ยังไม่ได้เชื่อมต่อระบบเก็บผล ติดตั้ง Apps Script ตาม README แล้วใส่ URL ใน SITE_CONFIG ของไฟล์ index.html</div>`;
   else if(!STATS.sample&&!STATS.loaded)body=`<div class="panel empty">กำลังโหลดผลการสำรวจ…</div>`;
-  else if(!all.length)body=`<div class="panel empty stack"><h3 style="font-size:19px">ยังไม่มีผู้เล่นส่งผล</h3><p class="muted">เมื่อผู้เล่นจบบทที่ 4 ผลจะขึ้นที่นี่ทันที แชร์ลิงก์เกมจากเมนู Share ให้ผู้เล่นในสิทธิ์ Contributor หรือเปิดลิงก์ให้คนในองค์กร ผู้ที่ได้สิทธิ์ Viewer จะเล่นได้แต่ส่งผลไม่ได้</p><div><button class="btn cyan" data-action="toggleSample">ดูตัวอย่างด้วยข้อมูลจำลอง</button></div></div>`;
+  else if(!all.length)body=`<div class="panel empty stack"><h3 style="font-size:19px">ยังไม่มีผู้เล่นส่งผล</h3><p class="muted">เมื่อผู้เล่นจบบทที่ 4 ผลจะขึ้นที่นี่ทันที ถ้ายังไม่ได้เชื่อมต่อ Google Sheets ให้นำรหัสผลลัพธ์ที่ผู้เล่นส่งมาวางในแท็บ จัดการข้อมูล</p><div><button class="btn cyan" data-action="toggleSample">ดูตัวอย่างด้วยข้อมูลจำลอง</button></div></div>`;
   else if(!R.length)body=`<div class="panel empty">ไม่มีผู้ตอบที่ตรงกับตัวกรองนี้</div>`;
   else{const A=agg(R),sat=satLevel(A.sat),order=[...A.dims].sort((a,b)=>b.p-a.p),pct=v=>(v-1)/4*100;
     const dumb=order.map(x=>{const L=gapLevel(x.g),lo=Math.min(x.rm,x.im),hi=Math.max(x.rm,x.im);return `<div class="dumb-row"><div class="lb">${DIMS[x.d].th}<small>${DIMS[x.d].en}</small></div>
@@ -872,7 +937,7 @@ function statsTab(){
      <div class="two"><div class="panel"><h3 style="font-size:18px;margin-bottom:8px">ความคาดหวังเทียบความจริง เรียงตามลำดับความสำคัญ</h3>
        <div class="axis"><span></span><div class="scale">${[1,2,3,4,5].map(v=>`<span style="left:${pct(v)}%">${v}</span>`).join('')}</div><span style="text-align:right">ช่องว่าง</span></div><div class="dumb">${dumb}</div>
        <div class="legend"><span><i class="sw" style="border:2px solid var(--cyan);border-radius:50%;width:12px;height:12px"></i>ค่าเฉลี่ยความคาดหวัง</span><span><i class="sw bg-ok" style="border-radius:50%;width:12px;height:12px"></i>ค่าเฉลี่ยบริษัทจริง</span><span class="c-ok">ใกล้/เกินคาด</span><span class="c-warn">ควรพัฒนา</span><span class="c-bad">เร่งด่วน</span></div></div>
-      <div class="panel stack"><h3 style="font-size:18px">ความพึงพอใจตามกลุ่ม</h3><div><div class="opt-label" style="margin-bottom:4px">ช่วงอายุ</div>${hbars(ages)}</div><div><div class="opt-label" style="margin-bottom:4px">บริษัท</div>${orgs.length?hbars(orgs):'<p class="muted" style="font-size:12.5px">ยังไม่มีข้อมูลบริษัท</p>'}</div><div><div class="opt-label" style="margin-bottom:4px">สถานะ</div>${hbars(sts)}</div><div><div class="opt-label" style="margin-bottom:4px">บริษัทที่ประเมิน</div>${hbars(modes)}</div><p class="muted" style="font-size:12px">ความยาวแถบ = ความพึงพอใจเฉลี่ย (1–5) สีตามเกณฑ์แปลผล</p></div></div>
+      <div class="panel stack"><h3 style="font-size:18px">ความพึงพอใจตามกลุ่ม</h3>${groupSets(R,A.reals).filter(x=>x[1].length).map(x=>`<div><div class="opt-label" style="margin-bottom:4px">${x[0]}</div>${hbars(x[1])}</div>`).join('')}<p class="muted" style="font-size:12px">ความยาวแถบ = ความพึงพอใจเฉลี่ย (1–5) สีตามเกณฑ์แปลผล</p></div></div>
      <div class="panel" style="margin-top:20px"><h3 style="font-size:18px;margin-bottom:10px">สรุปรายด้าน</h3><div class="tbl-wrap"><table class="dtable"><thead><tr><th>อันดับ</th><th>ด้าน</th><th class="n">คาดหวัง</th><th class="n">จริง</th><th class="n">SD จริง</th><th class="n">ช่องว่าง</th><th>แปลผลความพึงพอใจ</th><th>แปลผลช่องว่าง</th></tr></thead><tbody>
       ${order.map((x,n)=>`<tr><td class="n">${n+1}</td><td>${DIMS[x.d].th}</td><td class="n">${f1(x.im)}</td><td class="n">${f1(x.rm)}</td><td class="n">${f1(x.rsd)}</td><td class="n c-${gapLevel(x.g).k}">${f1(x.g)}</td><td class="c-${satLevel(x.rm).k}">${satLevel(x.rm).t}</td><td class="c-${gapLevel(x.g).k}">${gapLevel(x.g).t}</td></tr>`).join('')}</tbody></table></div></div>
      <div class="panel" style="margin-top:20px"><h3 style="font-size:18px">ไอเดียจากผู้เล่น <span class="muted" style="font-size:14px;font-weight:500">${ideas.length} ไอเดีย</span></h3><p class="muted" style="font-size:13px;margin:4px 0 10px">เรียงตามดาวแล้วตามเวลาล่าสุด</p>
@@ -887,9 +952,9 @@ function criteriaHTML(){return `<div class="panel howread" style="margin-top:20p
    <div class="tbl-wrap"><table><tr><th>ช่องว่าง (คาดหวัง − จริง)</th><th>การแปลผล</th></tr><tr><td class="tnum">≤ 0</td><td>เท่ากับหรือเกินความคาดหวัง เป็นจุดแข็ง</td></tr><tr><td class="tnum">0.01–0.50</td><td>ใกล้เคียงความคาดหวัง</td></tr><tr><td class="tnum">0.51–1.50</td><td>ควรพัฒนา</td></tr><tr><td class="tnum">มากกว่า 1.50</td><td>ต้องพัฒนาเร่งด่วน</td></tr></table></div>
    <p style="margin-top:8px">ลำดับความสำคัญ = ช่องว่าง × (ความคาดหวัง ÷ 5) ดัชนีความสอดคล้อง = 100 − (ค่าเฉลี่ย |ช่องว่าง| ÷ 4 × 100) ดาวของไอเดีย (1–5): 1 ดาวเมื่อยาว 8 ตัวอักษรขึ้นไป +1 เมื่อยาว 40 ตัวอักษรขึ้นไป +1 เมื่อยาว 90 ตัวอักษรขึ้นไป +1 เมื่อมีคำบอกการกระทำ +1 เมื่อมีตัวเลข ความถี่ หรือวิธีวัดผล</p></div>`;}
 function csvText(R){const q=v=>{const s=String(v==null?'':v);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
-  const h=['respondent','submitted_at','organization','age','status','company',...DIMS.map((_,d)=>'ideal_'+(d+1)),...DIMS.map((_,d)=>'real_'+(d+1)),...DIMS.map((_,d)=>'gap_'+(d+1)),...Array.from({length:45},(_,i)=>'item_raw_'+(i+1)),'ideas','extra'];
+  const h=['respondent','submitted_at','organization',...DEMOG_KEYS,'age_range','status','company',...DIMS.map((_,d)=>'ideal_'+(d+1)),...DIMS.map((_,d)=>'real_'+(d+1)),...DIMS.map((_,d)=>'gap_'+(d+1)),...Array.from({length:45},(_,i)=>'item_raw_'+(i+1)),'ideas','extra'];
   const lines=[h.join(',')];
-  R.forEach((r,n)=>{const re=rowReal(r);lines.push(['R'+String(n+1).padStart(3,'0'),r.at||'',r.org||'',r.age,r.status,r.sim?'simulated':'real',...r.ideal,...re.map(f1),...r.ideal.map((v,k)=>f1(v-re[k])),...r.items,
+  R.forEach((r,n)=>{const re=rowReal(r);lines.push(['R'+String(n+1).padStart(3,'0'),r.at||'',r.org||'',...DEMOG_KEYS.map(k=>r[k]==null?'':r[k]),r.age,r.status,r.sim?'simulated':'real',...r.ideal,...re.map(f1),...r.ideal.map((v,k)=>f1(v-re[k])),...r.items,
     rowIdeas(r).map(i=>`[${DIMS[i.d].th} ${i.stars|0}*] ${i.text}`).join(' | '),r.extra||''].map(q).join(','));});
   return '﻿'+lines.join('\n');}
 async function exportCsv(){const {R}=filteredRows();const txt=csvText(R);if(!window.claude)return saveFile(`ideal-company-results-${R.length}.csv`,txt,'text/csv;charset=utf-8');
@@ -900,12 +965,13 @@ async function exportCsv(){const {R}=filteredRows();const txt=csvText(R);if(!win
 /* ---------- result code: fallback for players who cannot write ---------- */
 function b64e(t){const u=new TextEncoder().encode(t);let s='';u.forEach(c=>s+=String.fromCharCode(c));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
 function b64d(t){t=t.replace(/-/g,'+').replace(/_/g,'/');while(t.length%4)t+='=';const s=atob(t),u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return new TextDecoder().decode(u);}
-function resultCode(){const r=buildRecord();const c=[r.v,r.at,(ORGS.indexOf(r.org)>=0?ORGS.indexOf(r.org):r.org),AGES.indexOf(r.age),STATUSES.indexOf(r.status),r.sim?1:0,r.ideal.join(''),r.items.join(''),r.ideas.map(i=>[i.d,i.stars,i.text]),r.extra,r.xp];
+function resultCode(){const r=buildRecord();const c=[r.v,r.at,(ORGS.indexOf(r.org)>=0?ORGS.indexOf(r.org):r.org),AGES.indexOf(r.age),STATUSES.indexOf(r.status),r.sim?1:0,r.ideal.join(''),r.items.join(''),r.ideas.map(i=>[i.d,i.stars,i.text]),r.extra,r.xp,DEMOG_KEYS.map(k=>r[k]==null?'':r[k])];
   const body=b64e(JSON.stringify(c));return 'WT9-'+body+'-'+fnv(body);}
 function parseCode(code){const m=/WT9-([A-Za-z0-9_-]+)-([0-9a-f]+)/.exec(code||'');if(!m||fnv(m[1])!==m[2])return null;
   try{const c=JSON.parse(b64d(m[1]));const digits=x=>String(x).split('').map(Number);
     const r={v:c[0]|0,at:String(c[1]||''),org:typeof c[2]==='string'?c[2].slice(0,80):(ORGS[c[2]]||''),age:AGES[c[3]]||'',status:STATUSES[c[4]]||'',sim:c[5]===1,ideal:digits(c[6]),items:digits(c[7]),
       ideas:(Array.isArray(c[8])?c[8]:[]).slice(0,9).map(i=>({d:i[0]|0,stars:Math.min(5,Math.max(0,i[1]|0)),text:String(i[2]||'').slice(0,500)})),extra:String(c[9]||'').slice(0,500),xp:c[10]|0,via:'code'};
+    if(Array.isArray(c[11]))DEMOG_KEYS.forEach((k,i)=>{const v=c[11][i];r[k]=k==='ageYears'?(parseInt(v,10)||null):String(v==null?'':v).slice(0,80);});
     if(!validRow(r))return null;r.persona='';return{r,id:'code-'+m[2]};}catch(e){return null;}}
 function codeBlock(){const c=resultCode();return `<div class="code-box"><p><b style="font-family:var(--display)">ส่งผลด้วยรหัสผลลัพธ์</b><br><span class="muted">ระบบส่งผลอัตโนมัติจากเครื่องนี้ไม่ได้ คัดลอกรหัสด้านล่างแล้วส่งให้ผู้จัดกิจกรรม เช่น ทางแชตหรืออีเมล รหัสนี้ไม่มีชื่อหรือข้อมูลระบุตัวตน</span></p>
   <textarea id="resCode" class="field" readonly aria-label="รหัสผลลัพธ์">${c}</textarea><div class="row"><button class="btn sm primary" data-action="copyCode">คัดลอกรหัสผลลัพธ์</button><button class="btn sm ghost" data-action="resubmit">ลองส่งอัตโนมัติอีกครั้ง</button></div></div>`;}
@@ -928,7 +994,7 @@ let ADMIN_PASS='';try{ADMIN_PASS=sessionStorage.getItem('ic-admin-pass')||'';}ca
 function localUid(){let id='';try{id=localStorage.getItem('ic-player-id')||'';}catch(e){}
   if(!/^p-[a-z0-9]{20,}$/.test(id)){const a=new Uint8Array(16);(crypto&&crypto.getRandomValues?crypto.getRandomValues(a):a.forEach((_,i)=>a[i]=Math.random()*256|0));
     id='p-'+[...a].map(x=>x.toString(36).padStart(2,'0')).join('').slice(0,26);try{localStorage.setItem('ic-player-id',id);}catch(e){}}return id;}
-async function api(method,payload){const url=SITE_CONFIG.ENDPOINT;let r;
+async function api(method,payload){const url=activeEndpoint();let r;
   if(method==='GET'){r=await fetch(url+'?'+new URLSearchParams(payload).toString(),{method:'GET'});}
   else{r=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});}
   const j=await r.json();if(!j.ok){const e=new Error(j.error||'error');e.code=j.error==='unauthorized'?'unauthorized':'unavailable';throw e;}return j;}
@@ -941,6 +1007,33 @@ function makeSheetDB(){const listeners=new Set();let timer=null,last=[];
       delete:async()=>{await api('POST',{action:'delete',ids:[id],code:ADMIN_PASS});clearTimeout(timer);timer=setTimeout(()=>{pull();timer=null;poll();},400);}}},
     collection(){return{limit(){return{onSnapshot(ok,err){const l={ok,err};listeners.add(l);pull();poll();return()=>{listeners.delete(l);};}}}}}};
   function poll(){if(timer)return;timer=setTimeout(function t(){timer=null;if(listeners.size&&ADMIN_OK){pull();poll();}},30000);}}
+
+/* ---------- where results live on the standalone website ---------- */
+let LOCAL_ONLY=false;
+function savedEndpoint(){try{return localStorage.getItem('ic-endpoint')||'';}catch(e){return '';}}
+function activeEndpoint(){return SITE_CONFIG.ENDPOINT||savedEndpoint();}
+function makeLocalDB(){const KEY='ic-local-responses',listeners=new Set();
+  const read=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){return {};}};
+  const write=o=>{try{localStorage.setItem(KEY,JSON.stringify(o));}catch(e){const er=new Error('quota');er.code='quota_exceeded';throw er;}};
+  const emit=()=>{const o=read(),snap={docs:Object.entries(o).map(([id,d])=>({id,exists:true,data:()=>d}))};listeners.forEach(l=>l(snap));};
+  return{doc(path){const id=path.split('/')[1];return{set:async d=>{const o=read();o[id]=d;write(o);emit();},delete:async()=>{const o=read();delete o[id];write(o);emit();}}},
+    collection(){return{limit(){return{onSnapshot(ok){listeners.add(ok);setTimeout(emit,0);return()=>listeners.delete(ok);}}}}}};}
+function adminNote(){if(window.claude)return DB?'ทุกเครื่องที่ใส่รหัสถูกต้องดูและจัดการข้อมูลได้':'<span class="c-warn">ยังเชื่อมต่อระบบเก็บผลไม่ได้</span>';
+  if(SITE_CONFIG.ENDPOINT)return '<span class="c-ok">เชื่อมต่อ Google Sheets แล้ว ผู้เล่นทุกคนส่งผลอัตโนมัติ</span>';
+  if(savedEndpoint())return '<span class="c-warn">เครื่องนี้อ่านผลจาก Google Sheets ได้ แต่ผู้เล่นยังส่งผลอัตโนมัติไม่ได้ จนกว่าจะใส่ URL ใน index.html</span>';
+  return '<span class="c-warn">โหมดในเครื่อง: ผู้เล่นจะได้รหัสผลลัพธ์ นำรหัสมาวางในแท็บ "จัดการข้อมูล" ผลจะเก็บในเบราว์เซอร์นี้เท่านั้น</span>';}
+function connectPanel(){if(window.claude)return '';const cur=activeEndpoint();
+  return `<div class="panel stack" style="margin-bottom:16px"><div><h3 style="font-size:18px">เชื่อมต่อ Google Sheets</h3><p class="muted" style="font-size:13.5px;margin-top:4px">วาง Web app URL ของ Apps Script ที่ลงท้ายด้วย <code>/exec</code> หน้านี้จะอ่านผลจาก Google Sheet ได้ทันที ถ้าต้องการให้ผู้เล่นส่งผลอัตโนมัติด้วย ต้องใส่ URL เดียวกันใน <code>SITE_CONFIG</code> ของไฟล์ index.html</p></div>
+   ${SITE_CONFIG.ENDPOINT?`<p class="c-ok" style="font-size:13.5px">ไฟล์เว็บมี URL แล้ว: <code style="word-break:break-all">${esc(SITE_CONFIG.ENDPOINT)}</code></p>`:`
+   <input id="epBox" class="field" placeholder="https://script.google.com/macros/s/…/exec" value="${esc(savedEndpoint())}" autocomplete="off">
+   <div class="row" style="justify-content:space-between"><span id="epMsg" style="font-size:13.5px">${cur?'<span class="c-ok">บันทึก URL ไว้ในเครื่องนี้แล้ว</span>':''}</span><div class="row">${savedEndpoint()?'<button class="btn sm ghost" data-action="epClear">ลบ URL</button>':''}<button class="btn sm primary" data-action="epSave">บันทึกและทดสอบ</button></div></div>`}</div>`;}
+async function epSave(){const box=document.getElementById('epBox'),msg=document.getElementById('epMsg');const u=(box.value||'').trim();
+  if(!/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(u)){msg.innerHTML='<span class="c-bad">URL ต้องขึ้นต้นด้วย https://script.google.com/macros/s/ และลงท้ายด้วย /exec</span>';return;}
+  msg.innerHTML='<span class="muted">กำลังทดสอบ…</span>';
+  try{const r=await fetch(u+'?'+new URLSearchParams({action:'list',code:ADMIN_PASS}));const j=await r.json();
+    if(!j.ok){msg.innerHTML=j.error==='unauthorized'?'<span class="c-bad">เชื่อมต่อได้ แต่รหัสผู้ดูแลไม่ตรงกับ ADMIN_CODE ใน Apps Script</span>':'<span class="c-bad">เชื่อมต่อได้ แต่ Apps Script ตอบกลับผิดพลาด</span>';return;}
+    try{localStorage.setItem('ic-endpoint',u);}catch(e){}msg.innerHTML=`<span class="c-ok">เชื่อมต่อสำเร็จ พบผล ${(j.rows||[]).length} รายการ กำลังโหลด…</span>`;setTimeout(()=>location.reload(),900);}
+  catch(e){msg.innerHTML='<span class="c-bad">เชื่อมต่อไม่ได้ ตรวจว่า Deploy เป็น Web app และตั้ง Who has access เป็น Anyone</span>';}}
 
 /* ---------- article: findings + I-O psychology recommendations ---------- */
 const IOP=[
@@ -962,13 +1055,13 @@ const IOP=[
   acts:['หมุนเวียนงาน (job rotation) หรือขยายขอบเขตงาน (job enrichment) ให้ได้ใช้ทักษะหลากหลาย','ให้อิสระในการตัดสินใจวิธีทำงาน และเปิดให้พนักงานปรับแต่งงานของตน (job crafting)','สื่อสารให้เห็นผลกระทบของงานต่อลูกค้าและสังคม']},
  {theory:'แนวคิดการสื่อสารในองค์การ (Organizational Communication) และความยุติธรรมด้านข้อมูล (Informational Justice)',why:'พนักงานที่ได้รับข้อมูลครบ ทันเวลา และมีคำอธิบาย จะเข้าใจเป้าหมาย ลดข่าวลือ และไว้วางใจองค์กรมากขึ้น การสื่อสารที่ขัดกันทำให้เกิดความกำกวมในบทบาท (role ambiguity)',
   acts:['ประชุมสรุปทิศทางองค์กร (town hall) อย่างน้อยเดือนละครั้ง พร้อมช่วงถามตอบ','กำหนดช่องทางข่าวสารหลักช่องทางเดียว เพื่อลดข้อมูลที่ขัดกัน','สรุปคำสั่งงานเป็นลายลักษณ์อักษร และเปิดช่องทางสอบถามที่ตอบได้ภายในเวลาที่กำหนด']}];
-function filterLabel(){const f=STATS.f,a=[];if(f.org)a.push(f.org===OTHER?'บริษัทอื่น ๆ':f.org);if(f.age)a.push('อายุ '+f.age);if(f.status)a.push(f.status);if(f.mode)a.push(f.mode==='sim'?'ประเมินบริษัทจำลอง':'ประเมินบริษัทจริง');return a.length?a.join(' · '):'ผู้ตอบทั้งหมด';}
+function filterLabel(){const f=STATS.f,a=[];['generation','gender','dept','tenure'].forEach(k=>{if(f[k])a.push(f[k]);});if(f.org)a.push(f.org===OTHER?'บริษัทอื่น ๆ':f.org);if(f.age)a.push('อายุ '+f.age);if(f.status)a.push(f.status);if(f.mode)a.push(f.mode==='sim'?'ประเมินบริษัทจำลอง':'ประเมินบริษัทจริง');return a.length?a.join(' · '):'ผู้ตอบทั้งหมด';}
 function buildArticle(R){const A=agg(R),n=A.n,sat=satLevel(A.sat),order=[...A.dims].sort((a,b)=>b.p-a.p);
   const urgent=order.filter(x=>gapLevel(x.g).k==='bad'),improve=order.filter(x=>gapLevel(x.g).k==='warn'),good=[...A.dims].filter(x=>x.g<=0.5).sort((a,b)=>a.g-b.g);
   const hiExp=[...A.dims].sort((a,b)=>b.im-a.im).slice(0,3),loReal=[...A.dims].sort((a,b)=>a.rm-b.rm).slice(0,3),hiReal=[...A.dims].sort((a,b)=>b.rm-a.rm).slice(0,3);
   const nm=x=>DIMS[x.d].th,lst=a=>a.map(nm).join(' ');
   const by=(fn,keys)=>groups(R,A.reals,fn,keys);
-  const grpLines=[];[['บริษัท',by(r=>r.org,orgKeys(R))],['ช่วงอายุ',by(r=>r.age,AGES)],['สถานะ',by(r=>r.status,STATUSES)]].forEach(([lab,g])=>{
+  const grpLines=[];groupSets(R,A.reals).filter(x=>!['สถานะ','บริษัทที่ประเมิน'].includes(x[0])).forEach(([lab,g])=>{
     const ok=g.filter(x=>x.n>=3);if(ok.length<2)return;const hi=ok.reduce((a,b)=>b.sat>a.sat?b:a),lo=ok.reduce((a,b)=>b.sat<a.sat?b:a),diff=hi.sat-lo.sat;
     grpLines.push(diff>=0.3?`เมื่อแยกตาม${lab} กลุ่ม ${hi.k} มีความพึงพอใจเฉลี่ยสูงสุด (${f1(hi.sat)}, ${hi.n} คน) และกลุ่ม ${lo.k} ต่ำสุด (${f1(lo.sat)}, ${lo.n} คน) ต่างกัน ${f1(diff)} คะแนน ควรออกแบบมาตรการให้เหมาะกับกลุ่มที่ต่ำกว่า`
       :`เมื่อแยกตาม${lab} ความพึงพอใจของแต่ละกลุ่มใกล้เคียงกัน (ต่างกันไม่เกิน ${f1(diff)} คะแนน)`);});
@@ -1001,7 +1094,7 @@ function artText(a){const L=[a.title,`ผู้ตอบ ${a.n} คน · จั
 let ART=null;
 function articleTab(){const {all,R}=filteredRows(),f=STATS.f;
   const sel=(id,label,val,opts)=>`<label for="${id}">${label}<select id="${id}" class="field">${opts.map(o=>`<option value="${esc(o[0])}"${o[0]===val?' selected':''}>${esc(o[1])}</option>`).join('')}</select></label>`;
-  const bar=`${STATS.sample?'<div class="sample-banner">กำลังใช้ข้อมูลจำลอง 36 คน บทความนี้ไม่ใช่ผลจริง</div>':''}<div class="admin-bar">${sel('fOrg','บริษัท',f.org,[['','ทุกบริษัท'],...ORGS.map(a=>[a,a]),[OTHER,'บริษัทอื่น ๆ']])}${sel('fAge','ช่วงอายุ',f.age,[['','ทุกช่วงอายุ'],...AGES.map(a=>[a,a])])}${sel('fStatus','สถานะ',f.status,[['','ทุกสถานะ'],...STATUSES.map(a=>[a,a])])}${sel('fMode','บริษัทที่ประเมิน',f.mode,[['','ทั้งหมด'],['real','บริษัทจริง'],['sim','บริษัทจำลอง']])}
+  const bar=`${STATS.sample?'<div class="sample-banner">กำลังใช้ข้อมูลจำลอง 36 คน บทความนี้ไม่ใช่ผลจริง</div>':''}<div class="admin-bar">${filterBar(all)}
     <span style="flex:1"></span><button class="btn sm" data-action="artCopy" ${R.length?'':'disabled'}>คัดลอกบทความ</button><button class="btn sm" data-action="artDl" ${R.length?'':'disabled'}>ดาวน์โหลด (.txt)</button><button class="btn sm ghost" data-action="toggleSample">${STATS.sample?'กลับไปใช้ข้อมูลจริง':'ลองกับข้อมูลจำลอง'}</button></div>
    <p class="muted" style="font-size:13px;margin-top:8px">บทความสร้างอัตโนมัติจากข้อมูลตามตัวกรอง และอัปเดตเมื่อมีผู้ตอบเพิ่ม ใช้เป็นร่างแรกแล้วตรวจทานก่อนเผยแพร่</p>`;
   if(!R.length){ART=null;return `${bar}<div class="panel empty" style="margin-top:16px">${all.length?'ไม่มีผู้ตอบที่ตรงกับตัวกรองนี้':(DB||STATS.sample?'ยังไม่มีผู้เล่นส่งผล ลองกด "ลองกับข้อมูลจำลอง" เพื่อดูตัวอย่างบทความ':'ยังไม่ได้เชื่อมต่อระบบเก็บผล')}</div>`;}
@@ -1015,7 +1108,7 @@ function fmtTime(t){try{return new Date(t).toLocaleString('th-TH',{dateStyle:'sh
 function manageRows(){const f=STATS.mf||{org:'',from:'',to:''};
   return STATS.rows.slice().sort((a,b)=>String(b.at||'').localeCompare(String(a.at||''))).filter(r=>
     orgMatch(r,f.org)&&(!f.from||String(r.at||'')>=f.from)&&(!f.to||String(r.at||'').slice(0,10)<=f.to));}
-function manageTab(){return (DB?importPanel():'')+manageTabInner();}
+function manageTab(){return connectPanel()+(DB?importPanel():'')+manageTabInner();}
 function manageTabInner(){if(!DB)return `<div class="panel empty">ยังไม่ได้เชื่อมต่อระบบเก็บผล ใส่ URL ของ Google Apps Script ใน SITE_CONFIG ของไฟล์ index.html</div>`;
   if(STATS.err)return `<div class="panel empty">โหลดข้อมูลไม่ได้ ตรวจว่ารหัสผู้ดูแลตรงกับใน Apps Script และ URL ถูกต้อง แล้วเปิดหน้านี้ใหม่</div>`;
   if(!STATS.loaded)return `<div class="panel empty">กำลังโหลดข้อมูล…</div>`;
@@ -1068,7 +1161,7 @@ function howto(){modal(`<h2>วิธีเล่น Ideal Company</h2><div clas
  <div class="row" style="justify-content:flex-end;margin-top:14px"><button class="btn primary" data-action="closeModal">เข้าใจแล้ว</button></div>`);}
 function askReset(){modal(`<h2>เริ่มภารกิจใหม่?</h2><p class="muted">คำตอบ ไอเดีย และ XP ทั้งหมดในเครื่องนี้จะถูกล้าง</p><div class="row" style="justify-content:flex-end;margin-top:16px"><button class="btn ghost" data-action="closeModal">ยกเลิก</button><button class="btn primary" data-action="doReset">ล้างและเริ่มใหม่</button></div>`);}
 
-function loadDemo(){S=fresh();S.demo=true;S.profile={style:0,skin:1,hair:1,outfit:0,color:1,codename:'ผู้เล่นตัวอย่าง',org:'ASM Company',age:'25–34 ปี',status:'พนักงานบริษัท',sim:false};
+function loadDemo(){S=fresh();S.demo=true;S.profile={style:0,skin:1,hair:1,outfit:0,color:1,codename:'ผู้เล่นตัวอย่าง',org:'ASM Company',age:'25–34 ปี',status:'พนักงานบริษัท',sim:false,gender:'หญิง',ageYears:'29',marital:'โสด',family:'3–4 คน',edu:'ปริญญาตรี',dept:'บัญชี / การเงิน',position:'เจ้าหน้าที่บัญชี',tenure:'1–3 ปี',distance:'11–20 กม.',commute:'รถโดยสารสาธารณะ / รถไฟฟ้า',hospital:'มากกว่า 3 ปี'};
   S.ideal=[5,4,4,4,4,3,5,5,4];const tg=[2.4,2.2,3.4,3.0,2.6,2.8,4.0,3.2,2.4],nz=[-0.4,0.3,0.4,-0.3,0];
   S.answers=DIMS.map((D,d)=>D.items.map((it,i)=>{const v=Math.min(5,Math.max(1,Math.round(tg[d]+nz[i])));return it[1]?6-v:v}));
   S.ideas={0:{text:'ปรับเงินเดือนตามผลประเมินจริงปีละ 2 ครั้ง และเปิดเผยช่วงเงินเดือนของแต่ละตำแหน่งให้พนักงานทราบ',stars:3},1:{text:'ประกาศเกณฑ์เลื่อนขั้นให้ชัด',stars:2}};
@@ -1078,7 +1171,7 @@ function loadDemo(){S=fresh();S.demo=true;S.profile={style:0,skin:1,hair:1,outfi
 document.addEventListener('click',e=>{const el=e.target.closest('[data-action]');if(!el)return;const a=el.dataset.action;
   if(a==='closeModal'){if(el.classList.contains('modal')&&e.target!==el)return;closeModal();return;}
   switch(a){
-  case'start':if(S.demo){S=fresh();SUB={s:'idle'};}S.screen=(S.profile.age&&effOrg()&&STATUSES.includes(S.profile.status))?(idealDone()?(allReal()?'ch3':'ch2'):'ch1'):'avatar';render();window.scrollTo(0,0);break;
+  case'start':if(S.demo){S=fresh();SUB={s:'idle'};}S.screen=(profileOK()&&STATUSES.includes(S.profile.status))?(idealDone()?(allReal()?'ch3':'ch2'):'ch1'):'avatar';render();window.scrollTo(0,0);break;
   case'demo':loadDemo();SUB={s:'demo'};render();toast('โหลดข้อมูลจำลองแล้ว');window.scrollTo(0,0);break;
   case'howto':howto();break;
   case'home':S.screen='home';render();break;
@@ -1086,11 +1179,12 @@ document.addEventListener('click',e=>{const el=e.target.closest('[data-action]')
   case'doReset':S=fresh();SUB={s:'idle'};closeModal();render();toast('เริ่มภารกิจใหม่แล้ว');break;
   case'setP':S.profile[el.dataset.k]=+el.dataset.v;keepName();render();break;
   case'setAge':S.profile.age=el.dataset.v;keepName();render();break;
-  case'setOrg':keepName();S.profile.org=el.dataset.v;render();if(el.dataset.v===OTHER){const i=document.getElementById('orgName');if(i)i.focus();}break;
-  case'setStatus':S.profile.status=el.dataset.v;keepName();render();break;
-  case'toggleSim':S.profile.sim=!S.profile.sim;keepName();render();break;
+  case'setF':keepProfile();S.profile[el.dataset.k]=el.dataset.v;render();break;
+  case'setOrg':keepName();keepProfile();S.profile.org=el.dataset.v;render();if(el.dataset.v===OTHER){const i=document.getElementById('orgName');if(i)i.focus();}break;
+  case'setStatus':S.profile.status=el.dataset.v;keepName();keepProfile();render();break;
+  case'toggleSim':keepProfile();S.profile.sim=!S.profile.sim;keepName();render();break;
   case'randNameUnused':{const a1=['นักออกแบบ','สถาปนิก','นักสำรวจ','ผู้พิทักษ์','นักบุกเบิก'],n=a1[Math.floor(Math.random()*a1.length)]+'#'+(10+Math.floor(Math.random()*90));S.profile.codename=n;render();break;}
-  case'enterCity':keepName();if(!effOrg()||!S.profile.age||!S.profile.status){document.getElementById('avErr').hidden=false;return;}S.screen='ch1';render();toast('ยินดีต้อนรับสู่ Ideal Company');window.scrollTo(0,0);break;
+  case'enterCity':profileEnter();break;
   case'idealStep':commitSlider();S.idealStep=+el.dataset.v;render();break;
   case'idealPrev':commitSlider();S.idealStep=Math.max(0,S.idealStep-1);render();break;
   case'idealNext':{const k=S.idealStep;withXP(()=>{commitSlider(true);if(k<8)S.idealStep=k+1;else{const miss=S.ideal.findIndex(v=>v==null);if(miss>=0)S.idealStep=miss;else S.screen='ch2';}},k===8&&idealDone()?'ปลดล็อกบทที่ 2':`ออกแบบ${DIMS[k].place}แล้ว`);window.scrollTo({top:0,behavior:'smooth'});break;}
@@ -1109,6 +1203,8 @@ document.addEventListener('click',e=>{const el=e.target.closest('[data-action]')
   case'artDl':if(ART)saveFile(`ideal-company-article-${new Date().toISOString().slice(0,10)}.txt`,artText(ART),'text/plain;charset=utf-8');break;
   case'copyCode':copyCode();break;
   case'importCodes':importCodes();break;
+  case'epSave':epSave();break;
+  case'epClear':try{localStorage.removeItem('ic-endpoint');}catch(e){}location.reload();break;
   case'askDelete':askDelete();break;
   case'doDelete':doDelete();break;
   case'selNone':SEL.clear();render();break;
@@ -1130,12 +1226,12 @@ document.addEventListener('input',e=>{if(e.target.id==='idealSlider'){const v=+e
   if(e.target.id==='codename')S.profile.codename=e.target.value;
   if(e.target.id==='extra')S.extra=e.target.value;
   if(e.target.id==='orgName'){S.profile.orgName=e.target.value;save();}});
-document.addEventListener('change',e=>{const m={fAge:'age',fOrg:'org',fStatus:'status',fMode:'mode'}[e.target.id];if(m){STATS.f[m]=e.target.value;STATS.csv='';render();}});
+document.addEventListener('change',e=>{const m={fAge:'age',fOrg:'org',fStatus:'status',fMode:'mode',fGen:'generation',fGender:'gender',fDept:'dept',fTenure:'tenure'}[e.target.id];if(m){STATS.f[m]=e.target.value;STATS.csv='';render();}});
 function keepName(){const on=document.getElementById('orgName');if(on)S.profile.orgName=on.value;const n=document.getElementById('codename');if(n)S.profile.codename=n.value;}
 function commitSlider(force){const s=document.getElementById('idealSlider');if(s&&(force||S.ideal[S.idealStep]!=null))S.ideal[S.idealStep]=+s.value;}
 function saveIdeaDrafts(){topDims().forEach(d=>{const ta=document.getElementById('idea'+d);if(ta&&S.ideas[d])S.ideas[d].text=ta.value.trim()||S.ideas[d].text;});const ex=document.getElementById('extra');if(ex)S.extra=ex.value;}
 /* ---------- boot ---------- */
-async function initCaps(){const c=window.claude;if(!c||!c.use){if(SITE_CONFIG.ENDPOINT){DB=makeSheetDB();UID=localUid();if(ADMIN_OK&&S.screen==='stats')ensureSub();render();if(S.finished&&!S.demo&&!S.submitted)submit();}return;}
+async function initCaps(){const c=window.claude;if(!c||!c.use){if(activeEndpoint()){DB=makeSheetDB();UID=localUid();LOCAL_ONLY=!SITE_CONFIG.ENDPOINT;}else{DB=makeLocalDB();LOCAL_ONLY=true;}if(ADMIN_OK&&S.screen==='stats')ensureSub();render();if(S.finished&&!S.demo&&!S.submitted)submit();return;}
   try{USER=await c.use('user');}catch(e){}try{DB=await c.use('db');}catch(e){}
   if(USER){try{IS_ADMIN=!!(await USER.canEdit());}catch(e){}try{UID=await USER.id();}catch(e){}}
   if(ADMIN_OK&&S.screen==='stats')ensureSub();
