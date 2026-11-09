@@ -523,7 +523,7 @@ const ORGS=['ASM Company'];
 const POSITIONS=['ระดับหัวหน้างาน','ระดับปฏิบัติการ'];
 const STATUSES=['พนักงานบริษัท','ผู้บริหาร','อื่น ๆ'];
 const OTHER='__other';
-function effOrg(p){p=p||S.profile;return p.org===OTHER?String(p.orgName||'').trim().slice(0,80):(p.org||'');}
+function effOrg(p){p=p||S.profile;return p.org===OTHER?(String(p.orgName||'').trim().slice(0,80)||ORGS[0]):(p.org||ORGS[0]);}
 function orgKeys(R){return [...ORGS,...[...new Set(R.map(r=>r.org).filter(o=>o&&!ORGS.includes(o)))].sort()];}
 function orgMatch(r,f){return !f||(f===OTHER?(r.org&&!ORGS.includes(r.org)):f==='none'?!r.org:r.org===f);}
 /* unit list: code, name, headcount (from HR Profile 05/11/2026, no personal data) */
@@ -658,7 +658,7 @@ function ageBucket(a){if(a==null)return '';return a<18?AGES[0]:a<25?AGES[1]:a<35
 function effDept(p){p=p||S.profile;return p.dept===OTHER?String(p.deptOther||'').trim().slice(0,60):(p.dept||'');}
 const PF=[ // key, label, options, kind
  ['gender','เพศ',GENDERS,'chip'],['ageYears','อายุ (ปี)',null,'age'],['marital','สถานภาพ',MARITAL,'chip'],['family','จำนวนสมาชิกในครอบครัว (รวมตัวคุณ)',FAMILY,'chip'],['edu','วุฒิการศึกษาสูงสุด',EDU,'select'],
- ['org','บริษัทหรือองค์กร',null,'org'],['unitCode','รหัสหน่วยงาน 10 หลัก',null,'unit'],['position','ตำแหน่ง',POSITIONS,'chip'],['bossLevel','ระดับหัวหน้าของคุณคือ',BOSS,'chip'],['tenure','อายุงานในองค์กรนี้',TENURE,'chip'],
+ ['unitCode','รหัสหน่วยงาน 10 หลัก',null,'unit'],['position','ตำแหน่ง',POSITIONS,'chip'],['bossLevel','ระดับหัวหน้าของคุณคือ',BOSS,'chip'],['tenure','อายุงานในองค์กรนี้',TENURE,'chip'],
  ['distance','ระยะทางจากที่พักถึงที่ทำงาน',DIST,'chip'],['commute','วิธีการเดินทางหลัก',COMMUTE,'select'],['hospital','รับการรักษาในโรงพยาบาลครั้งล่าสุด',HOSP,'select']];
 function pfFilled(k){const p=S.profile;if(k==='ageYears')return ageNum()!=null;if(k==='org')return !!effOrg();if(k==='dept')return !!effDept();if(k==='position')return POSITIONS.includes(p.position);if(k==='unitCode')return unitDigits(p.unitCode).length===10&&p.unitOk!==false;if(k==='bossLevel')return BOSS.includes(p.bossLevel);return !!p[k];}
 function profileOK(){return PF.every(f=>pfFilled(f[0]));}
@@ -675,7 +675,7 @@ function avatarScr(){const p=S.profile,sec=(t,keys)=>`<section class="pf-sec"><h
   return `<main class="wrap screen"><div class="ch-head"><span class="eyebrow">ก่อนเริ่ม</span><h2>ข้อมูลผู้เล่น</h2></div>
   <div class="panel stack profile-panel">
    ${sec('ข้อมูลส่วนตัว',['gender','ageYears','marital','family','edu'])}
-   ${sec('การทำงาน',['org','unitCode','position','bossLevel','tenure'])}
+   ${sec('การทำงาน',['unitCode','position','bossLevel','tenure'])}
    ${sec('การเดินทางและสุขภาพ',['distance','commute','hospital'])}
    <button class="toggle" data-action="toggleSim" aria-pressed="${p.sim}"><span class="knob"></span><span><b style="font-family:var(--display)">ใช้โหมดบริษัทจำลอง</b><br><span class="muted" style="font-size:13px">สำหรับผู้ที่ยังไม่มีประสบการณ์ทำงาน ในบทที่ 1 คุณจะจินตนาการว่าทำงานที่ ${SIMCO} มาแล้ว 1 ปี</span></span></button>
    <p id="avErr" class="err" hidden></p>
