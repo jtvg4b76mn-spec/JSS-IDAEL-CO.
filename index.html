@@ -742,7 +742,7 @@ function xp(){let x=0;
 const BADGES=[
  {id:'explore',n:'นักสำรวจ 16 ชั้น',d:'สำรวจบริษัทจริงครบทุกด้าน',ok:()=>allReal()},
  {id:'gap',n:'นักสแกนตึก',d:'เปิดดูผลสแกนความพึงพอใจ',ok:()=>S.sawGap},
- {id:'idea',n:'นักปฏิรูปองค์กร',d:'ส่งไอเดียระดับ 5 ดาว',ok:()=>Object.values(S.ideas).some(i=>i.stars===5)},
+ {id:'idea',n:'นักปฏิรูปองค์กร',d:'เขียนข้อเสนอแนะ',ok:()=>!!String(S.extra||'').trim()},
  {id:'done',n:'ผู้สร้าง Worktopia',d:'ทำภารกิจครบทั้ง 3 บท',ok:()=>S.finished}];
 function persona(){const ds=DIMS.map((_,d)=>d),rv=ds.map(d=>realMean(d)),rm=avg(rv),lo=rv.filter(v=>v<=2.33).length;
   if(rm>=3.67&&lo===0)return{t:'ผู้พบบ้านที่ใช่',d:'คุณพึงพอใจกับที่ทำงานเกือบทุกด้าน จุดแข็งเหล่านี้ควรรักษาไว้'};
@@ -936,7 +936,7 @@ function siteTab(){return `<div class="panel stack"><h3 style="font-size:18px">�
    <tr><td>ข้อมูลผู้เล่น</td><td>กรอกเพศ อายุ บริษัท ตำแหน่ง อายุงาน และข้อมูลการเดินทาง</td><td>ช่วงอายุ สถานะ โหมด (ไม่ส่งชื่อรหัสหรือหน้าตา)</td><td>ตัวละครของตน</td></tr>
    <tr><td>บทที่ 1 Reality Quest</td><td>ตอบ 32 ข้อต่อเนื่อง สุ่มลำดับใหม่ทุกคน ด้านเดียวกันไม่ติดกัน</td><td>item_raw_1–32</td><td>ชั้นของตึกเมื่อตอบครบด้าน</td></tr>
    <tr><td>บทที่ 2 Satisfaction Scanner</td><td>ดูตึกผลลัพธ์</td><td>คำนวณความพึงพอใจรายด้าน</td><td>สีชั้น 3 ระดับ และ 3 ชั้นที่ควรพัฒนา ไม่มีตัวเลข</td></tr>
-   <tr><td>บทที่ 3 Change Maker</td><td>เสนอไอเดียให้ 3 ด้านที่พึงพอใจน้อยสุด + ข้อเสนอแนะอื่น</td><td>ideas, extra</td><td>ดาว 1–5 และ XP</td></tr>
+   <tr><td>บทที่ 3 Change Maker</td><td>เขียนข้อเสนอแนะ 1 ช่อง ไม่บังคับ</td><td>extra</td><td>—</td></tr>
    <tr><td>ใบรับรองภารกิจ</td><td>ดูบุคลิกภาพผลลัพธ์และเหรียญ</td><td>ส่งผลอัตโนมัติ 1 รายการต่อบัญชี (ผลล่าสุดแทนที่)</td><td>สถานะการส่งผล</td></tr></tbody></table></div>
   <h3 style="font-size:18px">ระบบรางวัล</h3><ul class="list-plain"><li>XP: คำตอบบทที่ 1 10/ข้อ · สร้างชั้นครบด้าน +30 · ดาวไอเดีย 30/ดาว · เปิดบทที่ 2 +50 · จบภารกิจ +100 · ทุก 200 XP ขึ้น 1 เลเวล</li>
    <li>เหรียญ: ${BADGES.map(b=>`${b.n} (${b.d})`).join(' · ')}</li>
@@ -982,17 +982,11 @@ function ch3Scr(){const ds=DIMS.map((_,d)=>d),top=topDims(),strong=ds.filter(d=>
     <h3 style="font-size:17px">ชั้นที่ควรพัฒนาก่อน</h3>
     <div class="dist-list">${top.map((d,n)=>{const L=playerLevel(realMean(d));return `<div class="dist-item" style="cursor:default">${icoBadge(d)}<span style="min-width:0"><span class="nm" style="display:block">${DIMS[d].place}</span><span class="sub">${DIMS[d].th}</span></span><span class="status" style="color:var(--${L.k});border-color:var(--${L.k})">${L.t}</span></div>`}).join('')}</div>
     <h3 style="font-size:17px">ชั้นที่แข็งแรงที่สุด</h3><p class="muted">${strong.length?strong.slice(0,4).map(d=>DIMS[d].place).join(' · '):'ยังไม่มีชั้นที่อยู่ในระดับพึงพอใจ'}</p>
-    <button class="btn primary" data-action="go" data-to="ch4">${S.demo?'ดูตัวอย่างบทที่ 3':'ไปบทที่ 3 เสนอไอเดียพัฒนา'}</button>
+    <button class="btn primary" data-action="go" data-to="ch4">${S.demo?'ดูตัวอย่างบทที่ 3':'ไปบทที่ 3'}</button>
    </div></div></main>`;}
-function ch4Scr(){const top=topDims();
-  return `<main class="wrap screen"><div class="ch-head"><span class="eyebrow">Chapter 3 · Change Maker</span><h2>ร่วมสร้างบริษัทในฝัน</h2><p>ถ้าคุณเป็นผู้บริหารหนึ่งวัน คุณจะทำอะไรกับ 3 ชั้นที่คุณพึงพอใจน้อยที่สุด ไอเดียที่บอกว่าจะทำอะไร ทำบ่อยแค่ไหน หรือวัดผลอย่างไร จะได้ดาวและ XP มากกว่า (สูงสุด 5 ดาว · 150 XP ต่อไอเดีย)</p></div>
-  <div class="stack">${top.map((d,n)=>{const I=S.ideas[d]||{text:'',stars:0};return `<div class="idea-card"><div class="row" style="justify-content:space-between"><div><div class="eyebrow">ชั้นที่ควรพัฒนา อันดับ ${n+1}</div><h3 class="ico-h">${icoBadge(d)}${DIMS[d].th} · ${DIMS[d].place}</h3></div>${I.stars?starsHTML(I.stars):''}</div>
-   <label for="idea${d}" class="muted" style="font-size:13.5px">ถ้าคุณเป็นผู้บริหาร คุณจะพัฒนาเรื่อง${DIMS[d].th}อย่างไร?</label>
-   <textarea id="idea${d}" class="field" maxlength="500" placeholder="เช่น ${DIMS[d].starters[0]} โดย...">${esc(I.text)}</textarea>
-   <div class="starters"><span class="muted" style="font-size:12.5px">ไอเดียตั้งต้น:</span>${DIMS[d].starters.map(t=>`<button class="starter" data-action="starter" data-d="${d}" data-t="${esc(t)}">${t}</button>`).join('')}</div>
-   <div class="row" style="justify-content:space-between"><div class="idea-result" id="res${d}">${I.stars?ideaFeedback(I.stars):''}</div><button class="btn cyan sm" data-action="submitIdea" data-d="${d}">${I.stars?'ส่งไอเดียฉบับปรับปรุง':'ส่งไอเดีย'}</button></div></div>`}).join('')}
-   <div class="idea-card"><h3>ข้อเสนอแนะอื่น ๆ (ไม่บังคับ)</h3><label for="extra" class="muted" style="font-size:13.5px">มีเรื่องอื่นที่อยากให้บริษัทในฝันมีไหม?</label><textarea id="extra" class="field" maxlength="500">${esc(S.extra)}</textarea></div>
-   <p id="ideaErr" class="err" hidden>ส่งไอเดียอย่างน้อย 1 ข้อก่อนส่งคำตอบ</p>
+function ch4Scr(){
+  return `<main class="wrap screen"><div class="ch-head"><span class="eyebrow">Chapter 3 · Change Maker</span><h2>ร่วมสร้างบริษัทในฝัน</h2></div>
+  <div class="stack"><div class="idea-card"><label for="extra"><h3>ข้อเสนอแนะ</h3></label><textarea id="extra" class="field" maxlength="1000" rows="6">${esc(S.extra)}</textarea></div>
    <div class="row" style="justify-content:space-between"><button class="btn ghost" data-action="go" data-to="ch3">กลับไปดูผลสแกน</button><button class="btn primary" data-action="finish">ส่งคำตอบ</button></div></div></main>`;}
 function ideaFeedback(n){return [,'<span class="muted">ได้ 1 ดาว ลองเขียนให้ยาวขึ้นว่าจะทำอะไร</span>','<span class="muted">ได้ 2 ดาว บอกว่าจะทำอะไร เช่น จัด ปรับ เพิ่ม</span>','<span class="muted">ได้ 3 ดาว บอกความถี่หรือวิธีวัดผล เช่น ทุกเดือน ติดตามผล</span>','<span class="muted">ได้ 4 ดาว เพิ่มรายละเอียดอีกนิดจะได้ดาวเต็ม</span>','<span class="c-ok">5 ดาว ไอเดียเป็นรูปธรรม นำไปใช้ได้จริง</span>'][n]||'';}
 
@@ -1024,7 +1018,7 @@ function subHTML(){const m={idle:['muted','ผลของคุณจะถู�
 function paintSub(){const el=document.getElementById('subBox');if(el)el.innerHTML=subHTML();}
 function buildRecord(){return{v:2,...demogOf(),at:new Date().toISOString(),age:ageBucket(ageNum())||S.profile.age,status:S.profile.status,sim:!!S.profile.sim,
   org:effOrg(),items:S.answers.flat(),order:validOrder(S.order)?S.order.slice():null,persona:persona().t,xp:xp(),
-  ideas:Object.entries(S.ideas).filter(([,v])=>v.text).map(([d,v])=>({d:+d,text:String(v.text).slice(0,500),stars:v.stars|0})),extra:String(S.extra||'').slice(0,500)};}
+  ideas:Object.entries(S.ideas).filter(([,v])=>v.text).map(([d,v])=>({d:+d,text:String(v.text).slice(0,500),stars:v.stars|0})),extra:String(S.extra||'').trim().slice(0,1000)};}
 async function submit(){if(S.demo){SUB={s:'demo'};return paintSub();}
   if(!DB||!UID||LOCAL_ONLY){SUB={s:'nodb'};return paintSub();}
   SUB={s:'sending'};paintSub();const rec=buildRecord(),ref=DB.doc('responses/'+UID);
@@ -1103,9 +1097,10 @@ function statsTab(){
       <div class="panel stack"><h3 style="font-size:18px">ความพึงพอใจตามกลุ่ม</h3>${groupSets(R,A.reals).filter(x=>x[1].length).map(x=>`<div><div class="opt-label" style="margin-bottom:4px">${x[0]}</div>${hbars(x[1])}</div>`).join('')}<p class="muted" style="font-size:12px">ความยาวแถบ = ความพึงพอใจเฉลี่ย (1–5) สีตามเกณฑ์แปลผล</p></div></div>
      <div class="panel" style="margin-top:20px"><h3 style="font-size:18px;margin-bottom:10px">สรุปรายด้าน</h3><div class="tbl-wrap"><table class="dtable"><thead><tr><th>อันดับที่ควรพัฒนา</th><th>ด้าน</th><th class="n">ค่าเฉลี่ย</th><th class="n">SD</th><th>แปลผลความพึงพอใจ</th></tr></thead><tbody>
       ${order.map((x,n)=>`<tr><td class="n">${n+1}</td><td>${DIMS[x.d].th}</td><td class="n c-${satLevel(x.rm).k}">${f1(x.rm)}</td><td class="n">${f1(x.rsd)}</td><td class="c-${satLevel(x.rm).k}">${satLevel(x.rm).t}</td></tr>`).join('')}</tbody></table></div></div>
-     <div class="panel" style="margin-top:20px"><h3 style="font-size:18px">ไอเดียจากผู้เล่น <span class="muted" style="font-size:14px;font-weight:500">${ideas.length} ไอเดีย</span></h3><p class="muted" style="font-size:13px;margin:4px 0 10px">เรียงตามดาวแล้วตามเวลาล่าสุด</p>
-      ${ideas.length?`<div class="tbl-wrap"><table class="dtable"><thead><tr><th>ด้าน</th><th>ดาว</th><th>ไอเดีย</th><th>ผู้เสนอ</th></tr></thead><tbody>${ideas.slice(0,100).map(i=>`<tr><td style="white-space:nowrap">${DIMS[i.d].th}</td><td>${starsHTML(Math.min(5,Math.max(0,i.stars|0)))}</td><td style="min-width:220px">${esc(i.text)}</td><td class="muted" style="white-space:nowrap">${esc(i.age)}<br>${esc(i.position||'')}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">ยังไม่มีไอเดีย</p>'}
-      ${extras.length?`<h3 style="font-size:16px;margin-top:16px">ข้อเสนอแนะอื่น ๆ</h3><ul class="list-plain" style="margin-top:8px">${extras.slice(0,50).map(t=>`<li class="muted">${esc(t)}</li>`).join('')}</ul>`:''}</div>
+     <div class="panel" style="margin-top:20px"><h3 style="font-size:18px">ข้อเสนอแนะจากผู้ตอบ <span class="muted" style="font-size:14px;font-weight:500">${extras.length} รายการ</span></h3>
+      ${extras.length?`<ul class="list-plain" style="margin-top:10px">${extras.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:'<p class="muted" style="margin-top:8px">ยังไม่มีข้อเสนอแนะ</p>'}
+      ${ideas.length?`<h3 style="font-size:16px;margin-top:18px">ไอเดียรายด้าน (จากแบบเดิม)</h3><p class="muted" style="font-size:13px;margin:4px 0 10px">เรียงตามดาวแล้วตามเวลาล่าสุด</p>`:''}
+      ${ideas.length?`<div class="tbl-wrap"><table class="dtable"><thead><tr><th>ด้าน</th><th>ดาว</th><th>ไอเดีย</th><th>ผู้เสนอ</th></tr></thead><tbody>${ideas.slice(0,100).map(i=>`<tr><td style="white-space:nowrap">${DIMS[i.d].th}</td><td>${starsHTML(Math.min(5,Math.max(0,i.stars|0)))}</td><td style="min-width:220px">${esc(i.text)}</td><td class="muted" style="white-space:nowrap">${esc(i.age)}<br>${esc(i.position||'')}</td></tr>`).join('')}</tbody></table></div>`:''}</div>
      <div class="panel" style="margin-top:20px"><h3 style="font-size:18px">ค่าเฉลี่ยรายข้อ (เฉลยการให้คะแนน)</h3><p class="muted" style="font-size:13px;margin:4px 0 10px">ข้อเชิงลบ (R) กลับคะแนนเป็น 6 − คะแนนดิบก่อนคำนวณรายด้าน</p>
       <div class="tbl-wrap"><table class="dtable"><thead><tr><th class="n">ข้อ</th><th>ด้าน</th><th>ข้อความ</th><th>ทิศทาง</th><th class="n">ดิบ</th><th class="n">หลังกลับ</th></tr></thead><tbody>
       ${A.items.map((it,k)=>`<tr><td class="n">${k+1}</td><td style="white-space:nowrap">${DIMS[it.d].th}</td><td style="min-width:240px">${it.text}</td><td>${it.rev?'<span class="rev">ลบ (R)</span>':'บวก'}</td><td class="n">${f1(it.raw)}</td><td class="n c-${satLevel(it.scored).k}">${f1(it.scored)}</td></tr>`).join('')}</tbody></table></div></div>`;}
@@ -1262,7 +1257,9 @@ function buildArticle(R){const A=agg(R),n=A.n,sat=satLevel(A.sat),order=[...A.di
    subs:recs.map((x,k)=>{const T=IOP[x.d],items=DIMS[x.d].items.map((it,i)=>A.items.find(q=>q.d===x.d&&q.i===i)).sort((a,b)=>a.scored-b.scored);const w=items[0];
      return{h:`${sec}.${k+1} ${nm(x)} (ค่าเฉลี่ย ${f1(x.rm)} · ${satLevel(x.rm).t})`,p:[`กรอบแนวคิด: ${T.theory} ${T.why}`,`ข้อที่ได้คะแนนต่ำสุดในด้านนี้คือ “${w.text}” (คะแนนเฉลี่ย ${f1(w.scored)} จาก 5${w.rev?' หลังกลับคะแนน':''}) จึงควรเริ่มแก้ที่ประเด็นนี้`],ul:T.acts};})});
   if(good.length)B.push({h:`${sec+1}. จุดแข็งที่ควรรักษา`,p:[`${lst(good)} อยู่ในระดับพึงพอใจ องค์กรควรรักษาแนวปฏิบัติเดิม และใช้จุดแข็งนี้ในการสื่อสารภาพลักษณ์นายจ้าง (employer branding) และการรักษาบุคลากร`]});
-  if(ideaBy.length)B.push({h:`${sec+(good.length?2:1)}. ข้อเสนอจากผู้ตอบ`,p:[`ผู้ตอบเสนอไอเดียทั้งหมด ${ideas.length} ไอเดีย ตัวอย่างไอเดียที่ได้ดาวสูงในด้านที่ควรพัฒนา:`],ul:ideaBy.flatMap(o=>o.list.map(i=>`${nm(o.x)}: ${i.text}`))});
+  const exs=R.map(r=>typeof r.extra==='string'?r.extra.trim():'').filter(Boolean);
+  if(exs.length||ideaBy.length)B.push({h:`${sec+(good.length?2:1)}. ข้อเสนอแนะจากผู้ตอบ`,p:[`ผู้ตอบเขียนข้อเสนอแนะ ${exs.length} รายการ${exs.length>12?' ตัวอย่าง 12 รายการล่าสุด:':':'}`],ul:exs.slice(-12).reverse().concat(ideaBy.flatMap(o=>o.list.map(i=>`${nm(o.x)}: ${i.text}`)))});
+  if(false)B.push({h:'',p:[`ผู้ตอบเสนอไอเดียทั้งหมด ${ideas.length} ไอเดีย ตัวอย่างไอเดียที่ได้ดาวสูงในด้านที่ควรพัฒนา:`],ul:ideaBy.flatMap(o=>o.list.map(i=>`${nm(o.x)}: ${i.text}`))});
   const last=B.length;
   B.push({h:`${last}. ข้อจำกัด`,p:[`ผลนี้มาจากผู้ตอบ ${n} คน${n<30?' ซึ่งยังน้อย ควรตีความอย่างระมัดระวัง':''} เป็นการรายงานด้วยตนเอง (self-report) และเป็นค่าเฉลี่ยเชิงพรรณนา ผู้ตอบในโหมดบริษัทจำลองประเมินสถานการณ์สมมติ ไม่ใช่บริษัทจริง ควรแยกวิเคราะห์ก่อนนำไปใช้ตัดสินใจ`]});
   B.push({h:`${last+1}. สรุป`,p:[`ภาพรวมพนักงาน${sat.k==='ok'?'พึงพอใจต่อองค์กร':sat.k==='warn'?'พึงพอใจในระดับปานกลาง':'ยังไม่พึงพอใจต่อองค์กร'} โดยด้านที่ควรพัฒนาก่อนคือ ${order.slice(0,3).map(nm).join(' ')} องค์กรควรเริ่มจากมาตรการในด้านอันดับแรก กำหนดผู้รับผิดชอบและตัวชี้วัด แล้ววัดซ้ำด้วยเกมนี้ภายใน 6 เดือน เพื่อดูว่าความพึงพอใจเพิ่มขึ้นหรือไม่`]});
@@ -1320,8 +1317,8 @@ function viewResp(id){const list=manageRows(),k=list.findIndex(x=>x.id===id),r=l
    ${ok?`<h3 class="rv-h">คะแนนรายด้านและคำตอบรายข้อ</h3><div class="tbl-wrap"><table class="dtable rv-table"><thead><tr><th>ด้าน / ข้อคำถาม</th><th class="n">ตอบ</th><th class="n">คะแนน</th>${Object.keys(ordPos).length?'<th class="n">ลำดับที่ได้</th>':''}</tr></thead><tbody>
      ${DIMS.map((D,d)=>{const lv=satLevel(re[d]);return `<tr class="rv-dim"><td><b>${d+1}. ${esc(D.th)}</b></td><td></td><td class="n c-${lv.k}"><b>${f1(re[d])}</b></td>${Object.keys(ordPos).length?'<td></td>':''}</tr>`+
        D.items.map((it,i)=>{const x=IX(d,i),v=r.items[x];return `<tr><td class="rv-item">${esc(it[0])}${it[1]?' <span class="rev">R</span>':''}</td><td class="n tnum">${v}</td><td class="n tnum">${it[1]?6-v:v}</td>${Object.keys(ordPos).length?`<td class="n tnum">${ordPos[x]||''}</td>`:''}</tr>`}).join('')}).join('')}</tbody></table></div>`:''}
-   <h3 class="rv-h">ไอเดียและข้อเสนอแนะ</h3>${rowIdeas(r).length?rowIdeas(r).map(i=>`<p class="rv-idea"><b>${esc(DIMS[i.d].th)}</b> ${'★'.repeat(i.stars|0)}<br>${esc(i.text)}</p>`).join(''):'<p class="muted">ไม่มีไอเดีย</p>'}
-   ${r.extra?`<p class="rv-idea"><b>ข้อเสนอแนะอื่น</b><br>${esc(r.extra)}</p>`:''}${nav}</div>`);
+   <h3 class="rv-h">ข้อเสนอแนะ</h3>${r.extra?`<p class="rv-idea">${esc(r.extra)}</p>`:'<p class="muted">ไม่ได้เขียนข้อเสนอแนะ</p>'}
+   ${rowIdeas(r).map(i=>`<p class="rv-idea"><b>${esc(DIMS[i.d].th)}</b> ${'★'.repeat(i.stars|0)}<br>${esc(i.text)}</p>`).join('')}${nav}</div>`);
   const b=document.querySelector('#modalRoot .modal-box');if(b){b.classList.add('wide');b.scrollTop=0;}}
 function askDelete(){const n=SEL.size;if(!n)return;
   modal(`<h2>ลบ ${n} รายการ?</h2><p class="muted">ผลของผู้เล่นที่เลือกจะถูกลบถาวรและกู้คืนไม่ได้ สถิติและไฟล์ดาวน์โหลดจะไม่นับรายการเหล่านี้อีก ถ้าผู้เล่นคนเดิมเล่นจบใหม่ ผลใหม่จะถูกบันทึกตามปกติ</p>
@@ -1354,7 +1351,7 @@ function howto(){modal(`<h2>วิธีเล่น Ideal Company</h2><div clas
  <ol><li><b>ข้อมูลผู้เล่น</b> กรอกข้อมูลพื้นฐาน บริษัท และตำแหน่ง ถ้ายังไม่มีประสบการณ์ทำงาน เปิดโหมดบริษัทจำลอง</li>
  <li><b>บทที่ 1 Reality Quest</b> ตอบภารกิจ 32 ข้อต่อเนื่องกันว่าข้อความจริงกับบริษัทของคุณแค่ไหน พักแล้วกลับมาตอบต่อได้</li>
  <li><b>บทที่ 2 Satisfaction Scanner</b> ดูตึกว่าชั้นไหนแข็งแรง ชั้นไหนต้องเสริม และ 3 ชั้นที่ควรพัฒนาก่อน</li>
- <li><b>บทที่ 3 Change Maker</b> เสนอไอเดียพัฒนา ไอเดียที่บอกว่าจะทำอะไรและทำบ่อยแค่ไหนได้ดาวและ XP มากกว่า</li></ol>
+ <li><b>บทที่ 3 Change Maker</b> เขียนข้อเสนอแนะ แล้วกดส่งคำตอบ</li></ol>
  <p class="muted" style="font-size:13px">ไม่มีคำตอบถูกหรือผิด เมื่อจบบทที่ 3 คำตอบจะถูกส่งให้ทีมผู้วิจัยแบบไม่ระบุตัวตน ชื่อรหัสและหน้าตาตัวละครไม่ถูกส่ง</p>
  <div class="row" style="justify-content:flex-end;margin-top:14px"><button class="btn primary" data-action="closeModal">เข้าใจแล้ว</button></div>`);}
 function askReset(){modal(`<h2>เริ่มภารกิจใหม่?</h2><p class="muted">คำตอบ ไอเดีย และ XP ทั้งหมดในเครื่องนี้จะถูกล้าง</p><div class="row" style="justify-content:flex-end;margin-top:16px"><button class="btn ghost" data-action="closeModal">ยกเลิก</button><button class="btn primary" data-action="doReset">ล้างและเริ่มใหม่</button></div>`);}
@@ -1413,7 +1410,7 @@ document.addEventListener('click',e=>{const el=e.target.closest('[data-action]')
   case'submitIdea':{const d=+el.dataset.d,t=document.getElementById('idea'+d).value,st=rateIdea(t);
     if(!st){document.getElementById('res'+d).innerHTML='<span class="err">เขียนไอเดียอย่างน้อย 1 ประโยค</span>';return;}
     saveIdeaDrafts();const prev=S.ideas[d]?.stars||0;withXP(()=>{S.ideas[d]={text:t.trim(),stars:Math.max(st,prev)}},st===5?'ไอเดียระดับ 5 ดาว':'ส่งไอเดียแล้ว');break;}
-  case'finish':{saveIdeaDrafts();if(!Object.values(S.ideas).some(i=>i.stars)){document.getElementById('ideaErr').hidden=false;return;}withXP(()=>{S.finished=true;S.submitted=false;S.screen='report'},'ภารกิจสำเร็จ');window.scrollTo(0,0);submit();break;}
+  case'finish':{saveIdeaDrafts();withXP(()=>{S.finished=true;S.submitted=false;S.screen='report'},'ภารกิจสำเร็จ');window.scrollTo(0,0);submit();break;}
   case'resubmit':submit();break;
   case'exportCsv':exportCsv();break;
   case'toggleSample':STATS.sample=!STATS.sample;STATS.csv='';render();break;}
