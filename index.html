@@ -671,7 +671,6 @@ function avatarScr(){const p=S.profile,sec=(t,keys)=>`<section class="pf-sec"><h
    ${sec('ข้อมูลส่วนตัว',['gender','ageYears','marital','family','edu'])}
    ${sec('การทำงาน',['unitCode','position','bossLevel','tenure'])}
    ${sec('การเดินทางและสุขภาพ',['distance','commute','hospital'])}
-   <button class="toggle" data-action="toggleSim" aria-pressed="${p.sim}"><span class="knob"></span><span><b style="font-family:var(--display)">ใช้โหมดบริษัทจำลอง</b><br><span class="muted" style="font-size:13px">สำหรับผู้ที่ยังไม่มีประสบการณ์ทำงาน ในบทที่ 1 คุณจะจินตนาการว่าทำงานที่ ${SIMCO} มาแล้ว 1 ปี</span></span></button>
    <p id="avErr" class="err" hidden></p>
    <div class="row" style="justify-content:space-between"><button class="btn ghost" data-action="home">ย้อนกลับ</button><button class="btn primary" data-action="enterCity">เริ่มภารกิจ</button></div>
   </div></main>`;}
@@ -716,7 +715,7 @@ function fresh(){return{screen:'home',profile:{style:0,skin:1,hair:0,outfit:1,co
   pos:0,answers:DIMS.map(D=>Array(D.items.length).fill(null)),cur:null,ideas:{},extra:'',sawGap:false,finished:false,demo:false};}
 let S=fresh();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&Array.isArray(o.answers)&&o.answers.length===ND+1){o.answers.splice(5,1);o.order=null;o.ideas={};if(o.pos)o.pos=0;}if(o&&o.answers&&o.answers.length===ND&&o.answers.every((a,d)=>a.length===DIMS[d].items.length))S=Object.assign(fresh(),o)}}catch(e){}}
+function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&Array.isArray(o.answers)&&o.answers.length===ND+1){o.answers.splice(5,1);o.order=null;o.ideas={};if(o.pos)o.pos=0;}if(o&&o.profile)o.profile.sim=false;if(o&&o.answers&&o.answers.length===ND&&o.answers.every((a,d)=>a.length===DIMS[d].items.length))S=Object.assign(fresh(),o)}}catch(e){}}
 
 /* ---------- scoring ---------- */
 const avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
@@ -1254,7 +1253,7 @@ function buildArticle(R){const A=agg(R),n=A.n,sat=satLevel(A.sat),order=[...A.di
   if(exs.length||ideaBy.length)B.push({h:`${sec+(good.length?2:1)}. ข้อเสนอแนะจากผู้ตอบ`,p:[`ผู้ตอบเขียนข้อเสนอแนะ ${exs.length} รายการ${exs.length>12?' ตัวอย่าง 12 รายการล่าสุด:':':'}`],ul:exs.slice(-12).reverse().concat(ideaBy.flatMap(o=>o.list.map(i=>`${nm(o.x)}: ${i.text}`)))});
   if(false)B.push({h:'',p:[`ผู้ตอบเสนอไอเดียทั้งหมด ${ideas.length} ไอเดีย ตัวอย่างไอเดียที่ได้ดาวสูงในด้านที่ควรพัฒนา:`],ul:ideaBy.flatMap(o=>o.list.map(i=>`${nm(o.x)}: ${i.text}`))});
   const last=B.length;
-  B.push({h:`${last}. ข้อจำกัด`,p:[`ผลนี้มาจากผู้ตอบ ${n} คน${n<30?' ซึ่งยังน้อย ควรตีความอย่างระมัดระวัง':''} เป็นการรายงานด้วยตนเอง (self-report) และเป็นค่าเฉลี่ยเชิงพรรณนา ผู้ตอบในโหมดบริษัทจำลองประเมินสถานการณ์สมมติ ไม่ใช่บริษัทจริง ควรแยกวิเคราะห์ก่อนนำไปใช้ตัดสินใจ`]});
+  B.push({h:`${last}. ข้อจำกัด`,p:[`ผลนี้มาจากผู้ตอบ ${n} คน${n<30?' ซึ่งยังน้อย ควรตีความอย่างระมัดระวัง':''} เป็นการรายงานด้วยตนเอง (self-report) และเป็นค่าเฉลี่ยเชิงพรรณนา`]});
   B.push({h:`${last+1}. สรุป`,p:[`ภาพรวมพนักงาน${sat.k==='ok'?'พึงพอใจต่อองค์กร':sat.k==='warn'?'พึงพอใจในระดับปานกลาง':'ยังไม่พึงพอใจต่อองค์กร'} โดยด้านที่ควรพัฒนาก่อนคือ ${order.slice(0,3).map(nm).join(' ')} องค์กรควรเริ่มจากมาตรการในด้านอันดับแรก กำหนดผู้รับผิดชอบและตัวชี้วัด แล้ววัดซ้ำด้วยเกมนี้ภายใน 6 เดือน เพื่อดูว่าความพึงพอใจเพิ่มขึ้นหรือไม่`]});
   return{title:`สรุปผลความพึงพอใจในงาน 15 ด้าน: ${filterLabel()}`,date:new Date().toLocaleDateString('th-TH',{dateStyle:'long'}),n,blocks:B};}
 function artHTML(a){const t=b=>b.table?`<div class="tbl-wrap"><table class="dtable"><thead><tr>${b.table.head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${b.table.rows.map(r=>`<tr>${r.map((c,i)=>`<td${i>1&&i<5?' class="n"':''}>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:'';
@@ -1341,7 +1340,7 @@ function withXP(fn,msg){const before=xp();fn();const gain=xp()-before;render();i
 function modal(html){const r=document.getElementById('modalRoot');r.innerHTML=`<div class="modal" data-action="closeModal"><div class="modal-box" role="dialog" aria-modal="true">${html}</div></div>`;}
 function closeModal(){document.getElementById('modalRoot').innerHTML='';}
 function howto(){modal(`<h2>วิธีเล่น Ideal Company</h2><div class="mascot-line">${mascotSVG()}<p class="muted">คุณคือ “นักออกแบบอนาคตขององค์กร” ร่วมกันสร้างตึก 15 ชั้นของ Ideal Company ซึ่งแทนความพึงพอใจในงาน 15 ด้าน ประยุกต์จากกรอบ Job Satisfaction Survey (JSS) ใช้เวลาประมาณ 10 นาที</p></div>
- <ol><li><b>ข้อมูลผู้เล่น</b> กรอกข้อมูลพื้นฐาน บริษัท และตำแหน่ง ถ้ายังไม่มีประสบการณ์ทำงาน เปิดโหมดบริษัทจำลอง</li>
+ <ol><li><b>ข้อมูลผู้เล่น</b> กรอกข้อมูลพื้นฐาน รหัสหน่วยงาน และตำแหน่ง</li>
  <li><b>บทที่ 1 Reality Quest</b> ตอบภารกิจ 30 ข้อต่อเนื่องกันว่าข้อความจริงกับบริษัทของคุณแค่ไหน พักแล้วกลับมาตอบต่อได้</li>
  <li><b>บทที่ 2 Satisfaction Scanner</b> ดูตึกว่าชั้นไหนแข็งแรง ชั้นไหนต้องเสริม และ 3 ชั้นที่ควรพัฒนาก่อน</li>
  <li><b>บทที่ 3 Change Maker</b> เขียนข้อเสนอแนะ แล้วกดส่งคำตอบ</li></ol>
