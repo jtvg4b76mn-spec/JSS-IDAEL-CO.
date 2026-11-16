@@ -449,12 +449,6 @@ const DIMS=[
   scen:'มีพนักงานลาออก 2 คนแต่ยังไม่รับคนใหม่ งานจึงตกอยู่กับคนที่ทำงานเร็ว และไม่มีช่องทางขอให้ทบทวนการแบ่งงาน',
   starters:['ทำตารางภาระงานรายสัปดาห์ให้ทุกคนเห็น','กำหนดอัตรากำลังขั้นต่ำต่อกะ','เปิดช่องทางขอทบทวนการแบ่งงาน'],
   items:[['ความสมดุลในการกระจายงาน ระหว่างพนักงานมีความเป็นธรรม',0],['ฉันสามารถแจ้งปัญหาเรื่องการกระจายภาระงานให้ผู้รับผิดชอบพิจารณาทบทวนใหม่ได้',0]]},
- {th:'โบนัส',en:'Bonus',place:'ห้องเก็บถ้วยรางวัล',
-  def:'ระดับความรู้สึกพึงพอใจของพนักงานที่มีต่อเงินโบนัสที่บริษัทจัดสรรให้ โดยพิจารณาจากความเหมาะสมของจำนวนเงิน ความเป็นธรรมในการพิจารณา ความชัดเจนของหลักเกณฑ์ ความสอดคล้องระหว่างโบนัสกับผลการปฏิบัติงานหรือผลประกอบการตามเงื่อนไขของบริษัท ตลอดจนความคาดหวังและการรับรู้ถึงคุณค่าของโบนัสที่ได้รับ',
-  ideal:'หากคุณคือเจ้าของบริษัท “โบนัสที่เป็นธรรมและสะท้อนคุณค่าของความทุ่มเท” ควรมีความสำคัญเพียงใด?',
-  scen:'บริษัทมีกำไรดีขึ้น แต่โบนัสเท่าเดิมทุกปี และไม่เคยอธิบายว่าใช้เกณฑ์ใดในการจัดสรร',
-  starters:['ประกาศสูตรคำนวณโบนัสล่วงหน้า','เชื่อมโบนัสกับผลประกอบการและผลงาน','สื่อสารเหตุผลของการจัดสรรทุกปี'],
-  items:[['ฉันรู้สึกว่าบริษัทพิจารณาการจัดสรรโบนัสอย่างเป็นธรรมสอดคล้องกับผลประกอบการ',0],['โบนัสที่ได้รับทำให้ฉันรับรู้ได้ว่าบริษัทเห็นคุณค่าในความเสียสละทุ่มเทให้กับงานของฉัน',0]]},
  {th:'ค่าล่วงเวลา',en:'Additional Compensation',place:'หอนาฬิกาค่าล่วงเวลา',
   def:'ระดับความรู้สึกพึงพอใจของพนักงานที่มีต่อค่าตอบแทนเพิ่มเติมจากเงินเดือนปกติ ได้แก่ ค่าล่วงเวลา ค่ากะ เบี้ยขยัน และเงินเพิ่มพิเศษประเภทอื่นที่เกี่ยวข้องกับการปฏิบัติงาน โดยพิจารณาจากความเหมาะสมของอัตราค่าตอบแทน ความชัดเจนของหลักเกณฑ์การคำนวณ ความถูกต้องและตรงเวลาของการจ่ายเงิน ตลอดจนความเป็นธรรมในการจัดสรรโอกาสในการทำงานที่ได้รับค่าตอบแทนเพิ่มเติม',
   ideal:'หากคุณคือเจ้าของบริษัท “ค่าล่วงเวลาและเงินเพิ่มที่คุ้มค่าและจ่ายถูกต้อง” ควรมีความสำคัญเพียงใด?',
@@ -605,7 +599,7 @@ function progressTab(){const P=progressData(),f=STATS.pf||(STATS.pf={div:'',sort
     <label for="pfSort">เรียง<select id="pfSort" class="field">${[['pctAsc','ตอบน้อยไปมาก'],['pctDesc','ตอบมากไปน้อย'],['size','หน่วยงานใหญ่ก่อน'],['code','ตามรหัส']].map(o=>`<option value="${o[0]}"${f.sort===o[0]?' selected':''}>${o[1]}</option>`).join('')}</select></label></div>
     <div class="tbl-wrap"><table class="dtable"><thead><tr><th>รหัส</th><th>หน่วยงาน</th><th class="n">พนักงาน</th><th class="n">ตอบแล้ว</th><th>ความคืบหน้า</th></tr></thead><tbody>
     ${U.map(u=>{const v=pctOf(u.r,u.h);return `<tr><td class="tnum" style="white-space:nowrap">${esc(fmtUnit(u.c))}</td><td style="min-width:220px">${esc(u.n)}</td><td class="n">${u.h}</td><td class="n">${u.r}</td><td style="min-width:180px"><span class="prow">${pbar(v)}<b class="tnum">${pct1(v)}</b></span></td></tr>`}).join('')}</tbody></table></div>
-    <p class="muted" style="font-size:12.5px;margin-top:8px">นับผู้ตอบ 1 คนต่อ 1 เครื่องที่ส่งคำตอบครบ 32 ข้อ (รวมผลการตอบที่เสีย) เทียบกับจำนวนพนักงานในไฟล์ที่อัปโหลดล่าสุด</p></div>
+    <p class="muted" style="font-size:12.5px;margin-top:8px">นับผู้ตอบ 1 คนต่อ 1 เครื่องที่ส่งคำตอบครบ 30 ข้อ (รวมผลการตอบที่เสีย) เทียบกับจำนวนพนักงานในไฟล์ที่อัปโหลดล่าสุด</p></div>
    ${STATS.sample?'':uploadPanel()}`;}
 function progressCsv(){const P=progressData(),q=v=>{const s=String(v==null?'':v);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
   const L=[['unit_code','unit_name','division','headcount','responded','percent'].join(',')];
@@ -722,7 +716,7 @@ function fresh(){return{screen:'home',profile:{style:0,skin:1,hair:0,outfit:1,co
   pos:0,answers:DIMS.map(D=>Array(D.items.length).fill(null)),cur:null,ideas:{},extra:'',sawGap:false,finished:false,demo:false};}
 let S=fresh();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&o.answers&&o.answers.length===ND&&o.answers.every((a,d)=>a.length===DIMS[d].items.length))S=Object.assign(fresh(),o)}}catch(e){}}
+function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&Array.isArray(o.answers)&&o.answers.length===ND+1){o.answers.splice(5,1);o.order=null;o.ideas={};if(o.pos)o.pos=0;}if(o&&o.answers&&o.answers.length===ND&&o.answers.every((a,d)=>a.length===DIMS[d].items.length))S=Object.assign(fresh(),o)}}catch(e){}}
 
 /* ---------- scoring ---------- */
 const avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
@@ -740,7 +734,7 @@ function xp(){let x=0;
   S.answers.forEach((a,d)=>{x+=a.filter(v=>v!=null).length*10;if(distDone(d))x+=30});
   Object.values(S.ideas).forEach(i=>{x+=(i.stars||0)*30});if(S.sawGap)x+=50;if(S.finished)x+=100;return x;}
 const BADGES=[
- {id:'explore',n:'นักสำรวจ 16 ชั้น',d:'สำรวจบริษัทจริงครบทุกด้าน',ok:()=>allReal()},
+ {id:'explore',n:'นักสำรวจ 15 ชั้น',d:'สำรวจบริษัทจริงครบทุกด้าน',ok:()=>allReal()},
  {id:'gap',n:'นักสแกนตึก',d:'เปิดดูผลสแกนความพึงพอใจ',ok:()=>S.sawGap},
  {id:'idea',n:'นักปฏิรูปองค์กร',d:'เขียนข้อเสนอแนะ',ok:()=>!!String(S.extra||'').trim()},
  {id:'done',n:'ผู้สร้าง Worktopia',d:'ทำภารกิจครบทั้ง 3 บท',ok:()=>S.finished}];
@@ -794,7 +788,6 @@ const ICONS=[
  '<path d="M12 11v10M8.5 21h7"/><circle cx="12" cy="9.5" r="1.6"/><path d="M8.6 6.1a5 5 0 0 0 0 6.8M15.4 6.1a5 5 0 0 1 0 6.8M6 3.6a8.6 8.6 0 0 0 0 11.8M18 3.6a8.6 8.6 0 0 1 0 11.8"/>',
  '<rect x="4" y="5" width="16" height="15" rx="1.5"/><path d="M4 9.5h16M8.5 3v4M15.5 3v4M8 13h2M12 13h2M8 16.5h2M12 16.5h2"/>',
  '<circle cx="8.5" cy="8.5" r="2.8"/><circle cx="16" cy="9.5" r="2.3"/><path d="M3.5 19c.6-3.2 2.6-5 5-5s4.4 1.8 5 5"/><path d="M14 14.3c.6-.3 1.3-.5 2-.5 2 0 3.6 1.5 4.1 4.2"/>',
- '<path d="M7.5 4h9v5a4.5 4.5 0 0 1-9 0z"/><path d="M7.5 6H4.5a3 3 0 0 0 3 4M16.5 6h3a3 3 0 0 1-3 4"/><path d="M12 13.5V17M8.5 20h7M9.5 17h5"/>',
  '<circle cx="10" cy="10" r="6.5"/><path d="M10 6.5V10l2.5 1.5"/><circle cx="17" cy="17" r="3.5"/><path d="M17 15.5v3"/>',
  '<path d="M9 3.5 4 6l1.5 4.5 2-1v11h9v-11l2 1L20 6l-5-2.5c0 1.7-1.3 3-3 3s-3-1.3-3-3z"/>',
  '<path d="M4 17h16v2.5H4z"/><path d="M5.5 17a6.5 6.5 0 0 1 13 0"/><path d="M10 10.7V7h4v3.7"/>',
@@ -862,7 +855,7 @@ function shuffleOrder(){const a=FLAT.map((_,k)=>k);
 function ordAt(p){if(!validOrder(S.order)){S.order=shuffleOrder();save();}return FLAT[S.order[p]];}
 const nAns=()=>S.answers.flat().filter(v=>v!=null).length;
 function nextPos(from){for(let k=0;k<NT;k++){const p=((from||0)+k)%NT,[d,i]=ordAt(p);if(S.answers[d][i]==null)return p;}return -1;}
-function homeScr(){const demoReal=[2.6,2.4,3.4,2.8,2.5,2.6,3,3.3,3.2,3.6,3.1,2.4,2.5,3,3.4,2.8];
+function homeScr(){const demoReal=[2.6,2.4,3.4,2.8,2.5,3,3.3,3.2,3.6,3.1,2.4,2.5,3,3.4,2.8];
   const hasProgress=nAns()>0&&!S.demo;
   return `<main class="wrap screen"><section class="hero">
   <div><div class="logo"><svg width="46" height="46" viewBox="0 0 46 46" aria-hidden="true"><polygon points="23,3 43,14 23,25 3,14" fill="#3FD9F2"/><polygon points="3,14 23,25 23,44 3,33" fill="#11966C"/><polygon points="23,25 43,14 43,33 23,44" fill="#0B6E50"/></svg>
@@ -881,15 +874,15 @@ function homeScr(){const demoReal=[2.6,2.4,3.4,2.8,2.5,2.6,3,3.3,3.2,3.6,3.1,2.4
 
 function dossierHTML(){return `<div class="scenario"><b>แฟ้มข้อมูล ${SIMCO}</b><ul class="list-plain" style="margin-top:6px">${DIMS.map(d=>`<li>${d.scen}</li>`).join('')}</ul></div>`;}
 function ch2Scr(){const done=DIMS.filter((_,d)=>distDone(d)).length,ans=nAns(),np=nextPos(S.pos||0);
-  return `<main class="wrap screen"><div class="ch-head"><span class="eyebrow">Chapter 1 · Reality Quest</span><h2>สำรวจบริษัทจริง</h2><p>${S.profile.sim?`จินตนาการว่าคุณทำงานที่ ${SIMCO} มาแล้ว 1 ปี อ่านแฟ้มข้อมูลด้านล่างก่อนเริ่ม`:`นึกถึงการทำงานหรือการเรียนที่ ${esc(effOrg()||'องค์กรของคุณ')}`} แล้วตอบภารกิจ 32 ข้อต่อเนื่องกัน ตอบครบแต่ละด้าน ชั้นนั้นของตึกจะสร้างเสร็จ ไม่มีคำตอบถูกหรือผิด</p></div>
+  return `<main class="wrap screen"><div class="ch-head"><span class="eyebrow">Chapter 1 · Reality Quest</span><h2>สำรวจบริษัทจริง</h2><p>${S.profile.sim?`จินตนาการว่าคุณทำงานที่ ${SIMCO} มาแล้ว 1 ปี อ่านแฟ้มข้อมูลด้านล่างก่อนเริ่ม`:`นึกถึงการทำงานหรือการเรียนที่ ${esc(effOrg()||'องค์กรของคุณ')}`} แล้วตอบภารกิจ 30 ข้อต่อเนื่องกัน ตอบครบแต่ละด้าน ชั้นนั้นของตึกจะสร้างเสร็จ ไม่มีคำตอบถูกหรือผิด</p></div>
   <div class="two"><div class="panel map">${mapSVG({real:DIMS.map((_,d)=>realMean(d))})}${legend()}</div>
    <div class="panel stack">${S.profile.sim?dossierHTML():''}
-    <div class="stat-row"><div class="mini-stat"><div class="k">ตอบแล้ว</div><div class="v tnum">${ans} <small>จาก 32</small></div></div><div class="mini-stat"><div class="k">ชั้นที่สร้างเสร็จ</div><div class="v tnum">${done} <small>จาก 16</small></div></div></div>
-    ${np>=0?`<button class="btn primary xl" data-action="startRun">${ans?`ตอบต่อ ข้อที่ ${ans+1}`:'เริ่มตอบ 32 ข้อ'}</button>`:'<button class="btn primary xl" data-action="go" data-to="ch3">ดูผลสแกนในบทที่ 2</button>'}
+    <div class="stat-row"><div class="mini-stat"><div class="k">ตอบแล้ว</div><div class="v tnum">${ans} <small>จาก 30</small></div></div><div class="mini-stat"><div class="k">ชั้นที่สร้างเสร็จ</div><div class="v tnum">${done} <small>จาก 15</small></div></div></div>
+    ${np>=0?`<button class="btn primary xl" data-action="startRun">${ans?`ตอบต่อ ข้อที่ ${ans+1}`:'เริ่มตอบ 30 ข้อ'}</button>`:'<button class="btn primary xl" data-action="go" data-to="ch3">ดูผลสแกนในบทที่ 2</button>'}
    </div></div></main>`;}
 function missionScr(){const pos=S.pos||0,[d,i]=ordAt(pos),val=S.answers[d][i],ans=nAns();
   return `<main class="wrap screen"><div class="mission stack">
-  <div class="row" style="justify-content:space-between"><button class="btn sm ghost" data-action="go" data-to="ch2">พักไว้ก่อน</button><span class="muted tnum" style="font-size:13px">ข้อ ${pos+1} จาก 32</span></div>
+  <div class="row" style="justify-content:space-between"><button class="btn sm ghost" data-action="go" data-to="ch2">พักไว้ก่อน</button><span class="muted tnum" style="font-size:13px">ข้อ ${pos+1} จาก 30</span></div>
   <div class="runbar" aria-hidden="true"><i style="width:${ans/NT*100}%"></i></div>
   ${S.profile.sim?'<div><button class="btn sm cyan" data-action="dossier">ดูแฟ้มข้อมูลบริษัทจำลอง</button></div>':''}
   <div class="panel stack" style="padding:24px"><p class="muted" style="font-size:13px">ข้อความนี้จริงกับ${S.profile.sim?'บริษัทจำลอง':'บริษัทของคุณ'}แค่ไหน?</p>
@@ -925,7 +918,7 @@ function statsScr(){if(!ADMIN_OK)return homeScr();const t=STATS.tab||'stats';
    <div style="margin-top:18px">${body}</div>
    <textarea id="csvBox" class="field" readonly ${STATS.csv?'':'hidden'} style="min-height:140px;margin-top:14px;font-size:12px" aria-label="ข้อมูลสำหรับคัดลอก">${esc(STATS.csv)}</textarea></main>`;}
 function itemsTab(){const pos={};ORDER.forEach(([d,i],p)=>pos[IX(d,i)]=p+1);
-  return `<div class="panel"><h3 style="font-size:18px">ข้อคำถามบทที่ 1 (32 ข้อ)</h3><p class="muted" style="font-size:13px;margin:4px 0 10px">มาตร 1–5: ${AG.map((t,i)=>`${i+1} ${t}`).join(' · ')} ข้อเชิงลบ (R) กลับคะแนนเป็น 6 − คะแนนดิบ ลำดับในเกมสุ่มใหม่ให้ผู้เล่นแต่ละคน โดยข้อของด้านเดียวกันไม่อยู่ติดกัน (*ลำดับเริ่มต้นใช้เมื่อสุ่มไม่สำเร็จ) ดูลำดับที่แต่ละคนได้รับในแท็บจัดการข้อมูล › ดูคำตอบ</p>
+  return `<div class="panel"><h3 style="font-size:18px">ข้อคำถามบทที่ 1 (30 ข้อ)</h3><p class="muted" style="font-size:13px;margin:4px 0 10px">มาตร 1–5: ${AG.map((t,i)=>`${i+1} ${t}`).join(' · ')} ข้อเชิงลบ (R) กลับคะแนนเป็น 6 − คะแนนดิบ ลำดับในเกมสุ่มใหม่ให้ผู้เล่นแต่ละคน โดยข้อของด้านเดียวกันไม่อยู่ติดกัน (*ลำดับเริ่มต้นใช้เมื่อสุ่มไม่สำเร็จ) ดูลำดับที่แต่ละคนได้รับในแท็บจัดการข้อมูล › ดูคำตอบ</p>
    <div class="tbl-wrap"><table class="dtable"><thead><tr><th class="n">รหัส</th><th class="n">ลำดับเริ่มต้น*</th><th>ด้าน</th><th>ข้อความ</th><th>ทิศทาง</th></tr></thead><tbody>
    ${DIMS.flatMap((D,d)=>D.items.map((it,i)=>`<tr><td class="n">${IX(d,i)+1}</td><td class="n">${pos[IX(d,i)]}</td><td style="white-space:nowrap">${D.th}</td><td style="min-width:240px">${it[0]}</td><td>${it[1]?'<span class="rev">ลบ (R)</span>':'บวก'}</td></tr>`)).join('')}</tbody></table></div></div>
   <div class="panel" style="margin-top:20px"><h3 style="font-size:18px;margin-bottom:10px">สถานการณ์ของ${SIMCO}</h3>
@@ -934,7 +927,7 @@ function itemsTab(){const pos={};ORDER.forEach(([d,i],p)=>pos[IX(d,i)]=p+1);
 function siteTab(){return `<div class="panel stack"><h3 style="font-size:18px">โครงสร้างเกม</h3>
   <div class="tbl-wrap"><table class="dtable"><thead><tr><th>ขั้น</th><th>สิ่งที่ผู้เล่นทำ</th><th>ข้อมูลที่ได้</th><th>ผู้เล่นเห็นอะไร</th></tr></thead><tbody>
    <tr><td>ข้อมูลผู้เล่น</td><td>กรอกเพศ อายุ บริษัท ตำแหน่ง อายุงาน และข้อมูลการเดินทาง</td><td>ช่วงอายุ สถานะ โหมด (ไม่ส่งชื่อรหัสหรือหน้าตา)</td><td>ตัวละครของตน</td></tr>
-   <tr><td>บทที่ 1 Reality Quest</td><td>ตอบ 32 ข้อต่อเนื่อง สุ่มลำดับใหม่ทุกคน ด้านเดียวกันไม่ติดกัน</td><td>item_raw_1–32</td><td>ชั้นของตึกเมื่อตอบครบด้าน</td></tr>
+   <tr><td>บทที่ 1 Reality Quest</td><td>ตอบ 30 ข้อต่อเนื่อง สุ่มลำดับใหม่ทุกคน ด้านเดียวกันไม่ติดกัน</td><td>item_raw_1–30</td><td>ชั้นของตึกเมื่อตอบครบด้าน</td></tr>
    <tr><td>บทที่ 2 Satisfaction Scanner</td><td>ดูตึกผลลัพธ์</td><td>คำนวณความพึงพอใจรายด้าน</td><td>สีชั้น 3 ระดับ และ 3 ชั้นที่ควรพัฒนา ไม่มีตัวเลข</td></tr>
    <tr><td>บทที่ 3 Change Maker</td><td>เขียนข้อเสนอแนะ 1 ช่อง ไม่บังคับ</td><td>extra</td><td>—</td></tr>
    <tr><td>ใบรับรองภารกิจ</td><td>ดูบุคลิกภาพผลลัพธ์และเหรียญ</td><td>ส่งผลอัตโนมัติ 1 รายการต่อบัญชี (ผลล่าสุดแทนที่)</td><td>สถานะการส่งผล</td></tr></tbody></table></div>
@@ -944,7 +937,7 @@ function siteTab(){return `<div class="panel stack"><h3 style="font-size:18px">�
    <li>สีชั้นฝั่งผู้เล่น: เขียว ≥ 3.67 · เหลือง 2.34–3.66 · แดง ≤ 2.33</li></ul>
   <h3 style="font-size:18px">ข้อมูลที่เก็บต่อผู้เล่น 1 คน</h3>
   <div class="tbl-wrap"><table class="dtable"><thead><tr><th>ฟิลด์</th><th>ความหมาย</th></tr></thead><tbody>
-   ${[['at','เวลาที่ส่งผล'],['age','ช่วงอายุ'],['org','บริษัทหรือองค์กรที่เลือก'],...DEMOG_KEYS.map(k=>[k,DEMOG_LABEL[k]+(k==='generation'?' (คำนวณจากอายุ)':'')]),['status','สถานะ'],['sim','true = ประเมินบริษัทจำลอง'],['items','คะแนนดิบ 32 ข้อ เรียงตามรหัสข้อ 1–32 (ก่อนกลับคะแนน)'],['ideas','ไอเดีย: ด้าน ข้อความ ดาว'],['extra','ข้อเสนอแนะอื่น'],['persona','บุคลิกภาพผลลัพธ์ที่ผู้เล่นเห็น'],['xp','คะแนนสะสม']].map(r=>`<tr><td><code>${r[0]}</code></td><td>${r[1]}</td></tr>`).join('')}</tbody></table></div>
+   ${[['at','เวลาที่ส่งผล'],['age','ช่วงอายุ'],['org','บริษัทหรือองค์กรที่เลือก'],...DEMOG_KEYS.map(k=>[k,DEMOG_LABEL[k]+(k==='generation'?' (คำนวณจากอายุ)':'')]),['status','สถานะ'],['sim','true = ประเมินบริษัทจำลอง'],['items','คะแนนดิบ 30 ข้อ เรียงตามรหัสข้อ 1–30 (ก่อนกลับคะแนน)'],['ideas','ไอเดีย: ด้าน ข้อความ ดาว'],['extra','ข้อเสนอแนะอื่น'],['persona','บุคลิกภาพผลลัพธ์ที่ผู้เล่นเห็น'],['xp','คะแนนสะสม']].map(r=>`<tr><td><code>${r[0]}</code></td><td>${r[1]}</td></tr>`).join('')}</tbody></table></div>
   <h3 style="font-size:18px">สิทธิ์และความเป็นส่วนตัว</h3><ul class="list-plain"><li>เมื่อใส่ URL ของ Apps Script ใน index.html ผู้เล่นทุกคนส่งผลอัตโนมัติโดยไม่ต้องมีบัญชี ถ้ายังไม่ใส่ ผู้เล่นได้รหัสผลลัพธ์ไปส่งให้ผู้จัด แล้วนำเข้าในแท็บจัดการข้อมูล</li>
    <li>หน้าเกมของผู้เล่นไม่แสดงผลของคนอื่น ผลรวมเปิดดูได้จากส่วน Admin ทุกเครื่องที่ใส่รหัสผู้ดูแลถูกต้อง</li>
    <li>รหัสผู้ดูแลเป็นตัวกั้นหลักของส่วน Admin ควรเก็บรหัสไว้เฉพาะทีมผู้วิจัย</li>
@@ -952,9 +945,9 @@ function siteTab(){return `<div class="panel stack"><h3 style="font-size:18px">�
    <li>แท็บจัดการข้อมูลลบผลได้จากทุกเครื่องที่ใส่รหัสถูกต้อง การลบเป็นการลบถาวร</li></ul></div>`;}
 function downloadTab(){const all=STATS.rows.filter(usableRow),sp=spoiledRows();
   return `<div class="dl-grid">
-   <div class="panel stack"><h3 style="font-size:17px">ผลของผู้เล่น (CSV)</h3><p class="muted" style="font-size:13.5px">1 แถวต่อผู้เล่น: ข้อมูลกลุ่ม ความพึงพอใจ 16 ด้าน คะแนนดิบ 32 ข้อ และไอเดีย เปิดใน Excel ได้ภาษาไทย</p><p class="tnum">${all.length} คน</p><button class="btn primary" data-action="dl" data-k="csv" ${all.length?'':'disabled'}>ดาวน์โหลด CSV</button></div>
+   <div class="panel stack"><h3 style="font-size:17px">ผลของผู้เล่น (CSV)</h3><p class="muted" style="font-size:13.5px">1 แถวต่อผู้เล่น: ข้อมูลกลุ่ม ความพึงพอใจ 15 ด้าน คะแนนดิบ 30 ข้อ และไอเดีย เปิดใน Excel ได้ภาษาไทย</p><p class="tnum">${all.length} คน</p><button class="btn primary" data-action="dl" data-k="csv" ${all.length?'':'disabled'}>ดาวน์โหลด CSV</button></div>
    <div class="panel stack"><h3 style="font-size:17px">ข้อมูลดิบ (JSON)</h3><p class="muted" style="font-size:13.5px">ทุกรายการตามที่ระบบเก็บ ไม่มีรหัสบัญชี เหมาะสำหรับนำไปวิเคราะห์ต่อ</p><p class="tnum">${all.length} รายการ</p><button class="btn" data-action="dl" data-k="json" ${all.length?'':'disabled'}>ดาวน์โหลด JSON</button></div>
-   <div class="panel stack"><h3 style="font-size:17px">ชุดข้อคำถามและเฉลย (CSV)</h3><p class="muted" style="font-size:13.5px">32 ข้อ พร้อมด้าน ทิศทาง และลำดับในเกม</p><p class="tnum">32 แถว</p><button class="btn" data-action="dl" data-k="key">ดาวน์โหลดเฉลย</button></div>
+   <div class="panel stack"><h3 style="font-size:17px">ชุดข้อคำถามและเฉลย (CSV)</h3><p class="muted" style="font-size:13.5px">30 ข้อ พร้อมด้าน ทิศทาง และลำดับในเกม</p><p class="tnum">30 แถว</p><button class="btn" data-action="dl" data-k="key">ดาวน์โหลดเฉลย</button></div>
    <div class="panel stack"><h3 style="font-size:17px">ผลการตอบที่เสีย (CSV)</h3><p class="muted" style="font-size:13.5px">รายการที่ตอบตัวเลขเดียวกันทุกข้อ แยกไว้ตรวจสอบ ไม่รวมในไฟล์ผลของผู้เล่น</p><p class="tnum">${sp.length} รายการ</p><button class="btn" data-action="dl" data-k="spoiled" ${sp.length?'':'disabled'}>ดาวน์โหลดผลที่เสีย</button></div></div>
    ${all.length?'':`<p class="muted" style="margin-top:12px">${DB?(STATS.err?'โหลดข้อมูลไม่ได้':'ยังไม่มีผู้เล่นส่งผล'):'ยังไม่ได้เชื่อมต่อระบบเก็บผล'}</p>`}`;}
 function keyCsv(){const q=v=>{const s=String(v);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};const pos={};ORDER.forEach(([d,i],p)=>pos[IX(d,i)]=p+1);
@@ -976,7 +969,7 @@ function playerLevel(m){if(m>=3.67)return{k:'ok',t:'พึงพอใจ'};if(m
 function ch3Scr(){const ds=DIMS.map((_,d)=>d),top=topDims(),strong=ds.filter(d=>realMean(d)>=3.67).sort((a,b)=>realMean(b)-realMean(a));
   const tint=ds.map(d=>{const k=playerLevel(realMean(d)).k;return k==='ok'?'':k});
   const nBad=ds.filter(d=>playerLevel(realMean(d)).k!=='ok').length;
-  return `<main class="wrap screen"><div class="ch-head"><span class="eyebrow">Chapter 2 · Satisfaction Scanner</span><h2>ตึกของเราแข็งแรงแค่ไหน</h2><p>สแกนตึกเสร็จแล้ว ตึก 1 ตึกมี 16 ชั้น ชั้นละ 1 ด้าน ชั้นยิ่งกว้างยิ่งพึงพอใจ สีของแต่ละชั้นบอกระดับความพึงพอใจของคุณ</p></div>
+  return `<main class="wrap screen"><div class="ch-head"><span class="eyebrow">Chapter 2 · Satisfaction Scanner</span><h2>ตึกของเราแข็งแรงแค่ไหน</h2><p>สแกนตึกเสร็จแล้ว ตึก 1 ตึกมี 15 ชั้น ชั้นละ 1 ด้าน ชั้นยิ่งกว้างยิ่งพึงพอใจ สีของแต่ละชั้นบอกระดับความพึงพอใจของคุณ</p></div>
   <div class="two"><div class="panel map">${mapSVG({real:ds.map(realMean),tint})}${legend('<span><i class="sw bg-ok"></i>พึงพอใจ</span><span><i class="sw bg-warn"></i>ปานกลาง</span><span><i class="sw bg-bad"></i>ไม่พึงพอใจ</span>')}</div>
    <div class="panel stack"><div class="mascot-line">${mascotSVG()}<div class="bubble">${nBad===0?'คุณพึงพอใจกับที่ทำงานแทบทุกชั้นเลย':nBad>=6?`มี ${nBad} ชั้นที่ยังต้องเสริมความแข็งแรง ภารกิจบทที่ 3 สำคัญมาก`:`มี ${nBad} ชั้นที่ยังต้องเสริมความแข็งแรง มาช่วยกันออกแบบทางแก้ในบทที่ 3`}</div></div>
     <h3 style="font-size:17px">ชั้นที่ควรพัฒนาก่อน</h3>
@@ -1031,6 +1024,8 @@ async function submit(){if(S.demo){SUB={s:'demo'};return paintSub();}
 let STATS={rows:[],loaded:false,err:null,sample:false,f:{org:'',age:'',status:'',mode:'',generation:'',gender:'',dept:'',tenure:''},unsub:null,csv:'',tab:'stats'};
 const clamp=v=>Math.min(5,Math.max(1,v));
 const isScore=v=>Number.isInteger(v)&&v>=1&&v<=5;
+function legacyRow(r){if(r&&Array.isArray(r.items)&&r.items.length===NT+2){r=Object.assign({},r,{items:r.items.filter((_,k)=>k!==10&&k!==11),legacy32:true});
+  if(Array.isArray(r.order)&&r.order.length===NT+2)r.order=r.order.filter(x=>x!==10&&x!==11).map(x=>x>11?x-2:x);else r.order=null;}return r;}
 function validRow(r){return r&&Array.isArray(r.items)&&r.items.length===NT&&r.items.every(isScore);}
 function isStraight(r){return Array.isArray(r.items)&&r.items.length>0&&r.items.every(v=>v===r.items[0]);}
 function usableRow(r){return validRow(r)&&!isStraight(r);}
@@ -1039,7 +1034,7 @@ function rowReal(r){return DIMS.map((D,d)=>avg(D.items.map((it,i)=>{const v=r.it
 function rowIdeas(r){return Array.isArray(r.ideas)?r.ideas.filter(i=>i&&Number.isInteger(i.d)&&i.d>=0&&i.d<ND&&typeof i.text==='string'):[];}
 function sd(a){const m=avg(a);return Math.sqrt(avg(a.map(x=>(x-m)**2)));}
 function prng(seed){let s=seed;return()=>{s=(s*1664525+1013904223)%4294967296;return s/4294967296;};}
-function sampleRows(){const rnd=prng(42),out=[],base=[2.7,2.5,3.4,2.8,2.6,2.6,3.0,3.3,3.2,3.6,3.1,2.5,2.5,3.0,3.3,2.8];
+function sampleRows(){const rnd=prng(42),out=[],base=[2.7,2.5,3.4,2.8,2.6,3.0,3.3,3.2,3.6,3.1,2.5,2.5,3.0,3.3,2.8];
   for(let n=0;n<36;n++){const age=AGES[1+Math.floor(rnd()*4)],status='',sim=rnd()<.15,shift=(rnd()-.5)*1.2;
     const items=[];
     DIMS.forEach((D,d)=>D.items.forEach(it=>{const v=clamp(Math.round(base[d]+shift+(rnd()-.5)*2));items.push(it[1]?6-v:v)}));
@@ -1056,7 +1051,7 @@ function agg(R){const reals=R.map(rowReal);
 function groups(R,reals,fn,keys){return keys.map(k=>{const idx=R.map((_,i)=>i).filter(i=>fn(R[i])===k);return{k,n:idx.length,sat:idx.length?avg(idx.map(i=>avg(reals[i]))):0};}).filter(x=>x.n);}
 function hbars(list){return list.map(g=>{const L=satLevel(g.sat);return `<div class="hbar"><span>${esc(g.k)}</span><span class="tr"><i class="bg-${L.k}" style="width:${(g.sat-1)/4*100}%"></i></span><span class="vl">${f1(g.sat)} · ${g.n} คน</span></div>`}).join('');}
 function ensureSub(){if(STATS.unsub||!DB)return;
-  try{STATS.unsub=DB.collection('responses').limit(1000).onSnapshot(s=>{STATS.rows=s.docs.filter(d=>d.exists).map(d=>Object.assign({},d.data(),{id:d.id}));STATS.loaded=true;STATS.err=null;if(S.screen==='stats')render();},
+  try{STATS.unsub=DB.collection('responses').limit(1000).onSnapshot(s=>{STATS.rows=s.docs.filter(d=>d.exists).map(d=>legacyRow(Object.assign({},d.data(),{id:d.id})));STATS.loaded=true;STATS.err=null;if(S.screen==='stats')render();},
     e=>{STATS.err=(e&&e.code)||'error';STATS.unsub=null;if(S.screen==='stats')render();});}catch(e){STATS.err='error';}}
 function filteredRows(){const all=(STATS.sample?sampleRows():STATS.rows).filter(usableRow),f=STATS.f;
   return{all,R:all.filter(r=>orgMatch(r,f.org)&&(!f.age||r.age===f.age)&&(!f.generation||r.generation===f.generation)&&(!f.gender||r.gender===f.gender)&&(!f.position||r.position===f.position)&&(!f.bossLevel||r.bossLevel===f.bossLevel)&&(!f.tenure||r.tenure===f.tenure)&&(!f.status||r.status===f.status)&&(!f.mode||(f.mode==='sim')===!!r.sim)).sort((a,b)=>String(b.at||'').localeCompare(String(a.at||'')))};}
@@ -1089,7 +1084,7 @@ function statsTab(){
     const extras=R.filter(r=>typeof r.extra==='string'&&r.extra.trim()).map(r=>r.extra.trim());
     body=`<div class="kpis"><div class="kpi"><div class="k">ผู้ตอบ</div><div class="v tnum">${A.n}<small> คน</small></div><div class="s muted">จากทั้งหมด ${all.length} คน</div></div>
       <div class="kpi"><div class="k">ความพึงพอใจเฉลี่ย</div><div class="v tnum">${f1(A.sat)}<small> / 5</small></div><div class="s c-${sat.k}">${sat.t}</div></div>
-      <div class="kpi"><div class="k">ด้านที่พึงพอใจ</div><div class="v tnum">${A.pctOk}<small>%</small></div><div class="s muted">ของ 16 ด้าน (ค่าเฉลี่ย ≥ 3.67)</div></div>
+      <div class="kpi"><div class="k">ด้านที่พึงพอใจ</div><div class="v tnum">${A.pctOk}<small>%</small></div><div class="s muted">ของ 15 ด้าน (ค่าเฉลี่ย ≥ 3.67)</div></div>
       <div class="kpi"><div class="k">ด้านที่ไม่พึงพอใจ</div><div class="v tnum c-${A.nLow?'bad':'ok'}">${A.nLow}<small> ด้าน</small></div><div class="s muted">ค่าเฉลี่ย ≤ 2.33</div></div></div>
      <div class="two"><div class="panel"><h3 style="font-size:18px;margin-bottom:8px">ความพึงพอใจรายด้าน เรียงจากต่ำไปสูง</h3>
        <div class="axis"><span></span><div class="scale">${[1,2,3,4,5].map(v=>`<span style="left:${pct(v)}%">${v}</span>`).join('')}</div><span style="text-align:right">ค่าเฉลี่ย</span></div><div class="dumb">${dumb}</div>
@@ -1205,8 +1200,6 @@ const IOP=[
   acts:['ประกาศตารางกะล่วงหน้าอย่างน้อย 2 สัปดาห์ และกำหนดเงื่อนไขการเปลี่ยนกะที่ชัดเจน','ใช้ระบบขอลาและสลับกะออนไลน์ที่โปร่งใส อนุมัติตามสิทธิโดยไม่ต้องเจรจา','สื่อสารกับหัวหน้างานว่าการใช้สิทธิลาตามระเบียบเป็นเรื่องปกติ และติดตามข้อร้องเรียน']},
  {theory:'แบบจำลองความต้องการ–ทรัพยากรในงาน (JD-R) และความยุติธรรมเชิงการแบ่งสรร (Distributive Justice)',why:'ภาระงานที่มากเกินและแบ่งไม่เท่ากันเป็นความต้องการในงานที่นำไปสู่ภาวะหมดไฟ (burnout) โดยเฉพาะกับคนที่ทำงานเร็วซึ่งมักได้งานเพิ่ม เมื่อไม่มีช่องทางขอทบทวน พนักงานจะรู้สึกไม่เป็นธรรม',
   acts:['วิเคราะห์ภาระงานและอัตรากำลังของแต่ละหน่วยงาน และเร่งสรรหาตำแหน่งที่ว่าง','ทำตารางแบ่งงานที่ทุกคนเห็น และหมุนเวียนงานหนักอย่างเป็นธรรม','เปิดช่องทางขอทบทวนภาระงาน พร้อมกำหนดผู้รับผิดชอบและระยะเวลาตอบกลับ']},
- {theory:'ทฤษฎีความคาดหวัง (Expectancy Theory) ของ Vroom และทฤษฎีความเสมอภาค (Equity Theory) ของ Adams',why:'โบนัสจูงใจได้เมื่อพนักงานเห็นว่าความทุ่มเทนำไปสู่ผลงาน และผลงานนำไปสู่รางวัลที่มีคุณค่า หากเกณฑ์ไม่ชัดหรือไม่สอดคล้องกับผลประกอบการ โบนัสจะไม่สร้างแรงจูงใจ และอาจถูกมองว่าไม่เป็นธรรม',
-  acts:['ประกาศหลักเกณฑ์และสูตรการจัดสรรโบนัสล่วงหน้า','เชื่อมโบนัสกับผลประกอบการและผลการปฏิบัติงานที่วัดได้','อธิบายเหตุผลของการจัดสรรทุกปี และเพิ่มการชื่นชมที่ไม่ใช่ตัวเงินควบคู่กัน']},
  {theory:'ทฤษฎีความเสมอภาค (Equity Theory) และความยุติธรรมเชิงกระบวนการ (Procedural Justice)',why:'ค่าล่วงเวลาเป็นสิ่งตอบแทนที่พนักงานเทียบกับเวลาและแรงที่เสียไปโดยตรง ความผิดพลาดซ้ำ ๆ ในการคำนวณทำให้รู้สึกว่าความทุ่มเทไม่ได้รับการยอมรับ และลดความเชื่อมั่นต่อระบบ',
   acts:['ใช้ระบบบันทึกเวลาอัตโนมัติ และให้พนักงานตรวจสอบชั่วโมงของตนได้','แสดงรายละเอียดการคำนวณค่าล่วงเวลาและค่ากะในสลิปเงินเดือน','กำหนดเกณฑ์จัดสรรงานล่วงเวลาอย่างเป็นธรรม และทบทวนอัตราให้เหมาะกับภาระ']},
  {theory:'ทฤษฎีสองปัจจัยของ Herzberg (ปัจจัยค้ำจุน) และการยศาสตร์ (Ergonomics)',why:'เครื่องแบบและอุปกรณ์สวมใส่เป็นปัจจัยค้ำจุน ถ้าไม่เหมาะกับสภาพงานจะทำให้ไม่สบายตัว เสี่ยงอันตราย และไม่พอใจทันที การรอเปลี่ยนนานยังส่งสัญญาณว่าองค์กรไม่ใส่ใจความเป็นอยู่ของพนักงาน',
@@ -1241,10 +1234,10 @@ function buildArticle(R){const A=agg(R),n=A.n,sat=satLevel(A.sat),order=[...A.di
   const ideas=R.flatMap(r=>rowIdeas(r)).sort((a,b)=>b.stars-a.stars);
   const ideaBy=order.slice(0,3).map(x=>({x,list:ideas.filter(i=>i.d===x.d).slice(0,3)})).filter(o=>o.list.length);
   const B=[];
-  B.push({h:'บทคัดย่อ',p:[`การสำรวจความพึงพอใจในงานผ่านเกม Ideal Company มีผู้ตอบ ${n} คน (${filterLabel()}) โดยวัดการรับรู้สภาพการทำงานจริง 16 ด้าน ซึ่งประยุกต์จากกรอบ Job Satisfaction Survey (JSS) ของ Spector ให้เข้ากับบริบทของบริษัท ผลพบว่าความพึงพอใจเฉลี่ยอยู่ที่ ${f1(A.sat)} จาก 5 อยู่ในระดับ${sat.t} มีด้านที่อยู่ในระดับพึงพอใจ ${A.pctOk}% ของทั้งหมด ด้านที่ควรพัฒนาเป็นลำดับแรกคือ ${order.slice(0,3).map(nm).join(' ')}`]});
+  B.push({h:'บทคัดย่อ',p:[`การสำรวจความพึงพอใจในงานผ่านเกม Ideal Company มีผู้ตอบ ${n} คน (${filterLabel()}) โดยวัดการรับรู้สภาพการทำงานจริง 15 ด้าน ซึ่งประยุกต์จากกรอบ Job Satisfaction Survey (JSS) ของ Spector ให้เข้ากับบริบทของบริษัท ผลพบว่าความพึงพอใจเฉลี่ยอยู่ที่ ${f1(A.sat)} จาก 5 อยู่ในระดับ${sat.t} มีด้านที่อยู่ในระดับพึงพอใจ ${A.pctOk}% ของทั้งหมด ด้านที่ควรพัฒนาเป็นลำดับแรกคือ ${order.slice(0,3).map(nm).join(' ')}`]});
   const nSp=spoiledRows().length;
   B.push({h:'1. ที่มาและวิธีการ',p:['ความพึงพอใจในงาน (job satisfaction) เป็นทัศนคติของพนักงานที่มีต่องานและองค์ประกอบต่าง ๆ ของงาน งานวิจัยด้านจิตวิทยาอุตสาหกรรมและองค์การพบว่าเกี่ยวข้องกับความผูกพันต่อองค์การ พฤติกรรมการเป็นสมาชิกที่ดี และความตั้งใจลาออก การสำรวจนี้แยกความพึงพอใจออกเป็นรายด้าน เพื่อให้องค์กรรู้ว่าควรพัฒนาเรื่องใดก่อน',
-    'ผู้ตอบประเมินข้อความเกี่ยวกับบริษัทจริง 32 ข้อ (ด้านละ 2 ข้อ) ด้วยมาตร 1–5 ข้อเชิงลบกลับคะแนนเป็น 6 − คะแนนดิบ แล้วเฉลี่ยเป็นคะแนนรายด้าน แปลผล 3.67–5.00 พึงพอใจ 2.34–3.66 ปานกลาง 1.00–2.33 ไม่พึงพอใจ และจัดลำดับที่ควรพัฒนาจากค่าเฉลี่ยต่ำไปสูง']});
+    'ผู้ตอบประเมินข้อความเกี่ยวกับบริษัทจริง 30 ข้อ (ด้านละ 2 ข้อ) ด้วยมาตร 1–5 ข้อเชิงลบกลับคะแนนเป็น 6 − คะแนนดิบ แล้วเฉลี่ยเป็นคะแนนรายด้าน แปลผล 3.67–5.00 พึงพอใจ 2.34–3.66 ปานกลาง 1.00–2.33 ไม่พึงพอใจ และจัดลำดับที่ควรพัฒนาจากค่าเฉลี่ยต่ำไปสูง']});
   B.push({h:'2. ผลการสำรวจภาพรวม',p:[`ความพึงพอใจเฉลี่ยทุกด้านเท่ากับ ${f1(A.sat)} (${sat.t}) ด้านที่ได้คะแนนสูงสุดคือ ${hiReal.map(x=>`${nm(x)} (${f1(x.rm)})`).join(' ')} และต่ำสุดคือ ${loReal.map(x=>`${nm(x)} (${f1(x.rm)})`).join(' ')}`,
     urgent.length?`มี ${urgent.length} ด้านที่อยู่ในระดับไม่พึงพอใจ (ไม่เกิน 2.33) ซึ่งควรพัฒนาเร่งด่วน ได้แก่ ${lst(urgent)}`:`ไม่มีด้านใดอยู่ในระดับไม่พึงพอใจ`,
     improve.length?`ด้านที่พึงพอใจปานกลางและควรพัฒนา (2.34–3.66) ได้แก่ ${lst(improve)}`:'',
@@ -1263,7 +1256,7 @@ function buildArticle(R){const A=agg(R),n=A.n,sat=satLevel(A.sat),order=[...A.di
   const last=B.length;
   B.push({h:`${last}. ข้อจำกัด`,p:[`ผลนี้มาจากผู้ตอบ ${n} คน${n<30?' ซึ่งยังน้อย ควรตีความอย่างระมัดระวัง':''} เป็นการรายงานด้วยตนเอง (self-report) และเป็นค่าเฉลี่ยเชิงพรรณนา ผู้ตอบในโหมดบริษัทจำลองประเมินสถานการณ์สมมติ ไม่ใช่บริษัทจริง ควรแยกวิเคราะห์ก่อนนำไปใช้ตัดสินใจ`]});
   B.push({h:`${last+1}. สรุป`,p:[`ภาพรวมพนักงาน${sat.k==='ok'?'พึงพอใจต่อองค์กร':sat.k==='warn'?'พึงพอใจในระดับปานกลาง':'ยังไม่พึงพอใจต่อองค์กร'} โดยด้านที่ควรพัฒนาก่อนคือ ${order.slice(0,3).map(nm).join(' ')} องค์กรควรเริ่มจากมาตรการในด้านอันดับแรก กำหนดผู้รับผิดชอบและตัวชี้วัด แล้ววัดซ้ำด้วยเกมนี้ภายใน 6 เดือน เพื่อดูว่าความพึงพอใจเพิ่มขึ้นหรือไม่`]});
-  return{title:`สรุปผลความพึงพอใจในงาน 16 ด้าน: ${filterLabel()}`,date:new Date().toLocaleDateString('th-TH',{dateStyle:'long'}),n,blocks:B};}
+  return{title:`สรุปผลความพึงพอใจในงาน 15 ด้าน: ${filterLabel()}`,date:new Date().toLocaleDateString('th-TH',{dateStyle:'long'}),n,blocks:B};}
 function artHTML(a){const t=b=>b.table?`<div class="tbl-wrap"><table class="dtable"><thead><tr>${b.table.head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${b.table.rows.map(r=>`<tr>${r.map((c,i)=>`<td${i>1&&i<5?' class="n"':''}>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:'';
   const blk=(b,lv)=>`<section><${lv}>${esc(b.h)}</${lv}>${(b.p||[]).map(x=>`<p>${esc(x)}</p>`).join('')}${t(b)}${b.ul?`<ul>${b.ul.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}${(b.subs||[]).map(s=>blk(s,'h4')).join('')}</section>`;
   return `<article class="report-art"><h2>${esc(a.title)}</h2><p class="muted">ผู้ตอบ ${a.n} คน · จัดทำ ${esc(a.date)}</p>${a.blocks.map(b=>blk(b,'h3')).join('')}</article>`;}
@@ -1312,7 +1305,7 @@ function viewResp(id){const list=manageRows(),k=list.findIndex(x=>x.id===id),r=l
   modal(`<div class="resp-view"><span class="eyebrow">คำตอบรายบุคคล</span><h2 style="margin-top:4px">${esc(fmtTime(r.at))}</h2>
    <p class="muted tnum" style="font-size:12.5px">รหัสรายการ ${esc(String(r.id).slice(0,18))} · ไม่ระบุตัวตน</p>
    ${ok?`<div class="kpis" style="margin-top:12px"><div class="kpi"><div class="k">ความพึงพอใจรวม</div><div class="v tnum c-${L.k}">${f1(all)}</div><div class="s muted">${L.t}</div></div>
-     <div class="kpi"><div class="k">คุณภาพคำตอบ</div><div class="v" style="font-size:20px">${isStraight(r)?'<span class="c-bad">ผลที่เสีย</span>':'<span class="c-ok">ใช้ได้</span>'}</div><div class="s muted">${isStraight(r)?'ตอบ '+r.items[0]+' ทุกข้อ ไม่นับในสถิติ':'นับในสถิติ'}</div></div></div>`:'<p class="err">ข้อมูลไม่ครบ 32 ข้อ</p>'}
+     <div class="kpi"><div class="k">คุณภาพคำตอบ</div><div class="v" style="font-size:20px">${isStraight(r)?'<span class="c-bad">ผลที่เสีย</span>':'<span class="c-ok">ใช้ได้</span>'}</div><div class="s muted">${isStraight(r)?'ตอบ '+r.items[0]+' ทุกข้อ ไม่นับในสถิติ':'นับในสถิติ'}</div></div></div>`:'<p class="err">ข้อมูลไม่ครบ 30 ข้อ</p>'}
    <h3 class="rv-h">ข้อมูลผู้เล่น</h3><div class="rv-grid">${prof.map(([a,b])=>`<div><span class="muted">${esc(a)}</span><b>${esc(b)}</b></div>`).join('')}</div>
    ${ok?`<h3 class="rv-h">คะแนนรายด้านและคำตอบรายข้อ</h3><div class="tbl-wrap"><table class="dtable rv-table"><thead><tr><th>ด้าน / ข้อคำถาม</th><th class="n">ตอบ</th><th class="n">คะแนน</th>${Object.keys(ordPos).length?'<th class="n">ลำดับที่ได้</th>':''}</tr></thead><tbody>
      ${DIMS.map((D,d)=>{const lv=satLevel(re[d]);return `<tr class="rv-dim"><td><b>${d+1}. ${esc(D.th)}</b></td><td></td><td class="n c-${lv.k}"><b>${f1(re[d])}</b></td>${Object.keys(ordPos).length?'<td></td>':''}</tr>`+
@@ -1347,9 +1340,9 @@ function withXP(fn,msg){const before=xp();fn();const gain=xp()-before;render();i
 
 function modal(html){const r=document.getElementById('modalRoot');r.innerHTML=`<div class="modal" data-action="closeModal"><div class="modal-box" role="dialog" aria-modal="true">${html}</div></div>`;}
 function closeModal(){document.getElementById('modalRoot').innerHTML='';}
-function howto(){modal(`<h2>วิธีเล่น Ideal Company</h2><div class="mascot-line">${mascotSVG()}<p class="muted">คุณคือ “นักออกแบบอนาคตขององค์กร” ร่วมกันสร้างตึก 16 ชั้นของ Ideal Company ซึ่งแทนความพึงพอใจในงาน 16 ด้าน ประยุกต์จากกรอบ Job Satisfaction Survey (JSS) ใช้เวลาประมาณ 10 นาที</p></div>
+function howto(){modal(`<h2>วิธีเล่น Ideal Company</h2><div class="mascot-line">${mascotSVG()}<p class="muted">คุณคือ “นักออกแบบอนาคตขององค์กร” ร่วมกันสร้างตึก 15 ชั้นของ Ideal Company ซึ่งแทนความพึงพอใจในงาน 15 ด้าน ประยุกต์จากกรอบ Job Satisfaction Survey (JSS) ใช้เวลาประมาณ 10 นาที</p></div>
  <ol><li><b>ข้อมูลผู้เล่น</b> กรอกข้อมูลพื้นฐาน บริษัท และตำแหน่ง ถ้ายังไม่มีประสบการณ์ทำงาน เปิดโหมดบริษัทจำลอง</li>
- <li><b>บทที่ 1 Reality Quest</b> ตอบภารกิจ 32 ข้อต่อเนื่องกันว่าข้อความจริงกับบริษัทของคุณแค่ไหน พักแล้วกลับมาตอบต่อได้</li>
+ <li><b>บทที่ 1 Reality Quest</b> ตอบภารกิจ 30 ข้อต่อเนื่องกันว่าข้อความจริงกับบริษัทของคุณแค่ไหน พักแล้วกลับมาตอบต่อได้</li>
  <li><b>บทที่ 2 Satisfaction Scanner</b> ดูตึกว่าชั้นไหนแข็งแรง ชั้นไหนต้องเสริม และ 3 ชั้นที่ควรพัฒนาก่อน</li>
  <li><b>บทที่ 3 Change Maker</b> เขียนข้อเสนอแนะ แล้วกดส่งคำตอบ</li></ol>
  <p class="muted" style="font-size:13px">ไม่มีคำตอบถูกหรือผิด เมื่อจบบทที่ 3 คำตอบจะถูกส่งให้ทีมผู้วิจัยแบบไม่ระบุตัวตน ชื่อรหัสและหน้าตาตัวละครไม่ถูกส่ง</p>
@@ -1357,7 +1350,7 @@ function howto(){modal(`<h2>วิธีเล่น Ideal Company</h2><div clas
 function askReset(){modal(`<h2>เริ่มภารกิจใหม่?</h2><p class="muted">คำตอบ ไอเดีย และ XP ทั้งหมดในเครื่องนี้จะถูกล้าง</p><div class="row" style="justify-content:flex-end;margin-top:16px"><button class="btn ghost" data-action="closeModal">ยกเลิก</button><button class="btn primary" data-action="doReset">ล้างและเริ่มใหม่</button></div>`);}
 
 function loadDemo(){S=fresh();S.demo=true;S.profile={style:0,skin:1,hair:1,outfit:0,color:1,codename:'ผู้เล่นตัวอย่าง',org:'ASM Company',age:'25–34 ปี',status:'พนักงานบริษัท',sim:false,gender:'หญิง',ageYears:'29',marital:'โสด',family:'3–4 คน',edu:'ปริญญาตรี',dept:'',position:'ระดับปฏิบัติการ',tenure:'1–3 ปี',distance:'11–20 กม.',commute:'รถโดยสารสาธารณะ / รถไฟฟ้า',hospital:'มากกว่า 3 ปี'};
-  const tg=[2.4,2.3,3.4,2.7,2.5,2.6,3.0,3.3,3.1,3.6,3.0,2.4,2.4,3.0,3.4,2.7],nz=[-0.3,0.3];
+  const tg=[2.4,2.3,3.4,2.7,2.5,3.0,3.3,3.1,3.6,3.0,2.4,2.4,3.0,3.4,2.7],nz=[-0.3,0.3];
   S.answers=DIMS.map((D,d)=>D.items.map((it,i)=>{const v=Math.min(5,Math.max(1,Math.round(tg[d]+nz[i])));return it[1]?6-v:v}));
   S.ideas={0:{text:'ปรับเงินเดือนตามผลประเมินจริงปีละ 2 ครั้ง และเปิดเผยช่วงเงินเดือนของแต่ละตำแหน่งให้พนักงานทราบ',stars:3},1:{text:'ประกาศเกณฑ์เลื่อนขั้นให้ชัด',stars:2}};
   S.sawGap=true;S.screen='ch3';}
@@ -1384,7 +1377,7 @@ document.addEventListener('click',e=>{const el=e.target.closest('[data-action]')
   case'startRun':{const np=nextPos(S.pos||0);S.pos=np<0?0:np;S.screen='mission';render();window.scrollTo(0,0);break;}
   case'answer':{const pos=S.pos||0,[d,i]=ordAt(pos),v=+el.dataset.v;el.setAttribute('aria-pressed','true');
     setTimeout(()=>{const wasDone=distDone(d);let msg='';withXP(()=>{S.answers[d][i]=v;if(!wasDone&&distDone(d)){S._anim=d;msg=`สร้างชั้น ${d+1} เสร็จ`;}
-      const np=nextPos(pos+1);if(np<0){S.sawGap=true;S.screen='ch3';msg='สร้างตึกครบ 16 ชั้นแล้ว';}else S.pos=np;},msg);window.scrollTo({top:0,behavior:'smooth'});},160);break;}
+      const np=nextPos(pos+1);if(np<0){S.sawGap=true;S.screen='ch3';msg='สร้างตึกครบ 15 ชั้นแล้ว';}else S.pos=np;},msg);window.scrollTo({top:0,behavior:'smooth'});},160);break;}
   case'prevQ':S.pos=Math.max(0,(S.pos||0)-1);render();break;
   case'dossier':modal(`<h2>แฟ้มข้อมูลบริษัท</h2>${dossierHTML()}<div class="row" style="justify-content:flex-end;margin-top:14px"><button class="btn primary" data-action="closeModal">กลับไปตอบต่อ</button></div>`);break;
   case'adminLogin':adminLogin();break;
